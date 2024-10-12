@@ -7,7 +7,7 @@ namespace Loonfactory.Google.Apis.YouTube.v3.Captions;
 /// <summary>
 /// The YouTubeCaptionResourceSnippet contains basic details about the caption.
 /// </summary>
-class YouTubeCaptionResourceSnippet
+public class YouTubeCaptionResourceSnippet
 {
     /// <summary>
     /// The ID that YouTube uses to uniquely identify the video associated with the caption track.

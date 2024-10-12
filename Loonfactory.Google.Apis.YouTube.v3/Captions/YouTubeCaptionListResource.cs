@@ -7,7 +7,7 @@ namespace Loonfactory.Google.Apis.YouTube.v3.Captions;
 /// <summary>
 /// The YouTubeCaptionList represents a list of YouTube caption resources.
 /// </summary>
-class YouTubeCaptionListResource
+public class YouTubeCaptionListResource
 {
     /// <summary>
     /// Identifies the API resource's type.

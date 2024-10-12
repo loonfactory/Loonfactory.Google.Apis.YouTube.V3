@@ -8,7 +8,7 @@ namespace Loonfactory.Google.Apis.YouTube.v3.Captions;
 /// A YouTubeCaptionResource represents a YouTube caption track.
 /// A caption track is associated with exactly one YouTube video.
 /// </summary>
-class YouTubeCaptionResource
+public class YouTubeCaptionResource
 {
     /// <summary>
     /// Identifies the API resource's type.
