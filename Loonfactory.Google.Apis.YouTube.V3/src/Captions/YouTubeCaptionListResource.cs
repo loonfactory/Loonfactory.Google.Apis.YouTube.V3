@@ -2,7 +2,7 @@
 
 using System.Text.Json.Serialization;
 
-namespace Loonfactory.Google.Apis.YouTube.v3.Captions;
+namespace Loonfactory.Google.Apis.YouTube.V3.Captions;
 
 /// <summary>
 /// The YouTubeCaptionList represents a list of YouTube caption resources.

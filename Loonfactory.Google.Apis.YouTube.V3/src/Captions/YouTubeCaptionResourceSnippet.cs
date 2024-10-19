@@ -2,7 +2,7 @@
 
 using System.ComponentModel.DataAnnotations;
 
-namespace Loonfactory.Google.Apis.YouTube.v3.Captions;
+namespace Loonfactory.Google.Apis.YouTube.V3.Captions;
 
 /// <summary>
 /// The YouTubeCaptionResourceSnippet contains basic details about the caption.

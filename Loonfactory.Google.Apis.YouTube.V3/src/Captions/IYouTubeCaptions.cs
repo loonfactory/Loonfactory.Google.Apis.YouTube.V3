@@ -1,6 +1,6 @@
 // Licensed under the MIT license by loonfactory.
 
-namespace Loonfactory.Google.Apis.YouTube.v3.Captions;
+namespace Loonfactory.Google.Apis.YouTube.V3.Captions;
 
 /// <summary>
 /// A caption resource represents a YouTube caption track. A caption track is associated with exactly one YouTube video.
