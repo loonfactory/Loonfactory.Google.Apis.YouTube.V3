@@ -3,7 +3,7 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.0.31903.59
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Loonfactory.Google.Apis.YouTube.V3", "Loonfactory.Google.Apis.YouTube.V3\src\Loonfactory.Google.Apis.YouTube.V3.csproj", "{9FCEF778-48EE-4D4D-8422-750EB3B37C90}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Loonfactory.Google.Apis.YouTube.V3", "src\Loonfactory.Google.Apis.YouTube.V3.csproj", "{9FCEF778-48EE-4D4D-8422-750EB3B37C90}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
