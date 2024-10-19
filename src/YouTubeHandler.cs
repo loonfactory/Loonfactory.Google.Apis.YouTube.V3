@@ -7,7 +7,7 @@ using Microsoft.Extensions.Options;
 
 namespace Loonfactory.Google.Apis.YouTube.V3;
 
-public abstract class YouTubeCaptionHandler : IYouTubeHandler
+public abstract class YouTubeHandler : IYouTubeHandler
 {
     /// <summary>
     /// Gets or sets the <see cref="YouTubeScheme"/> associated with this YouTube handler.

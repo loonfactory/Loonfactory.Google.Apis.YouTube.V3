@@ -24,15 +24,12 @@ public class YouTubeCaptions(IHttpContextAccessor httpContextAccessor, IYouTubeH
         string? onBehalfOfContentOwner = null,
         CancellationToken cancellationToken = default)
     {
-        var context = HttpContextAccessor.HttpContext ?? throw new InvalidOperationException("The HTTP context is not available. Ensure that 'IHttpContextAccessor' is properly configured and that the current request context is accessible. This typically occurs when trying to access the context outside of an active HTTP request pipeline.");
-        var handler = await Handlers.GetHandlerAsync(context).ConfigureAwait(false) ?? throw new InvalidOperationException("No YouTube handler is registered.");      
+        throw new NotImplementedException();
     }
 
     public async Task<Stream> DownloadAsync(string id, string? onBehalfOfContentOwner = null, string? tfmt = null, string? tlang = null, CancellationToken cancellationToken = default)
     {
-        var context = HttpContextAccessor.HttpContext ?? throw await CreateMissingHandlerException(scheme);
-
-        var handler = await Handlers.GetHandlerAsync(HttpContextAccessor.HttpContext).ConfigureAwait(false) ?? throw await CreateMissingHandlerException(scheme);
+        throw new NotImplementedException();
     }
 
     public Task<YouTubeCaptionResource> InsertAsync(IEnumerable<string> part, YouTubeCaptionResource resource, CancellationToken cancellationToken = default)
