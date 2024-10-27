@@ -75,6 +75,11 @@ public abstract class YouTubeHandler : IYouTubeHandler
     }
 
     /// <summary>
+    /// Gets the <see cref="HttpClient"/> instance used to communicate with the YouTube.
+    /// </summary>
+    protected HttpClient Backchannel => Options.Backchannel;
+
+    /// <summary>
     /// Initializes a new instance of <see cref="YouTubeCaptionHandler" />.
     /// </summary>
     /// <param name="options">The monitor for the options instance.</param>
@@ -93,12 +98,10 @@ public abstract class YouTubeHandler : IYouTubeHandler
     /// <param name="scheme"></param>
     /// <param name="context"></param>
     /// <returns></returns>
-    public async Task InitializeAsync(YouTubeScheme scheme, HttpContext context)
+    public async Task InitializeAsync(HttpContext? context)
     {
-        ArgumentNullException.ThrowIfNull(scheme);
         ArgumentNullException.ThrowIfNull(context);
 
-        Scheme = scheme;
         Context = context;
 
         Options = OptionsMonitor.Get(Scheme.Name);

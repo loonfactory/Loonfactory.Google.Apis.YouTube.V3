@@ -12,7 +12,6 @@ public interface IYouTubeHandler
     /// <summary>
     /// Initialize the YouTube handler. The handler should initialize anything it needs from the request and scheme as part of this method.
     /// </summary>
-    /// <param name="scheme">The <see cref="YouTubeScheme"/> scheme.</param>
     /// <param name="context">The <see cref="HttpContext"/> context for the current request.</param>
-    Task InitializeAsync(YouTubeScheme scheme, HttpContext context);
+    Task InitializeAsync(HttpContext? context = null);
 }

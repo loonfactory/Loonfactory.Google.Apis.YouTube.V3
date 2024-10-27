@@ -1,122 +1,78 @@
 // Licensed under the MIT license by loonfactory.
 
+using System.Net.Http.Headers;
 using System.Text.Encodings.Web;
-using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.WebUtilities;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 
 namespace Loonfactory.Google.Apis.YouTube.V3.Captions;
 
-public class YouTubeCaptionHandler : IYouTubeHandler
+/// <summary>
+/// Provides functionality to handle YouTube caption operations.
+/// </summary>
+public class YouTubeCaptionHandler : YouTubeHandler
 {
-    /// <summary>
-    /// Gets or sets the <see cref="YouTubeScheme"/> associated with this YouTube handler.
-    /// </summary>
-    public YouTubeScheme Scheme { get; private set; } = default!;
-
-    /// <summary>
-    /// Gets or sets the options associated with this YouTube handler.
-    /// </summary>
-    public YouTubeOptions Options { get; private set; } = default!;
-
-    /// <summary>
-    /// Gets or sets the <see cref="HttpContext"/>.
-    /// </summary>
-    protected HttpContext Context { get; private set; } = default!;
-
-    /// <summary>
-    /// Gets the <see cref="HttpRequest"/> associated with the current request.
-    /// </summary>
-    protected HttpRequest Request
-    {
-        get => Context.Request;
-    }
-
-    /// <summary>
-    /// Gets the <see cref="HttpResponse" /> associated with the current request.
-    /// </summary>
-    protected HttpResponse Response
-    {
-        get => Context.Response;
-    }
-
-    /// <summary>
-    /// Gets the <see cref="ILogger"/>.
-    /// </summary>
-    protected ILogger Logger { get; }
-
-    /// <summary>
-    /// Gets the <see cref="UrlEncoder"/>.
-    /// </summary>
-    protected UrlEncoder UrlEncoder { get; }
-
-    /// <summary>
-    /// Gets the current time, primarily for unit testing.
-    /// </summary>
-    protected TimeProvider TimeProvider { get; private set; } = TimeProvider.System;
-
-    /// <summary>
-    /// Gets the <see cref="IOptionsMonitor{TOptions}"/> to detect changes to options.
-    /// </summary>
-    protected IOptionsMonitor<YouTubeOptions> OptionsMonitor { get; }
-
-    /// <summary>
-    /// The handler calls methods on the events which give the application control at certain points where processing is occurring.
-    /// If it is not provided a default instance is supplied which does nothing when the methods are called.
-    /// </summary>
-    protected virtual object? Events { get; set; }
-
-    /// <summary>
-    /// Gets the absolute current url.
-    /// </summary>
-    protected string CurrentUri
-    {
-        get => Request.Scheme + Uri.SchemeDelimiter + Request.Host + Request.PathBase + Request.Path + Request.QueryString;
-    }
-
     /// <summary>
     /// Initializes a new instance of <see cref="YouTubeCaptionHandler" />.
     /// </summary>
     /// <param name="options">The monitor for the options instance.</param>
     /// <param name="logger">The <see cref="ILoggerFactory"/>.</param>
     /// <param name="encoder">The <see cref="UrlEncoder"/>.</param>
-    protected YouTubeCaptionHandler(IOptionsMonitor<YouTubeOptions> options, ILoggerFactory logger, UrlEncoder encoder)
+    protected YouTubeCaptionHandler(IOptionsMonitor<YouTubeOptions> options, ILoggerFactory logger, UrlEncoder encoder) : base(options, logger, encoder)
     {
-        Logger = logger.CreateLogger(this.GetType().FullName!);
-        UrlEncoder = encoder;
-        OptionsMonitor = options;
     }
 
     /// <summary>
-    /// Initialize the handler, resolve the options and validate them.
+    /// Asynchronously handles the deletion of a YouTube caption.
     /// </summary>
-    /// <param name="scheme"></param>
-    /// <param name="context"></param>
-    /// <returns></returns>
-    public async Task InitializeAsync(YouTubeScheme scheme, HttpContext context)
+    /// <param name="properties">The <see cref="YouTubeCaptionProperties"/> required for caption deletion.</param>
+    /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
+    /// <exception cref="ArgumentNullException">Thrown when <paramref name="properties"/> is <c>null</c>.</exception>
+    /// <exception cref="InvalidOperationException">Thrown when required properties are missing or invalid.</exception>
+    public virtual async Task HandleCaptionDeleteAsync(YouTubeCaptionProperties properties, CancellationToken cancellationToken)
     {
-        ArgumentNullException.ThrowIfNull(scheme);
-        ArgumentNullException.ThrowIfNull(context);
+        ArgumentNullException.ThrowIfNull(properties);
 
-        Scheme = scheme;
-        Context = context;
+        if (string.IsNullOrEmpty(properties.Id))
+        {
+            throw new InvalidOperationException("The caption id must be provided in the properties.");
+        }
 
-        Options = OptionsMonitor.Get(Scheme.Name);
+        if (string.IsNullOrEmpty(properties.AccessToken))
+        {
+            throw new InvalidOperationException("An access token must be provided in the properties.");
+        }
 
-        TimeProvider = Options.TimeProvider ?? TimeProvider.System;
+        var endpoint = BuildChallengeUrl(YouTubeCaptionDefaults.DeleteEndpoint, properties);
 
-        await InitializeEventsAsync().ConfigureAwait(false);
-        await InitializeHandlerAsync().ConfigureAwait(false);
+        var request = new HttpRequestMessage(HttpMethod.Delete, endpoint);
+        request.Headers.Authorization = new AuthenticationHeaderValue("Bearer", properties.AccessToken);
+
+        var response = await Backchannel.SendAsync(request, cancellationToken).ConfigureAwait(false);
+        if (response.IsSuccessStatusCode)
+        {
+            return;
+        }
+
+        throw new NotSupportedException("Handling of unsuccessful HTTP responses is not yet implemented.");
     }
 
     /// <summary>
-    /// Initializes the events object, called once per request by <see cref="InitializeAsync(YouTubeScheme, HttpContext context)"/>.
+    /// Constructs the challenge url.
     /// </summary>
-    protected virtual Task InitializeEventsAsync() => Task.CompletedTask;
+    /// <param name="uri">The base URI of the challenge.</param>
+    /// <param name="properties">The <see cref="YouTubeCaptionProperties"/>.</param>
+    /// <returns>The challenge url.</returns>
+    protected virtual string BuildChallengeUrl(string uri, YouTubeCaptionProperties properties)
+    {
+        var parameters = new Dictionary<string, string?>
+        {
+            { "id", properties.Id },
+            { "onBehalfOfContentOwner", properties.OnBehalfOfContentOwner},
+            { "key", Options.Key },
+        };
 
-    /// <summary>
-    /// Called after options/events have been initialized for the handler to finish initializing itself.
-    /// </summary>
-    /// <returns>A task</returns>
-    protected virtual Task InitializeHandlerAsync() => Task.CompletedTask;
+        return QueryHelpers.AddQueryString(uri, parameters);
+    }
 }

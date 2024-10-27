@@ -6,26 +6,17 @@ using Microsoft.Extensions.DependencyInjection;
 namespace Loonfactory.Google.Apis.YouTube.V3;
 
 /// <summary>
-/// 
+/// @TODO
 /// </summary>
-public class YouTubeHandlerProvider : IYouTubeHandlerProvider
+public class YouTubeHandlerProvider(IServiceProvider serviceProvider) : IYouTubeHandlerProvider
 {
     /// <summary>
-    /// Constructor.
+    /// The <see cref="IServiceProvider"/>.
     /// </summary>
-    /// <param name="schemes">The <see cref="IYouTubeSchemeProvider"/>.</param>
-    public YouTubeHandlerProvider(IYouTubeSchemeProvider schemes)
-    {
-        Schemes = schemes;
-    }
-
-    /// <summary>
-    /// The <see cref="IYouTubeSchemeProvider"/>.
-    /// </summary>
-    public IYouTubeSchemeProvider Schemes { get; }
+    public IServiceProvider ServiceProvider { get; } = serviceProvider;
 
     // handler instance cache, need to initialize once per request
-    private readonly Dictionary<string, IYouTubeHandler> _handlerMap = new(StringComparer.Ordinal);
+    private readonly Dictionary<Type, IYouTubeHandler> _handlerMap = [];
 
     /// <summary>
     /// Returns the handler instance that will be used.
@@ -33,26 +24,22 @@ public class YouTubeHandlerProvider : IYouTubeHandlerProvider
     /// <param name="context">The context.</param>
     /// <param name="schemeName">The name of the YouTube scheme being handled.</param>
     /// <returns>The handler instance.</returns>
-    public async Task<IYouTubeHandler?> GetHandlerAsync(HttpContext context, string schemeName)
+    public async Task<T?> GetHandlerAsync<T>(HttpContext? context = null) where T : class, IYouTubeHandler
     {
-        if (_handlerMap.TryGetValue(schemeName, out var value))
+        if (_handlerMap.TryGetValue(typeof(T), out var value))
         {
-            return value;
+            return value as T;
         }
 
-        var scheme = await Schemes.GetSchemeAsync(schemeName).ConfigureAwait(false);
-        if (scheme == null)
-        {
-            return null;
-        }
+        var handlerType = typeof(T);
+        var handler = (context?.RequestServices.GetService(handlerType) ??
+            ActivatorUtilities.CreateInstance(context?.RequestServices ?? ServiceProvider, handlerType))
+            as T;
 
-        var handler = (context.RequestServices.GetService(scheme.HandlerType) ??
-            ActivatorUtilities.CreateInstance(context.RequestServices, scheme.HandlerType))
-            as IYouTubeHandler;
         if (handler != null)
         {
-            await handler.InitializeAsync(scheme, context).ConfigureAwait(false);
-            _handlerMap[schemeName] = handler;
+            await handler.InitializeAsync(context).ConfigureAwait(false);
+            _handlerMap[handlerType] = handler;
         }
         return handler;
     }

@@ -1,0 +1,13 @@
+{
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name": "C#: LoonFactory.Google.Apis.YouTube.V3.Example [https]",
+            "type": "dotnet",
+            "request": "launch",
+            "projectPath": "${workspaceFolder}/example/LoonFactory.Google.Apis.YouTube.V3.Example.csproj",
+            "launchConfigurationId": "TargetFramework=;https",
+            "justMyCode": false
+        }
+    ]
+}
