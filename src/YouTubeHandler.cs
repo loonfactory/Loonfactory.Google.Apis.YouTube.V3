@@ -10,11 +10,6 @@ namespace Loonfactory.Google.Apis.YouTube.V3;
 public abstract class YouTubeHandler : IYouTubeHandler
 {
     /// <summary>
-    /// Gets or sets the <see cref="YouTubeScheme"/> associated with this YouTube handler.
-    /// </summary>
-    public YouTubeScheme Scheme { get; private set; } = default!;
-
-    /// <summary>
     /// Gets or sets the options associated with this YouTube handler.
     /// </summary>
     public YouTubeOptions Options { get; private set; } = default!;
@@ -95,7 +90,6 @@ public abstract class YouTubeHandler : IYouTubeHandler
     /// <summary>
     /// Initialize the handler, resolve the options and validate them.
     /// </summary>
-    /// <param name="scheme"></param>
     /// <param name="context"></param>
     /// <returns></returns>
     public async Task InitializeAsync(HttpContext? context)
@@ -104,7 +98,7 @@ public abstract class YouTubeHandler : IYouTubeHandler
 
         Context = context;
 
-        Options = OptionsMonitor.Get(Scheme.Name);
+        Options = OptionsMonitor.CurrentValue;
 
         TimeProvider = Options.TimeProvider ?? TimeProvider.System;
 
