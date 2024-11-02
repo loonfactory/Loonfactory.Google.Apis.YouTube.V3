@@ -5,7 +5,7 @@ VisualStudioVersion = 17.0.31903.59
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Loonfactory.Google.Apis.YouTube.V3", "src\Loonfactory.Google.Apis.YouTube.V3.csproj", "{9FCEF778-48EE-4D4D-8422-750EB3B37C90}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LoonFactory.Google.Apis.YouTube.V3.Example", "example\LoonFactory.Google.Apis.YouTube.V3.Example.csproj", "{77C34E26-2FAE-49EC-99D7-EC18A6C9A6C9}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Loonfactory.Google.Apis.YouTube.V3.Example", "example\Loonfactory.Google.Apis.YouTube.V3.Example.csproj", "{77C34E26-2FAE-49EC-99D7-EC18A6C9A6C9}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

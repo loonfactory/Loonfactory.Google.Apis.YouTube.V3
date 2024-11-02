@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 
-namespace LoonFactory.Google.Apis.YouTube.V3.Example.Data;
+namespace Loonfactory.Google.Apis.YouTube.V3.Example.Data;
 
 public class ApplicationDbContext : IdentityDbContext
 {

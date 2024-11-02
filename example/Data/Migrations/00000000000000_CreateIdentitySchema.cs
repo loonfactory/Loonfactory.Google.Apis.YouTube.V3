@@ -1,7 +1,7 @@
 ﻿using System;
 using Microsoft.EntityFrameworkCore.Migrations;
 
-namespace LoonFactory.Google.Apis.YouTube.V3.Example.Data.Migrations
+namespace Loonfactory.Google.Apis.YouTube.V3.Example.Data.Migrations
 {
     public partial class CreateIdentitySchema : Migration
     {

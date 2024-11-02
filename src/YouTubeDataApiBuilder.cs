@@ -12,7 +12,6 @@ namespace Loonfactory.Google.Apis.YouTube.V3;
 /// <param name="services">The services being configured.</param>
 public class YouTubeDataApiBuilder(IServiceCollection services)
 {
-
     /// <summary>
     /// The services being configured.
     /// </summary>

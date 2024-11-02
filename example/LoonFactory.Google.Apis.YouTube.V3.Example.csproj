@@ -1,10 +1,10 @@
 <Project Sdk="Microsoft.NET.Sdk.Web">
 
   <PropertyGroup>
-    <TargetFramework>net8.0</TargetFramework>
+    <TargetFramework>net9.0</TargetFramework>
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
-    <UserSecretsId>aspnet-LoonFactory.Google.Apis.YouTube.V3.Example-c08f2249-9568-4814-b0f9-0978bc635c35</UserSecretsId>
+    <UserSecretsId>aspnet-Loonfactory.Google.Apis.YouTube.V3.Example-c08f2249-9568-4814-b0f9-0978bc635c35</UserSecretsId>
   </PropertyGroup>
 
   <ItemGroup>
