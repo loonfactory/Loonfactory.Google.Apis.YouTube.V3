@@ -5,11 +5,6 @@ namespace Loonfactory.Google.Apis.YouTube.V3.Captions;
 public class YouTubeCaptionDefaults
 {
     /// <summary>
-    /// @TODO
-    /// </summary>
-    public const string CaptionsScheme = "Captions";
-
-    /// <summary>
     /// Endpoint URL for listing captions.
     /// </summary>
     public static readonly string ListEndpoint = "https://www.googleapis.com/youtube/v3/captions";

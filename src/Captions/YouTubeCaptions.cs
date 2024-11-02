@@ -26,7 +26,7 @@ public class YouTubeCaptions(
     public YouTubeOptions Options { get; } = options?.Value ?? throw new ArgumentNullException(nameof(options));
 
     public IAccessTokenProvider AccessTokenProvider { get; } = accessTokenProvider;
-  
+
     /// <summary>
     /// Gets the <see cref="IHttpContextAccessor"/>.
     /// </summary>

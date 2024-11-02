@@ -11,17 +11,14 @@ namespace Loonfactory.Google.Apis.YouTube.V3.Captions;
 /// <summary>
 /// Provides functionality to handle YouTube caption operations.
 /// </summary>
-public class YouTubeCaptionHandler : YouTubeHandler, IYouTubeCaptionHandler
+/// <remarks>
+/// Initializes a new instance of <see cref="YouTubeCaptionHandler" />.
+/// </remarks>
+/// <param name="options">The monitor for the options instance.</param>
+/// <param name="logger">The <see cref="ILoggerFactory"/>.</param>
+/// <param name="encoder">The <see cref="UrlEncoder"/>.</param>
+public class YouTubeCaptionHandler(IOptionsMonitor<YouTubeOptions> options, ILoggerFactory logger, UrlEncoder encoder) : YouTubeHandler(options, logger, encoder), IYouTubeCaptionHandler
 {
-    /// <summary>
-    /// Initializes a new instance of <see cref="YouTubeCaptionHandler" />.
-    /// </summary>
-    /// <param name="options">The monitor for the options instance.</param>
-    /// <param name="logger">The <see cref="ILoggerFactory"/>.</param>
-    /// <param name="encoder">The <see cref="UrlEncoder"/>.</param>
-    protected YouTubeCaptionHandler(IOptionsMonitor<YouTubeOptions> options, ILoggerFactory logger, UrlEncoder encoder) : base(options, logger, encoder)
-    {
-    }
 
     /// <summary>
     /// Asynchronously handles the deletion of a YouTube caption.

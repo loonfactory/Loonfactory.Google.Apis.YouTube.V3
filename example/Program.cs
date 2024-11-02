@@ -2,8 +2,9 @@
 
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
-using LoonFactory.Google.Apis.YouTube.V3.Example.Data;
 using Microsoft.AspNetCore.HttpOverrides;
+using Loonfactory.Google.Apis.YouTube.V3;
+using LoonFactory.Google.Apis.YouTube.V3.Example.Data;
 
 var builder = WebApplication.CreateBuilder(args);
 var configuration = builder.Configuration;
@@ -30,6 +31,8 @@ builder.Services.Configure<ForwardedHeadersOptions>(options =>
     options.ForwardedHeaders =
         ForwardedHeaders.XForwardedFor | ForwardedHeaders.XForwardedProto | ForwardedHeaders.XForwardedHost;
 });
+
+builder.Services.AddYouTubeDataApi();
 
 var app = builder.Build();
 
