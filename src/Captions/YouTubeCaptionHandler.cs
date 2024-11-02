@@ -11,7 +11,7 @@ namespace Loonfactory.Google.Apis.YouTube.V3.Captions;
 /// <summary>
 /// Provides functionality to handle YouTube caption operations.
 /// </summary>
-public class YouTubeCaptionHandler : YouTubeHandler
+public class YouTubeCaptionHandler : YouTubeHandler, IYouTubeCaptionHandler
 {
     /// <summary>
     /// Initializes a new instance of <see cref="YouTubeCaptionHandler" />.
