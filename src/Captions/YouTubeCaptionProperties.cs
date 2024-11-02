@@ -10,7 +10,6 @@ public class YouTubeCaptionProperties : YouTubeProperties
     /// <summary>
     /// The parameter key for the "accessToken" argument used for authorization.
     /// </summary>
-    /// 
     public static readonly string AccessTokenKey = "accessToken";
 
     /// <summary>

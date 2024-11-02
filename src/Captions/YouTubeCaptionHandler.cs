@@ -19,7 +19,6 @@ namespace Loonfactory.Google.Apis.YouTube.V3.Captions;
 /// <param name="encoder">The <see cref="UrlEncoder"/>.</param>
 public class YouTubeCaptionHandler(IOptionsMonitor<YouTubeOptions> options, ILoggerFactory logger, UrlEncoder encoder) : YouTubeHandler(options, logger, encoder), IYouTubeCaptionHandler
 {
-
     /// <summary>
     /// Asynchronously handles the deletion of a YouTube caption.
     /// </summary>
