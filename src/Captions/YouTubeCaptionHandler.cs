@@ -5,6 +5,7 @@ using System.Text.Encodings.Web;
 using Microsoft.AspNetCore.WebUtilities;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
+using Microsoft.Extensions.Primitives;
 
 namespace Loonfactory.Google.Apis.YouTube.V3.Captions;
 
@@ -54,6 +55,34 @@ public class YouTubeCaptionHandler(IOptionsMonitor<YouTubeOptions> options, ILog
         throw new NotSupportedException("Handling of unsuccessful HTTP responses is not yet implemented.");
     }
 
+    public virtual async Task HandleCaptionListAsync(YouTubeCaptionProperties properties, CancellationToken cancellationToken)
+    {
+        ArgumentNullException.ThrowIfNull(properties);
+
+        if (string.IsNullOrEmpty(properties.VideoId))
+        {
+            throw new InvalidOperationException("@TODO");
+        }
+
+        if ((properties.Parts?.Length ?? 0) == 0)
+        {
+            throw new InvalidOperationException("@TODO");
+        }
+
+        var endpoint = BuildChallengeUrl(YouTubeCaptionDefaults.ListEndpoint, properties);
+
+        var request = new HttpRequestMessage(HttpMethod.Get, endpoint);
+        request.Headers.Authorization = new AuthenticationHeaderValue("Bearer", properties.AccessToken);
+
+        var response = await Backchannel.SendAsync(request, cancellationToken).ConfigureAwait(false);
+        if (response.IsSuccessStatusCode)
+        {
+            return;
+        }
+
+        throw new NotSupportedException("Handling of unsuccessful HTTP responses is not yet implemented.");
+    }
+
     /// <summary>
     /// Constructs the challenge url.
     /// </summary>
@@ -62,13 +91,14 @@ public class YouTubeCaptionHandler(IOptionsMonitor<YouTubeOptions> options, ILog
     /// <returns>The challenge url.</returns>
     protected virtual string BuildChallengeUrl(string uri, YouTubeCaptionProperties properties)
     {
-        var parameters = new Dictionary<string, string?>
+        var parameters = new List<KeyValuePair<string, StringValues>>
         {
-            { "id", properties.Id },
-            { "onBehalfOfContentOwner", properties.OnBehalfOfContentOwner},
-            { "key", Options.Key },
+            new("id", properties.Id ),
+            new("part", properties.Parts),
+            new("onBehalfOfContentOwner", properties.OnBehalfOfContentOwner),
+            new("key", Options.Key),
         };
 
-        return QueryHelpers.AddQueryString(uri, parameters);
+        return QueryHelpers.AddQueryString(uri, parameters.AsEnumerable());
     }
 }

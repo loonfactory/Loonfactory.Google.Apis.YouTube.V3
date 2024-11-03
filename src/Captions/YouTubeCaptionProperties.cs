@@ -17,6 +17,10 @@ public class YouTubeCaptionProperties : YouTubeProperties
     /// </summary>
     public static readonly string IdKey = "id";
 
+    public static readonly string VideoIdKey = "videoId";
+
+    public static readonly string PartsKey = "parts";
+
     /// <summary>
     /// The parameter key for the "onBehalfOfContentOwner" argument being used for a challenge request.
     /// </summary>
@@ -70,5 +74,17 @@ public class YouTubeCaptionProperties : YouTubeProperties
     {
         get => GetParameter<string>(onBehalfOfContentOwnerKey);
         set => SetParameter(onBehalfOfContentOwnerKey, value);
+    }
+
+    public string? VideoId
+    {
+        get => GetParameter<string>(VideoIdKey);
+        set => SetParameter(VideoIdKey, value);
+    }
+
+    public string[]? Parts
+    {
+        get => GetParameter<string[]>(PartsKey);
+        set => SetParameter(PartsKey, value);
     }
 }
