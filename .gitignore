@@ -45,3 +45,5 @@ UpgradeLog.htm
 .idea
 mono_crash.*.json
 mono_crash.*.blob
+
+app.db
