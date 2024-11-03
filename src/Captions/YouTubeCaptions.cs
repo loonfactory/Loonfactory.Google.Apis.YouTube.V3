@@ -127,27 +127,48 @@ public class YouTubeCaptions(
 
     public Task<YouTubeCaptionResource> UpdateAsync(IEnumerable<string> part, YouTubeCaptionResource resource, CancellationToken cancellationToken = default)
     {
-        throw new NotImplementedException();
+        ArgumentNullException.ThrowIfNull(part);
+        ArgumentNullException.ThrowIfNull(resource);
+
+        return InternalUpdateAsync(part, null, resource, null, null, cancellationToken);
     }
 
     public Task<YouTubeCaptionResource> UpdateAsync(IEnumerable<string> part, string? onBehalfOfContentOwner, YouTubeCaptionResource resource, CancellationToken cancellationToken = default)
     {
-        throw new NotImplementedException();
+        ArgumentNullException.ThrowIfNull(part);
+        ArgumentNullException.ThrowIfNull(onBehalfOfContentOwner);
+        ArgumentNullException.ThrowIfNull(resource);
+
+        return InternalUpdateAsync(part, onBehalfOfContentOwner, resource, null, null, cancellationToken);
     }
 
     public Task<YouTubeCaptionResource> UpdateAsync(IEnumerable<string> part, YouTubeCaptionResource resource, Stream stream, CancellationToken cancellationToken = default)
     {
-        throw new NotImplementedException();
+        ArgumentNullException.ThrowIfNull(part);
+        ArgumentNullException.ThrowIfNull(resource);
+        ArgumentNullException.ThrowIfNull(stream);
+
+        return InternalUpdateAsync(part, null, resource, stream, "application/octet-stream", cancellationToken);
     }
 
     public Task<YouTubeCaptionResource> UpdateAsync(IEnumerable<string> part, string? onBehalfOfContentOwner, YouTubeCaptionResource resource, Stream stream, CancellationToken cancellationToken = default)
     {
-        throw new NotImplementedException();
+        ArgumentNullException.ThrowIfNull(part);
+        ArgumentNullException.ThrowIfNull(onBehalfOfContentOwner);
+        ArgumentNullException.ThrowIfNull(resource);
+        ArgumentNullException.ThrowIfNull(stream);
+
+        return InternalUpdateAsync(part, onBehalfOfContentOwner, resource, stream, null, cancellationToken);
     }
 
     public Task<YouTubeCaptionResource> UpdateAsync(IEnumerable<string> part, string? onBehalfOfContentOwner, YouTubeCaptionResource resource, Stream stream, string contentType, CancellationToken cancellationToken = default)
     {
-        throw new NotImplementedException();
+        ArgumentNullException.ThrowIfNull(part);
+        ArgumentNullException.ThrowIfNull(onBehalfOfContentOwner);
+        ArgumentNullException.ThrowIfNull(resource);
+        ArgumentNullException.ThrowIfNull(stream);
+
+        return InternalUpdateAsync(part, onBehalfOfContentOwner, resource, stream, contentType, cancellationToken);
     }
 
     private async Task<YouTubeCaptionResource> InternalInsertAsync(
@@ -176,6 +197,39 @@ public class YouTubeCaptions(
         }
 
         var result = await handler.HandleCaptionInsertAsync(resource, content, properties, cancellationToken).ConfigureAwait(false);
+        return result.Succeeded switch
+        {
+            true => result.Resource,
+            false => throw new NotImplementedException("@TODO")
+        };
+    }
+
+    private async Task<YouTubeCaptionResource> InternalUpdateAsync(
+      IEnumerable<string> part,
+      string? onBehalfOfContentOwner,
+      YouTubeCaptionResource resource,
+      Stream? stream,
+      string? contentType,
+      CancellationToken cancellationToken = default)
+    {
+        var handler = await Handlers.GetHandlerAsync<YouTubeCaptionHandler>()
+                         .ConfigureAwait(false) ?? throw new InvalidOperationException("YouTubeCaptionHandler could not be obtained.");
+
+        var properties = new YouTubeCaptionProperties
+        {
+            Parts = part.ToArray(),
+            OnBehalfOfContentOwner = onBehalfOfContentOwner,
+            AccessToken = await AccessTokenProvider.GetAccessTokenAsync(cancellationToken).ConfigureAwait(false)
+        };
+
+        StreamContent? content = null;
+        if (stream != null)
+        {
+            content = new StreamContent(stream);
+            content.Headers.ContentType = new MediaTypeHeaderValue(contentType ?? "application/octet-stream");
+        }
+
+        var result = await handler.HandleCaptionUpdateAsync(resource, content, properties, cancellationToken).ConfigureAwait(false);
         return result.Succeeded switch
         {
             true => result.Resource,

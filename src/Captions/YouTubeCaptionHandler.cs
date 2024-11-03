@@ -121,7 +121,34 @@ public class YouTubeCaptionHandler(IOptionsMonitor<YouTubeOptions> options, ILog
             throw new InvalidOperationException("@TODO");
         }
 
-        return InternalHandleCaptionInsertAsync(resource, content, properties, cancellationToken);
+        var endpoint = BuildChallengeUrl(YouTubeCaptionDefaults.InsertEndpoint, properties);
+        var request = new HttpRequestMessage(HttpMethod.Post, endpoint);
+        return InternalHandleCaptionUploadAsync(request, resource, content, properties, cancellationToken);
+    }
+
+    public virtual Task<YouTubeResult<YouTubeCaptionResource>> HandleCaptionUpdateAsync(
+        YouTubeCaptionResource resource,
+        StreamContent? content,
+        YouTubeCaptionProperties properties,
+        CancellationToken cancellationToken)
+    {
+        ArgumentNullException.ThrowIfNull(resource);
+        ArgumentNullException.ThrowIfNull(properties);
+        ArgumentNullException.ThrowIfNull(cancellationToken);
+
+        if ((properties.Parts?.Length ?? 0) == 0)
+        {
+            throw new InvalidOperationException("@TODO");
+        }
+
+        if (string.IsNullOrEmpty(resource.Id))
+        {
+            throw new InvalidOperationException("@TODO");
+        }
+
+        var endpoint = BuildChallengeUrl(YouTubeCaptionDefaults.UpdateEndpoint, properties);
+        var request = new HttpRequestMessage(HttpMethod.Put, endpoint);
+        return InternalHandleCaptionUploadAsync(request, resource, content, properties, cancellationToken);
     }
 
     /// <summary>
@@ -143,27 +170,28 @@ public class YouTubeCaptionHandler(IOptionsMonitor<YouTubeOptions> options, ILog
         return QueryHelpers.AddQueryString(uri, parameters.AsEnumerable());
     }
 
-    private async Task<YouTubeResult<YouTubeCaptionResource>> InternalHandleCaptionInsertAsync(
+    private async Task<YouTubeResult<YouTubeCaptionResource>> InternalHandleCaptionUploadAsync(
+        HttpRequestMessage request,
         YouTubeCaptionResource resource,
         StreamContent? content,
         YouTubeCaptionProperties properties,
         CancellationToken cancellationToken)
     {
-        var endpoint = BuildChallengeUrl(YouTubeCaptionDefaults.InsertEndpoint, properties);
-
-        var request = new HttpRequestMessage(HttpMethod.Get, endpoint);
         request.Headers.Authorization = new AuthenticationHeaderValue("Bearer", properties.AccessToken);
 
-        var multiparContent = new MultipartContent("related") {
-            JsonContent.Create(resource)
-        };
+        var jsonContent = JsonContent.Create(resource);
 
         if (content != null)
         {
-            multiparContent.Add(content);
+            request.Content = new MultipartContent("related") {
+                jsonContent,
+                content
+            };
         }
-
-        request.Content = multiparContent;
+        else
+        {
+            request.Content = jsonContent;
+        }
 
         var response = await Backchannel.SendAsync(request, cancellationToken).ConfigureAwait(false);
         var body = await response.Content.ReadAsStringAsync(Context.RequestAborted).ConfigureAwait(false);
