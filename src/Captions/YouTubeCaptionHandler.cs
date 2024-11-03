@@ -22,6 +22,39 @@ namespace Loonfactory.Google.Apis.YouTube.V3.Captions;
 /// <param name="encoder">The <see cref="UrlEncoder"/>.</param>
 public class YouTubeCaptionHandler(IOptionsMonitor<YouTubeOptions> options, ILoggerFactory logger, UrlEncoder encoder) : YouTubeHandler(options, logger, encoder), IYouTubeCaptionHandler
 {
+    public virtual async Task<YouTubeResult<Stream>> HandleCaptionDownloadAsync(YouTubeCaptionProperties properties, CancellationToken cancellationToken)
+    {
+        ArgumentNullException.ThrowIfNull(properties);
+
+        if (string.IsNullOrEmpty(properties.Id))
+        {
+            throw new InvalidOperationException("@TODO");
+        }
+
+        if ((properties.Parts?.Length ?? 0) == 0)
+        {
+            throw new InvalidOperationException("@TODO");
+        }
+
+        if (string.IsNullOrEmpty(properties.AccessToken))
+        {
+            throw new InvalidOperationException("An access token must be provided in the properties.");
+        }
+
+        var endpoint = BuildChallengeUrl($"{YouTubeCaptionDefaults.DownloadEndpoint}{properties.Id}", properties);
+
+        var request = new HttpRequestMessage(HttpMethod.Get, endpoint);
+        request.Headers.Authorization = new AuthenticationHeaderValue("Bearer", properties.AccessToken);
+
+        var response = await Backchannel.SendAsync(request, cancellationToken).ConfigureAwait(false);
+
+        return response.IsSuccessStatusCode switch
+        {
+            true => YouTubeResult<Stream>.Success(await response.Content.ReadAsStreamAsync(cancellationToken).ConfigureAwait(false)),
+            false => throw new NotImplementedException("Handling of unsuccessful HTTP responses is not yet implemented.")
+        };
+    }
+
     /// <summary>
     /// Asynchronously handles the deletion of a YouTube caption.
     /// </summary>
@@ -29,7 +62,7 @@ public class YouTubeCaptionHandler(IOptionsMonitor<YouTubeOptions> options, ILog
     /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     /// <exception cref="ArgumentNullException">Thrown when <paramref name="properties"/> is <c>null</c>.</exception>
     /// <exception cref="InvalidOperationException">Thrown when required properties are missing or invalid.</exception>
-    public virtual async Task HandleCaptionDeleteAsync(YouTubeCaptionProperties properties, CancellationToken cancellationToken)
+    public virtual async Task<YouTubeResult> HandleCaptionDeleteAsync(YouTubeCaptionProperties properties, CancellationToken cancellationToken)
     {
         ArgumentNullException.ThrowIfNull(properties);
 
@@ -49,12 +82,11 @@ public class YouTubeCaptionHandler(IOptionsMonitor<YouTubeOptions> options, ILog
         request.Headers.Authorization = new AuthenticationHeaderValue("Bearer", properties.AccessToken);
 
         var response = await Backchannel.SendAsync(request, cancellationToken).ConfigureAwait(false);
-        if (response.IsSuccessStatusCode)
+        return response.IsSuccessStatusCode switch
         {
-            return;
-        }
-
-        throw new NotSupportedException("Handling of unsuccessful HTTP responses is not yet implemented.");
+            true => YouTubeResult.NoResult,
+            false => throw new NotImplementedException("Handling of unsuccessful HTTP responses is not yet implemented.")
+        };
     }
 
     public virtual async Task<YouTubeResult<YouTubeCaptionListResource>> HandleCaptionListAsync(YouTubeCaptionProperties properties, CancellationToken cancellationToken)

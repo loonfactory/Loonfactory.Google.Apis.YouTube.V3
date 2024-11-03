@@ -90,3 +90,9 @@ public class YouTubeResult<T> where T : class
     public static YouTubeResult<T> Fail(string failureMessage, YouTubeProperties? properties)
         => Fail(new YouTubeRequestFailureException(failureMessage), properties);
 }
+
+public class YouTubeResult : YouTubeResult<object>
+{
+    private static readonly YouTubeResult _noResult = new() { None = true };
+    public static new YouTubeResult NoResult => _noResult;
+}

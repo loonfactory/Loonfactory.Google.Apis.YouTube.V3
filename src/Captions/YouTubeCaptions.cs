@@ -52,10 +52,26 @@ public class YouTubeCaptions(
         }, cancellationToken).ConfigureAwait(false);
     }
 
-    public Task<Stream> DownloadAsync(string id, string? onBehalfOfContentOwner = null, string? tfmt = null, string? tlang = null, CancellationToken cancellationToken = default)
+    public async Task<Stream> DownloadAsync(string id, string? onBehalfOfContentOwner = null, string? tfmt = null, string? tlang = null, CancellationToken cancellationToken = default)
     {
         ArgumentNullException.ThrowIfNull(id);
-        throw new NotImplementedException();
+
+        var handler = await Handlers.GetHandlerAsync<YouTubeCaptionHandler>()
+            .ConfigureAwait(false) ?? throw new InvalidOperationException("YouTubeCaptionHandler could not be obtained.");
+
+        // Implement the deletion logic using the handler
+        var result = await handler.HandleCaptionDownloadAsync(new YouTubeCaptionProperties
+        {
+            Id = id,
+            OnBehalfOfContentOwner = onBehalfOfContentOwner,
+            AccessToken = await AccessTokenProvider.GetAccessTokenAsync(cancellationToken).ConfigureAwait(false)
+        }, cancellationToken).ConfigureAwait(false);
+
+        return result.Succeeded switch
+        {
+            true => result.Resource,
+            false => throw new NotImplementedException("@TODO")
+        };
     }
 
     public Task<YouTubeCaptionResource> InsertAsync(IEnumerable<string> part, YouTubeCaptionResource resource, CancellationToken cancellationToken = default)
