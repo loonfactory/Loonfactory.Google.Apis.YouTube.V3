@@ -2,6 +2,7 @@
 
 using System.Net.Http.Headers;
 using System.Text.Encodings.Web;
+using System.Text.Json;
 using Microsoft.AspNetCore.WebUtilities;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
@@ -55,7 +56,7 @@ public class YouTubeCaptionHandler(IOptionsMonitor<YouTubeOptions> options, ILog
         throw new NotSupportedException("Handling of unsuccessful HTTP responses is not yet implemented.");
     }
 
-    public virtual async Task HandleCaptionListAsync(YouTubeCaptionProperties properties, CancellationToken cancellationToken)
+    public virtual async Task<YouTubeResult<YouTubeCaptionListResource>> HandleCaptionListAsync(YouTubeCaptionProperties properties, CancellationToken cancellationToken)
     {
         ArgumentNullException.ThrowIfNull(properties);
 
@@ -69,18 +70,24 @@ public class YouTubeCaptionHandler(IOptionsMonitor<YouTubeOptions> options, ILog
             throw new InvalidOperationException("@TODO");
         }
 
+        if (string.IsNullOrEmpty(properties.AccessToken))
+        {
+            throw new InvalidOperationException("An access token must be provided in the properties.");
+        }
+
         var endpoint = BuildChallengeUrl(YouTubeCaptionDefaults.ListEndpoint, properties);
 
         var request = new HttpRequestMessage(HttpMethod.Get, endpoint);
         request.Headers.Authorization = new AuthenticationHeaderValue("Bearer", properties.AccessToken);
 
         var response = await Backchannel.SendAsync(request, cancellationToken).ConfigureAwait(false);
-        if (response.IsSuccessStatusCode)
-        {
-            return;
-        }
+        var body = await response.Content.ReadAsStringAsync(Context.RequestAborted).ConfigureAwait(false);
 
-        throw new NotSupportedException("Handling of unsuccessful HTTP responses is not yet implemented.");
+        return response.IsSuccessStatusCode switch
+        {
+            true => YouTubeResult<YouTubeCaptionListResource>.Success(JsonSerializer.Deserialize<YouTubeCaptionListResource>(body)!),
+            false => throw new NotImplementedException("Handling of unsuccessful HTTP responses is not yet implemented.")
+        };
     }
 
     /// <summary>

@@ -79,9 +79,25 @@ public class YouTubeCaptions(
         throw new NotImplementedException();
     }
 
-    public Task<YouTubeCaptionListResource> ListAsync(IEnumerable<string> part, string videoId, string? id = null, string? onBehalfOfContentOwner = null, CancellationToken cancellationToken = default)
+    public async Task<YouTubeCaptionListResource> ListAsync(IEnumerable<string> part, string videoId, string? id = null, string? onBehalfOfContentOwner = null, CancellationToken cancellationToken = default)
     {
-        throw new NotImplementedException();
+        var handler = await Handlers.GetHandlerAsync<YouTubeCaptionHandler>()
+                   .ConfigureAwait(false) ?? throw new InvalidOperationException("YouTubeCaptionHandler could not be obtained.");
+
+        var result = await handler.HandleCaptionListAsync(new YouTubeCaptionProperties
+        {
+            VideoId = videoId,
+            Parts = part.ToArray(),
+            Id = id,
+            OnBehalfOfContentOwner = onBehalfOfContentOwner,
+            AccessToken = await AccessTokenProvider.GetAccessTokenAsync(cancellationToken).ConfigureAwait(false)
+        }, cancellationToken).ConfigureAwait(false);
+
+        return result.Succeeded switch
+        {
+            true => result.Resource,
+            false => throw new NotImplementedException("@TODO")
+        };
     }
 
     public Task<YouTubeCaptionResource> UpdateAsync(IEnumerable<string> part, YouTubeCaptionResource resource, CancellationToken cancellationToken = default)
