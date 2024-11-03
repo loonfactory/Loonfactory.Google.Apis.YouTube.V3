@@ -92,7 +92,7 @@ public interface IYouTubeCaptions
     /// <returns>If successful, returns the inserted <see cref="YouTubeCaptionResource"/>.</returns>
     public Task<YouTubeCaptionResource> InsertAsync(
         IEnumerable<string> part,
-        string? onBehalfOfContentOwner,
+        string onBehalfOfContentOwner,
         YouTubeCaptionResource resource,
         CancellationToken cancellationToken = default
     );
@@ -152,7 +152,7 @@ public interface IYouTubeCaptions
     /// <returns>If successful, returns the inserted <see cref="YouTubeCaptionResource"/>.</returns>
     public Task<YouTubeCaptionResource> InsertAsync(
         IEnumerable<string> part,
-        string? onBehalfOfContentOwner,
+        string onBehalfOfContentOwner,
         YouTubeCaptionResource resource,
         Stream stream,
         CancellationToken cancellationToken = default
@@ -188,7 +188,7 @@ public interface IYouTubeCaptions
     /// <returns>If successful, returns the inserted <see cref="YouTubeCaptionResource"/>.</returns>
     public Task<YouTubeCaptionResource> InsertAsync(
         IEnumerable<string> part,
-        string? onBehalfOfContentOwner,
+        string onBehalfOfContentOwner,
         YouTubeCaptionResource resource,
         Stream stream,
         string contentType,

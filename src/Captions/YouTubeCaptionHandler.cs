@@ -1,6 +1,7 @@
 // Licensed under the MIT license by loonfactory.
 
 using System.Net.Http.Headers;
+using System.Net.Http.Json;
 using System.Text.Encodings.Web;
 using System.Text.Json;
 using Microsoft.AspNetCore.WebUtilities;
@@ -90,6 +91,39 @@ public class YouTubeCaptionHandler(IOptionsMonitor<YouTubeOptions> options, ILog
         };
     }
 
+    public virtual Task<YouTubeResult<YouTubeCaptionResource>> HandleCaptionInsertAsync(
+        YouTubeCaptionResource resource,
+        StreamContent? content,
+        YouTubeCaptionProperties properties,
+        CancellationToken cancellationToken)
+    {
+        ArgumentNullException.ThrowIfNull(resource);
+        ArgumentNullException.ThrowIfNull(properties);
+        ArgumentNullException.ThrowIfNull(cancellationToken);
+
+        if ((properties.Parts?.Length ?? 0) == 0)
+        {
+            throw new InvalidOperationException("@TODO");
+        }
+
+        if (string.IsNullOrEmpty(resource.Snippet?.VideoId))
+        {
+            throw new InvalidOperationException("@TODO");
+        }
+
+        if (string.IsNullOrEmpty(resource.Snippet?.Language))
+        {
+            throw new InvalidOperationException("@TODO");
+        }
+
+        if (string.IsNullOrEmpty(resource.Snippet?.Name))
+        {
+            throw new InvalidOperationException("@TODO");
+        }
+
+        return InternalHandleCaptionInsertAsync(resource, content, properties, cancellationToken);
+    }
+
     /// <summary>
     /// Constructs the challenge url.
     /// </summary>
@@ -107,5 +141,37 @@ public class YouTubeCaptionHandler(IOptionsMonitor<YouTubeOptions> options, ILog
         };
 
         return QueryHelpers.AddQueryString(uri, parameters.AsEnumerable());
+    }
+
+    private async Task<YouTubeResult<YouTubeCaptionResource>> InternalHandleCaptionInsertAsync(
+        YouTubeCaptionResource resource,
+        StreamContent? content,
+        YouTubeCaptionProperties properties,
+        CancellationToken cancellationToken)
+    {
+        var endpoint = BuildChallengeUrl(YouTubeCaptionDefaults.InsertEndpoint, properties);
+
+        var request = new HttpRequestMessage(HttpMethod.Get, endpoint);
+        request.Headers.Authorization = new AuthenticationHeaderValue("Bearer", properties.AccessToken);
+
+        var multiparContent = new MultipartContent("related") {
+            JsonContent.Create(resource)
+        };
+
+        if (content != null)
+        {
+            multiparContent.Add(content);
+        }
+
+        request.Content = multiparContent;
+
+        var response = await Backchannel.SendAsync(request, cancellationToken).ConfigureAwait(false);
+        var body = await response.Content.ReadAsStringAsync(Context.RequestAborted).ConfigureAwait(false);
+
+        return response.IsSuccessStatusCode switch
+        {
+            true => YouTubeResult<YouTubeCaptionResource>.Success(JsonSerializer.Deserialize<YouTubeCaptionResource>(body)!),
+            false => throw new NotImplementedException("Handling of unsuccessful HTTP responses is not yet implemented.")
+        };
     }
 }
