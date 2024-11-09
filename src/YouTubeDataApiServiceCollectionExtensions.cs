@@ -52,6 +52,7 @@ public static class YouTubeDataApiServiceCollectionExtensions
 
         var builder = services.AddYouTubeDataApi();
         services.Configure(configureOptions);
+
         return builder;
     }
 

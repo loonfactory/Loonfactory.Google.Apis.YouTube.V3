@@ -1,9 +1,11 @@
 // Licensed under the MIT license by loonfactory.
 
+using Microsoft.AspNetCore.Authentication.Google;
 using Microsoft.AspNetCore.Identity;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.HttpOverrides;
+using Microsoft.EntityFrameworkCore;
 using Loonfactory.Google.Apis.YouTube.V3;
+using Loonfactory.Google.Apis.YouTube.V3.Example;
 using Loonfactory.Google.Apis.YouTube.V3.Example.Data;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -19,10 +21,12 @@ builder.Services.AddDefaultIdentity<IdentityUser>(options => options.SignIn.Requ
     .AddEntityFrameworkStores<ApplicationDbContext>();
 
 builder.Services.AddAuthentication()
-    .AddGoogle(googleOptions =>
+    .AddOAuth<GoogleOptions, TemporaryGoogleHandler>(GoogleDefaults.AuthenticationScheme, GoogleDefaults.DisplayName, googleOptions =>
     {
         googleOptions.ClientId = configuration["Authentication:Google:ClientId"]!;
         googleOptions.ClientSecret = configuration["Authentication:Google:ClientSecret"]!;
+
+        googleOptions.SaveTokens = true;
     });
 
 builder.Services.AddRazorPages();

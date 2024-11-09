@@ -92,12 +92,8 @@ public abstract class YouTubeHandler : IYouTubeHandler
     /// </summary>
     /// <param name="context"></param>
     /// <returns></returns>
-    public async Task InitializeAsync(HttpContext? context)
+    public async Task InitializeAsync()
     {
-        ArgumentNullException.ThrowIfNull(context);
-
-        Context = context;
-
         Options = OptionsMonitor.CurrentValue;
 
         TimeProvider = Options.TimeProvider ?? TimeProvider.System;
