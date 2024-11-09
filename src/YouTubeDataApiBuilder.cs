@@ -3,6 +3,7 @@
 using Loonfactory.Google.Apis.YouTube.V3.Captions;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
+using Microsoft.Extensions.Options;
 
 namespace Loonfactory.Google.Apis.YouTube.V3;
 
@@ -29,6 +30,9 @@ public class YouTubeDataApiBuilder(IServiceCollection services)
     {
         Services.TryAddScoped<IYouTubeCaptions, TYouTubeCaptions>();
         Services.AddTransient<THandler>();
+
+        Services.TryAddEnumerable(ServiceDescriptor.Singleton<IPostConfigureOptions<YouTubeOptions>, YouTubePostConfigureOptions<YouTubeOptions, THandler>>());
+
         return this;
     }
 }

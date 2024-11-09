@@ -24,7 +24,7 @@ public class YouTubeHandlerProvider(IServiceProvider serviceProvider) : IYouTube
     /// <param name="context">The context.</param>
     /// <param name="schemeName">The name of the YouTube scheme being handled.</param>
     /// <returns>The handler instance.</returns>
-    public async Task<T?> GetHandlerAsync<T>(HttpContext? context = null) where T : class, IYouTubeHandler
+    public async Task<T?> GetHandlerAsync<T>() where T : class, IYouTubeHandler
     {
         if (_handlerMap.TryGetValue(typeof(T), out var value))
         {
@@ -32,13 +32,12 @@ public class YouTubeHandlerProvider(IServiceProvider serviceProvider) : IYouTube
         }
 
         var handlerType = typeof(T);
-        var handler = (context?.RequestServices.GetService(handlerType) ??
-            ActivatorUtilities.CreateInstance(context?.RequestServices ?? ServiceProvider, handlerType))
+        var handler = ActivatorUtilities.CreateInstance(ServiceProvider, handlerType)
             as T;
 
         if (handler != null)
         {
-            await handler.InitializeAsync(context).ConfigureAwait(false);
+            await handler.InitializeAsync().ConfigureAwait(false);
             _handlerMap[handlerType] = handler;
         }
         return handler;

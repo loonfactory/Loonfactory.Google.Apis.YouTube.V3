@@ -15,27 +15,6 @@ public abstract class YouTubeHandler : IYouTubeHandler
     public YouTubeOptions Options { get; private set; } = default!;
 
     /// <summary>
-    /// Gets or sets the <see cref="HttpContext"/>.
-    /// </summary>
-    protected HttpContext Context { get; private set; } = default!;
-
-    /// <summary>
-    /// Gets the <see cref="HttpRequest"/> associated with the current request.
-    /// </summary>
-    protected HttpRequest Request
-    {
-        get => Context.Request;
-    }
-
-    /// <summary>
-    /// Gets the <see cref="HttpResponse" /> associated with the current request.
-    /// </summary>
-    protected HttpResponse Response
-    {
-        get => Context.Response;
-    }
-
-    /// <summary>
     /// Gets the <see cref="ILogger"/>.
     /// </summary>
     protected ILogger Logger { get; }
@@ -62,14 +41,6 @@ public abstract class YouTubeHandler : IYouTubeHandler
     protected virtual object? Events { get; set; }
 
     /// <summary>
-    /// Gets the absolute current url.
-    /// </summary>
-    protected string CurrentUri
-    {
-        get => Request.Scheme + Uri.SchemeDelimiter + Request.Host + Request.PathBase + Request.Path + Request.QueryString;
-    }
-
-    /// <summary>
     /// Gets the <see cref="HttpClient"/> instance used to communicate with the YouTube.
     /// </summary>
     protected HttpClient Backchannel => Options.Backchannel;
@@ -92,12 +63,8 @@ public abstract class YouTubeHandler : IYouTubeHandler
     /// </summary>
     /// <param name="context"></param>
     /// <returns></returns>
-    public async Task InitializeAsync(HttpContext? context)
+    public async Task InitializeAsync()
     {
-        ArgumentNullException.ThrowIfNull(context);
-
-        Context = context;
-
         Options = OptionsMonitor.CurrentValue;
 
         TimeProvider = Options.TimeProvider ?? TimeProvider.System;

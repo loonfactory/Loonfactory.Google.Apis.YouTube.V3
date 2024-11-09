@@ -13,7 +13,6 @@ public interface IYouTubeHandlerProvider
     /// Returns the handler instance that will be used.
     /// </summary>
     /// <typeparam name="T">The type of the handler, constrained to <see cref="IYouTubeHandler"/>.</typeparam>
-    /// <param name="context">The <see cref="HttpContext"/>.</param>
     /// <returns>The handler instance.</returns>
-    Task<T?> GetHandlerAsync<T>(HttpContext? context = null) where T : class, IYouTubeHandler;
+    Task<T?> GetHandlerAsync<T>() where T : class, IYouTubeHandler;
 }
