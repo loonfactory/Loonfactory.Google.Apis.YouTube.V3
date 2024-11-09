@@ -39,6 +39,7 @@ public static class YouTubeDataApiServiceCollectionExtensions
 
         services.TryAddSingleton(TimeProvider.System);
 
+        services.AddHttpContextAccessor();
         builder.AddAccessTokenProvider<HttpContextAccessTokenProvider>();
         builder.AddYouTubeCaptions<YouTubeCaptions, YouTubeCaptionHandler>();
 

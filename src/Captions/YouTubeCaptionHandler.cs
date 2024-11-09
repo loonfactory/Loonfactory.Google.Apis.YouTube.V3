@@ -114,13 +114,15 @@ public class YouTubeCaptionHandler(IOptionsMonitor<YouTubeOptions> options, ILog
         request.Headers.Authorization = new AuthenticationHeaderValue("Bearer", properties.AccessToken);
 
         var response = await Backchannel.SendAsync(request, cancellationToken).ConfigureAwait(false);
-        var body = await response.Content.ReadAsStringAsync(Context.RequestAborted).ConfigureAwait(false);
-
-        return response.IsSuccessStatusCode switch
+        if (!response.IsSuccessStatusCode)
         {
-            true => YouTubeResult<YouTubeCaptionListResource>.Success(JsonSerializer.Deserialize<YouTubeCaptionListResource>(body)!),
-            false => throw new NotImplementedException("Handling of unsuccessful HTTP responses is not yet implemented.")
-        };
+            throw new NotImplementedException("Handling of unsuccessful HTTP responses is not yet implemented.");
+        }
+
+        var body = await response.Content.ReadAsStringAsync(cancellationToken).ConfigureAwait(false);
+        return YouTubeResult<YouTubeCaptionListResource>.Success(
+            JsonSerializer.Deserialize<YouTubeCaptionListResource>(body, YouTubeDefaults.JsonSerializerOptions)!
+        );
     }
 
     public virtual Task<YouTubeResult<YouTubeCaptionResource>> HandleCaptionInsertAsync(
@@ -195,6 +197,7 @@ public class YouTubeCaptionHandler(IOptionsMonitor<YouTubeOptions> options, ILog
         {
             new("id", properties.Id ),
             new("part", properties.Parts),
+            new("videoId", properties.VideoId),
             new("onBehalfOfContentOwner", properties.OnBehalfOfContentOwner),
             new("key", Options.Key),
         };
@@ -226,11 +229,13 @@ public class YouTubeCaptionHandler(IOptionsMonitor<YouTubeOptions> options, ILog
         }
 
         var response = await Backchannel.SendAsync(request, cancellationToken).ConfigureAwait(false);
-        var body = await response.Content.ReadAsStringAsync(Context.RequestAborted).ConfigureAwait(false);
+        var body = await response.Content.ReadAsStringAsync(cancellationToken).ConfigureAwait(false);
 
         return response.IsSuccessStatusCode switch
         {
-            true => YouTubeResult<YouTubeCaptionResource>.Success(JsonSerializer.Deserialize<YouTubeCaptionResource>(body)!),
+            true => YouTubeResult<YouTubeCaptionResource>.Success(
+                JsonSerializer.Deserialize<YouTubeCaptionResource>(body, YouTubeDefaults.JsonSerializerOptions)!
+            ),
             false => throw new NotImplementedException("Handling of unsuccessful HTTP responses is not yet implemented.")
         };
     }

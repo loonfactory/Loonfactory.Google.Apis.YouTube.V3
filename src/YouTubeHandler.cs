@@ -15,27 +15,6 @@ public abstract class YouTubeHandler : IYouTubeHandler
     public YouTubeOptions Options { get; private set; } = default!;
 
     /// <summary>
-    /// Gets or sets the <see cref="HttpContext"/>.
-    /// </summary>
-    protected HttpContext Context { get; private set; } = default!;
-
-    /// <summary>
-    /// Gets the <see cref="HttpRequest"/> associated with the current request.
-    /// </summary>
-    protected HttpRequest Request
-    {
-        get => Context.Request;
-    }
-
-    /// <summary>
-    /// Gets the <see cref="HttpResponse" /> associated with the current request.
-    /// </summary>
-    protected HttpResponse Response
-    {
-        get => Context.Response;
-    }
-
-    /// <summary>
     /// Gets the <see cref="ILogger"/>.
     /// </summary>
     protected ILogger Logger { get; }
@@ -60,14 +39,6 @@ public abstract class YouTubeHandler : IYouTubeHandler
     /// If it is not provided a default instance is supplied which does nothing when the methods are called.
     /// </summary>
     protected virtual object? Events { get; set; }
-
-    /// <summary>
-    /// Gets the absolute current url.
-    /// </summary>
-    protected string CurrentUri
-    {
-        get => Request.Scheme + Uri.SchemeDelimiter + Request.Host + Request.PathBase + Request.Path + Request.QueryString;
-    }
 
     /// <summary>
     /// Gets the <see cref="HttpClient"/> instance used to communicate with the YouTube.

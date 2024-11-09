@@ -21,10 +21,13 @@ builder.Services.AddDefaultIdentity<IdentityUser>(options => options.SignIn.Requ
     .AddEntityFrameworkStores<ApplicationDbContext>();
 
 builder.Services.AddAuthentication()
+    .AddCookie()
     .AddOAuth<GoogleOptions, TemporaryGoogleHandler>(GoogleDefaults.AuthenticationScheme, GoogleDefaults.DisplayName, googleOptions =>
     {
         googleOptions.ClientId = configuration["Authentication:Google:ClientId"]!;
         googleOptions.ClientSecret = configuration["Authentication:Google:ClientSecret"]!;
+
+        googleOptions.Scope.Add("https://www.googleapis.com/auth/youtube.force-ssl");
 
         googleOptions.SaveTokens = true;
     });
@@ -59,6 +62,7 @@ app.UseStaticFiles();
 
 app.UseRouting();
 
+app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapRazorPages();

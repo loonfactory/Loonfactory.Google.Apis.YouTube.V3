@@ -3,6 +3,7 @@
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Google;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Identity;
 
 namespace Loonfactory.Google.Apis.YouTube.V3;
 
@@ -19,17 +20,10 @@ public class HttpContextAccessTokenProvider(
     public async Task<string?> GetAccessTokenAsync(CancellationToken cancellationToken = default)
     {
         var context = HttpContextAccessor.HttpContext ?? throw new InvalidOperationException("@TODO");
-        var googleScheme = await GetGoogleSchemeAsync().ConfigureAwait(false);
-
-        if (googleScheme != null)
+        var authResult = await context.AuthenticateAsync().ConfigureAwait(false);
+        if (authResult != null)
         {
-            var authenticateResult = await context.AuthenticateAsync(googleScheme.Name).ConfigureAwait(false);
-
-            if (authenticateResult.Succeeded)
-            {
-                var accessToken = authenticateResult.Properties.GetTokenValue("access_token");
-                return accessToken;
-            }
+            return authResult.Properties?.GetTokenValue("access_token");
         }
 
         return null;
