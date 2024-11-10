@@ -4,10 +4,8 @@ using System.Net.Http.Headers;
 using System.Net.Http.Json;
 using System.Text.Encodings.Web;
 using System.Text.Json;
-using Microsoft.AspNetCore.WebUtilities;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
-using Microsoft.Extensions.Primitives;
 
 namespace Loonfactory.Google.Apis.YouTube.V3.Captions;
 
@@ -183,26 +181,6 @@ public class YouTubeCaptionHandler(IOptionsMonitor<YouTubeOptions> options, ILog
         var endpoint = BuildChallengeUrl(YouTubeCaptionDefaults.UpdateEndpoint, properties);
         var request = new HttpRequestMessage(HttpMethod.Put, endpoint);
         return InternalHandleCaptionUploadAsync(request, resource, content, properties, cancellationToken);
-    }
-
-    /// <summary>
-    /// Constructs the challenge url.
-    /// </summary>
-    /// <param name="uri">The base URI of the challenge.</param>
-    /// <param name="properties">The <see cref="YouTubeCaptionProperties"/>.</param>
-    /// <returns>The challenge url.</returns>
-    protected virtual string BuildChallengeUrl(string uri, YouTubeCaptionProperties properties)
-    {
-        var parameters = new List<KeyValuePair<string, StringValues>>
-        {
-            new("id", properties.Id ),
-            new("part", properties.Parts),
-            new("videoId", properties.VideoId),
-            new("onBehalfOfContentOwner", properties.OnBehalfOfContentOwner),
-            new("key", Options.Key),
-        };
-
-        return QueryHelpers.AddQueryString(uri, parameters.AsEnumerable());
     }
 
     private async Task<YouTubeResult<YouTubeCaptionResource>> InternalHandleCaptionUploadAsync(

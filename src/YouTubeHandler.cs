@@ -2,6 +2,7 @@
 
 using System.Text.Encodings.Web;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.WebUtilities;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 
@@ -83,4 +84,18 @@ public abstract class YouTubeHandler : IYouTubeHandler
     /// </summary>
     /// <returns>A task</returns>
     protected virtual Task InitializeHandlerAsync() => Task.CompletedTask;
+
+    /// <summary>
+    /// Constructs the challenge url.
+    /// </summary>
+    /// <param name="uri">The base URI of the challenge.</param>
+    /// <param name="properties">The <see cref="YouTubeProperties"/>.</param>
+    /// <returns>The challenge url.</returns>
+    protected virtual string BuildChallengeUrl<T>(string uri, in T properties) where T : YouTubeProperties
+    {
+        var parameters = properties.Parameters.ToList();
+        parameters.Add(new("key", Options.Key));
+
+        return QueryHelpers.AddQueryString(uri, parameters.AsEnumerable());
+    }
 }

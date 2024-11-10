@@ -1,37 +1,21 @@
 // Licensed under the MIT license by loonfactory.
 
 using System.Net.Http.Headers;
-using Microsoft.AspNetCore.Authentication;
-using Microsoft.AspNetCore.Http;
-using Microsoft.Extensions.Options;
+using Microsoft.Extensions.Primitives;
 
 namespace Loonfactory.Google.Apis.YouTube.V3.Captions;
 
 public class YouTubeCaptions(
-    IAuthenticationSchemeProvider schemeProvider,
     IYouTubeHandlerProvider handlers,
-    IOptions<YouTubeOptions> options,
-    IAccessTokenProvider accessTokenProvider,
-    IHttpContextAccessor? httpContextAccessor = null) : IYouTubeCaptions
+    IAccessTokenProvider accessTokenProvider) : IYouTubeCaptions
 {
-    public IAuthenticationSchemeProvider SchemeProvider { get; } = schemeProvider;
 
     /// <summary>
     /// Used to resolve <see cref="IYouTubeHandler"/> instances.
     /// </summary>
     public IYouTubeHandlerProvider Handlers { get; } = handlers;
 
-    /// <summary>
-    /// The <see cref="YouTubeOptions"/>.
-    /// </summary>
-    public YouTubeOptions Options { get; } = options?.Value ?? throw new ArgumentNullException(nameof(options));
-
     public IAccessTokenProvider AccessTokenProvider { get; } = accessTokenProvider;
-
-    /// <summary>
-    /// Gets the <see cref="IHttpContextAccessor"/>.
-    /// </summary>
-    public IHttpContextAccessor? HttpContextAccessor { get; } = httpContextAccessor;
 
     public async Task DeleteAsync(
         string id,
@@ -74,7 +58,7 @@ public class YouTubeCaptions(
         };
     }
 
-    public Task<YouTubeCaptionResource> InsertAsync(IEnumerable<string> part, YouTubeCaptionResource resource, CancellationToken cancellationToken = default)
+    public Task<YouTubeCaptionResource> InsertAsync(StringValues part, YouTubeCaptionResource resource, CancellationToken cancellationToken = default)
     {
         ArgumentNullException.ThrowIfNull(part);
         ArgumentNullException.ThrowIfNull(resource);
@@ -82,7 +66,7 @@ public class YouTubeCaptions(
         return InternalInsertAsync(part, null, resource, null, null, cancellationToken);
     }
 
-    public Task<YouTubeCaptionResource> InsertAsync(IEnumerable<string> part, string onBehalfOfContentOwner, YouTubeCaptionResource resource, CancellationToken cancellationToken = default)
+    public Task<YouTubeCaptionResource> InsertAsync(StringValues part, string onBehalfOfContentOwner, YouTubeCaptionResource resource, CancellationToken cancellationToken = default)
     {
         ArgumentNullException.ThrowIfNull(part);
         ArgumentNullException.ThrowIfNull(onBehalfOfContentOwner);
@@ -91,7 +75,7 @@ public class YouTubeCaptions(
         return InternalInsertAsync(part, onBehalfOfContentOwner, resource, null, null, cancellationToken);
     }
 
-    public Task<YouTubeCaptionResource> InsertAsync(IEnumerable<string> part, YouTubeCaptionResource resource, Stream stream, CancellationToken cancellationToken = default)
+    public Task<YouTubeCaptionResource> InsertAsync(StringValues part, YouTubeCaptionResource resource, Stream stream, CancellationToken cancellationToken = default)
     {
         ArgumentNullException.ThrowIfNull(part);
         ArgumentNullException.ThrowIfNull(resource);
@@ -100,7 +84,7 @@ public class YouTubeCaptions(
         return InternalInsertAsync(part, null, resource, stream, "application/octet-stream", cancellationToken);
     }
 
-    public Task<YouTubeCaptionResource> InsertAsync(IEnumerable<string> part, string onBehalfOfContentOwner, YouTubeCaptionResource resource, Stream stream, CancellationToken cancellationToken = default)
+    public Task<YouTubeCaptionResource> InsertAsync(StringValues part, string onBehalfOfContentOwner, YouTubeCaptionResource resource, Stream stream, CancellationToken cancellationToken = default)
     {
         ArgumentNullException.ThrowIfNull(part);
         ArgumentNullException.ThrowIfNull(onBehalfOfContentOwner);
@@ -110,7 +94,7 @@ public class YouTubeCaptions(
         return InternalInsertAsync(part, null, resource, stream, "application/octet-stream", cancellationToken);
     }
 
-    public Task<YouTubeCaptionResource> InsertAsync(IEnumerable<string> part, string onBehalfOfContentOwner, YouTubeCaptionResource resource, Stream stream, string contentType, CancellationToken cancellationToken = default)
+    public Task<YouTubeCaptionResource> InsertAsync(StringValues part, string onBehalfOfContentOwner, YouTubeCaptionResource resource, Stream stream, string contentType, CancellationToken cancellationToken = default)
     {
         ArgumentNullException.ThrowIfNull(part);
         ArgumentNullException.ThrowIfNull(onBehalfOfContentOwner);
@@ -120,7 +104,7 @@ public class YouTubeCaptions(
         return InternalInsertAsync(part, onBehalfOfContentOwner, resource, stream, contentType, cancellationToken);
     }
 
-    public async Task<YouTubeCaptionListResource> ListAsync(IEnumerable<string> part, string videoId, string? id = null, string? onBehalfOfContentOwner = null, CancellationToken cancellationToken = default)
+    public async Task<YouTubeCaptionListResource> ListAsync(StringValues part, string videoId, string? id = null, string? onBehalfOfContentOwner = null, CancellationToken cancellationToken = default)
     {
         var handler = await Handlers.GetHandlerAsync<YouTubeCaptionHandler>()
                    .ConfigureAwait(false) ?? throw new InvalidOperationException("YouTubeCaptionHandler could not be obtained.");
@@ -128,7 +112,7 @@ public class YouTubeCaptions(
         var result = await handler.HandleCaptionListAsync(new YouTubeCaptionProperties
         {
             VideoId = videoId,
-            Parts = part.ToArray(),
+            Parts = part,
             Id = id,
             OnBehalfOfContentOwner = onBehalfOfContentOwner,
             AccessToken = await AccessTokenProvider.GetAccessTokenAsync(cancellationToken).ConfigureAwait(false)
@@ -141,7 +125,7 @@ public class YouTubeCaptions(
         };
     }
 
-    public Task<YouTubeCaptionResource> UpdateAsync(IEnumerable<string> part, YouTubeCaptionResource resource, CancellationToken cancellationToken = default)
+    public Task<YouTubeCaptionResource> UpdateAsync(StringValues part, YouTubeCaptionResource resource, CancellationToken cancellationToken = default)
     {
         ArgumentNullException.ThrowIfNull(part);
         ArgumentNullException.ThrowIfNull(resource);
@@ -149,7 +133,7 @@ public class YouTubeCaptions(
         return InternalUpdateAsync(part, null, resource, null, null, cancellationToken);
     }
 
-    public Task<YouTubeCaptionResource> UpdateAsync(IEnumerable<string> part, string? onBehalfOfContentOwner, YouTubeCaptionResource resource, CancellationToken cancellationToken = default)
+    public Task<YouTubeCaptionResource> UpdateAsync(StringValues part, string? onBehalfOfContentOwner, YouTubeCaptionResource resource, CancellationToken cancellationToken = default)
     {
         ArgumentNullException.ThrowIfNull(part);
         ArgumentNullException.ThrowIfNull(onBehalfOfContentOwner);
@@ -158,7 +142,7 @@ public class YouTubeCaptions(
         return InternalUpdateAsync(part, onBehalfOfContentOwner, resource, null, null, cancellationToken);
     }
 
-    public Task<YouTubeCaptionResource> UpdateAsync(IEnumerable<string> part, YouTubeCaptionResource resource, Stream stream, CancellationToken cancellationToken = default)
+    public Task<YouTubeCaptionResource> UpdateAsync(StringValues part, YouTubeCaptionResource resource, Stream stream, CancellationToken cancellationToken = default)
     {
         ArgumentNullException.ThrowIfNull(part);
         ArgumentNullException.ThrowIfNull(resource);
@@ -167,7 +151,7 @@ public class YouTubeCaptions(
         return InternalUpdateAsync(part, null, resource, stream, "application/octet-stream", cancellationToken);
     }
 
-    public Task<YouTubeCaptionResource> UpdateAsync(IEnumerable<string> part, string? onBehalfOfContentOwner, YouTubeCaptionResource resource, Stream stream, CancellationToken cancellationToken = default)
+    public Task<YouTubeCaptionResource> UpdateAsync(StringValues part, string? onBehalfOfContentOwner, YouTubeCaptionResource resource, Stream stream, CancellationToken cancellationToken = default)
     {
         ArgumentNullException.ThrowIfNull(part);
         ArgumentNullException.ThrowIfNull(onBehalfOfContentOwner);
@@ -177,7 +161,7 @@ public class YouTubeCaptions(
         return InternalUpdateAsync(part, onBehalfOfContentOwner, resource, stream, null, cancellationToken);
     }
 
-    public Task<YouTubeCaptionResource> UpdateAsync(IEnumerable<string> part, string? onBehalfOfContentOwner, YouTubeCaptionResource resource, Stream stream, string contentType, CancellationToken cancellationToken = default)
+    public Task<YouTubeCaptionResource> UpdateAsync(StringValues part, string? onBehalfOfContentOwner, YouTubeCaptionResource resource, Stream stream, string contentType, CancellationToken cancellationToken = default)
     {
         ArgumentNullException.ThrowIfNull(part);
         ArgumentNullException.ThrowIfNull(onBehalfOfContentOwner);
@@ -188,7 +172,7 @@ public class YouTubeCaptions(
     }
 
     private async Task<YouTubeCaptionResource> InternalInsertAsync(
-        IEnumerable<string> part,
+        StringValues part,
         string? onBehalfOfContentOwner,
         YouTubeCaptionResource resource,
         Stream? stream,
@@ -200,7 +184,7 @@ public class YouTubeCaptions(
 
         var properties = new YouTubeCaptionProperties
         {
-            Parts = part.ToArray(),
+            Parts = part,
             OnBehalfOfContentOwner = onBehalfOfContentOwner,
             AccessToken = await AccessTokenProvider.GetAccessTokenAsync(cancellationToken).ConfigureAwait(false)
         };
@@ -221,7 +205,7 @@ public class YouTubeCaptions(
     }
 
     private async Task<YouTubeCaptionResource> InternalUpdateAsync(
-      IEnumerable<string> part,
+      StringValues part,
       string? onBehalfOfContentOwner,
       YouTubeCaptionResource resource,
       Stream? stream,
@@ -233,7 +217,7 @@ public class YouTubeCaptions(
 
         var properties = new YouTubeCaptionProperties
         {
-            Parts = part.ToArray(),
+            Parts = part,
             OnBehalfOfContentOwner = onBehalfOfContentOwner,
             AccessToken = await AccessTokenProvider.GetAccessTokenAsync(cancellationToken).ConfigureAwait(false)
         };
