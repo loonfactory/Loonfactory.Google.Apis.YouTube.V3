@@ -1,5 +1,7 @@
 // Licensed under the MIT license by loonfactory.
 
+using Microsoft.Extensions.Primitives;
+
 namespace Loonfactory.Google.Apis.YouTube.V3.Captions;
 
 /// <summary>
@@ -41,7 +43,7 @@ public interface IYouTubeCaptions
     /// If successful, this method returns a <see cref="YouTubeCaptionListResource"/>.
     /// </returns>
     public Task<YouTubeCaptionListResource> ListAsync(
-        IEnumerable<string> part,
+        StringValues part,
         string videoId,
         string? id = null,
         string? onBehalfOfContentOwner = null,
@@ -71,7 +73,7 @@ public interface IYouTubeCaptions
     /// If successful, returns the inserted <see cref="YouTubeCaptionResource"/>.
     /// </returns>
     public Task<YouTubeCaptionResource> InsertAsync(
-        IEnumerable<string> part,
+        StringValues part,
         YouTubeCaptionResource resource,
         CancellationToken cancellationToken = default
     );
@@ -91,7 +93,7 @@ public interface IYouTubeCaptions
     /// <param name="cancellationToken">The <see cref="CancellationToken"/> used to propagate notifications that the operation should be canceled.</param>
     /// <returns>If successful, returns the inserted <see cref="YouTubeCaptionResource"/>.</returns>
     public Task<YouTubeCaptionResource> InsertAsync(
-        IEnumerable<string> part,
+        StringValues part,
         string onBehalfOfContentOwner,
         YouTubeCaptionResource resource,
         CancellationToken cancellationToken = default
@@ -117,7 +119,7 @@ public interface IYouTubeCaptions
     /// <param name="cancellationToken">The <see cref="CancellationToken"/> used to propagate notifications that the operation should be canceled.</param>
     /// <returns>If successful, returns the inserted <see cref="YouTubeCaptionResource"/>.</returns>
     public Task<YouTubeCaptionResource> InsertAsync(
-        IEnumerable<string> part,
+        StringValues part,
         YouTubeCaptionResource resource,
         Stream stream,
         CancellationToken cancellationToken = default
@@ -151,7 +153,7 @@ public interface IYouTubeCaptions
     /// <param name="cancellationToken">The <see cref="CancellationToken"/> used to propagate notifications that the operation should be canceled.</param>
     /// <returns>If successful, returns the inserted <see cref="YouTubeCaptionResource"/>.</returns>
     public Task<YouTubeCaptionResource> InsertAsync(
-        IEnumerable<string> part,
+        StringValues part,
         string onBehalfOfContentOwner,
         YouTubeCaptionResource resource,
         Stream stream,
@@ -187,7 +189,7 @@ public interface IYouTubeCaptions
     /// <param name="cancellationToken">The <see cref="CancellationToken"/> used to propagate notifications that the operation should be canceled.</param>
     /// <returns>If successful, returns the inserted <see cref="YouTubeCaptionResource"/>.</returns>
     public Task<YouTubeCaptionResource> InsertAsync(
-        IEnumerable<string> part,
+        StringValues part,
         string onBehalfOfContentOwner,
         YouTubeCaptionResource resource,
         Stream stream,
@@ -214,7 +216,7 @@ public interface IYouTubeCaptions
     /// <param name="cancellationToken">The <see cref="CancellationToken"/> used to propagate notifications that the operation should be canceled.</param>
     /// <returns>If successful, returns the updated <see cref="YouTubeCaptionResource"/>.</returns>
     public Task<YouTubeCaptionResource> UpdateAsync(
-        IEnumerable<string> part,
+        StringValues part,
         YouTubeCaptionResource resource,
         CancellationToken cancellationToken = default
     );
@@ -245,7 +247,7 @@ public interface IYouTubeCaptions
     /// <param name="cancellationToken">The <see cref="CancellationToken"/> used to propagate notifications that the operation should be canceled.</param>
     /// <returns>If successful, returns the updated <see cref="YouTubeCaptionResource"/>.</returns>
     public Task<YouTubeCaptionResource> UpdateAsync(
-        IEnumerable<string> part,
+        StringValues part,
         string? onBehalfOfContentOwner,
         YouTubeCaptionResource resource,
         CancellationToken cancellationToken = default
@@ -271,7 +273,7 @@ public interface IYouTubeCaptions
     /// <param name="cancellationToken">The <see cref="CancellationToken"/> used to propagate notifications that the operation should be canceled.</param>
     /// <returns>If successful, returns the updated <see cref="YouTubeCaptionResource"/>.</returns>
     public Task<YouTubeCaptionResource> UpdateAsync(
-        IEnumerable<string> part,
+        StringValues part,
         YouTubeCaptionResource resource,
         Stream stream,
         CancellationToken cancellationToken = default
@@ -305,7 +307,7 @@ public interface IYouTubeCaptions
     /// <param name="cancellationToken">The <see cref="CancellationToken"/> used to propagate notifications that the operation should be canceled.</param>
     /// <returns>If successful, returns the updated <see cref="YouTubeCaptionResource"/>.</returns>
     public Task<YouTubeCaptionResource> UpdateAsync(
-        IEnumerable<string> part,
+        StringValues part,
         string? onBehalfOfContentOwner,
         YouTubeCaptionResource resource,
         Stream stream,
@@ -341,7 +343,7 @@ public interface IYouTubeCaptions
     /// <param name="cancellationToken">The <see cref="CancellationToken"/> used to propagate notifications that the operation should be canceled.</param>
     /// <returns>If successful, returns the updated <see cref="YouTubeCaptionResource"/>.</returns>
     public Task<YouTubeCaptionResource> UpdateAsync(
-        IEnumerable<string> part,
+        StringValues part,
         string? onBehalfOfContentOwner,
         YouTubeCaptionResource resource,
         Stream stream,

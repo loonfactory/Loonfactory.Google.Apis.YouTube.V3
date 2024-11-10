@@ -1,6 +1,7 @@
 // Licensed under the MIT license by loonfactory.
 
 using Loonfactory.Google.Apis.YouTube.V3.Captions;
+using Loonfactory.Google.Apis.YouTube.V3.I18nLanguages;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.Extensions.Options;
@@ -29,10 +30,26 @@ public class YouTubeDataApiBuilder(IServiceCollection services)
         where THandler : class, IYouTubeCaptionHandler
     {
         Services.TryAddScoped<IYouTubeCaptions, TYouTubeCaptions>();
+        AddHandler<THandler>();
+
+        return this;
+    }
+
+    public virtual YouTubeDataApiBuilder AddYouTubeI18nLanguges<TYouTubeI18nLanguages, THandler>()
+        where TYouTubeI18nLanguages : class, IYouTubeI18nLanguages
+        where THandler : class, IYouTubeI18nLanguageHandler
+    {
+        Services.TryAddScoped<IYouTubeI18nLanguages, TYouTubeI18nLanguages>();
+        AddHandler<THandler>();
+
+        return this;
+    }
+
+    protected void AddHandler<THandler>() where THandler : class, IYouTubeHandler
+    {
         Services.AddTransient<THandler>();
 
         Services.TryAddEnumerable(ServiceDescriptor.Singleton<IPostConfigureOptions<YouTubeOptions>, YouTubePostConfigureOptions<YouTubeOptions, THandler>>());
 
-        return this;
     }
 }

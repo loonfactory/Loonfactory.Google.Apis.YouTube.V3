@@ -1,17 +1,14 @@
 // Licensed under the MIT license by loonfactory.
 
-namespace Loonfactory.Google.Apis.YouTube.V3;
+using Microsoft.Extensions.Primitives;
+
+namespace Loonfactory.Google.Apis.YouTube.V3.Captions;
 
 /// <summary>
 /// <see cref="YouTubeProperties"/> for a YouTube caption challenge.
 /// </summary>
 public class YouTubeCaptionProperties : YouTubeProperties
 {
-    /// <summary>
-    /// The parameter key for the "accessToken" argument used for authorization.
-    /// </summary>
-    public static readonly string AccessTokenKey = "accessToken";
-
     /// <summary>
     /// The parameter key for the "id" argument being used for a challenge request.
     /// </summary>
@@ -44,19 +41,9 @@ public class YouTubeCaptionProperties : YouTubeProperties
     /// Initializes a new instance of <see cref="YouTubeCaptionProperties"/>.
     /// </summary>
     /// <inheritdoc />
-    public YouTubeCaptionProperties(IDictionary<string, string?> items, IDictionary<string, object?> parameters)
+    public YouTubeCaptionProperties(IDictionary<string, string?> items, IDictionary<string, StringValues> parameters)
         : base(items, parameters)
     { }
-
-    /// <summary>
-    /// The access token used for authorizing the request.
-    /// This token must be obtained via the Google OAuth 2.0 authentication flow.
-    /// </summary>
-    public string? AccessToken
-    {
-        get => GetParameter<string>(AccessTokenKey);
-        set => SetParameter(AccessTokenKey, value);
-    }
 
     /// <summary>
     /// The "id" parameter value being used for a challenge request.
