@@ -2,6 +2,7 @@
 
 using Loonfactory.Google.Apis.YouTube.V3.Captions;
 using Loonfactory.Google.Apis.YouTube.V3.I18nLanguages;
+using Loonfactory.Google.Apis.YouTube.V3.I18nRegions;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 
@@ -44,6 +45,7 @@ public static class YouTubeDataApiServiceCollectionExtensions
         builder.AddAccessTokenProvider<HttpContextAccessTokenProvider>();
         builder.AddYouTubeCaptions<YouTubeCaptions, YouTubeCaptionHandler>();
         builder.AddYouTubeI18nLanguges<YouTubeI18nLanguages, YouTubeI18nLanguageHandler>();
+        builder.AddYouTubeI18nRegions<YouTubeI18nRegions, YouTubeI18nRegionHandler>();
 
         return builder;
     }

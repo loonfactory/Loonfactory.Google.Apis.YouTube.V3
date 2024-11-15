@@ -2,6 +2,7 @@
 
 using Loonfactory.Google.Apis.YouTube.V3.Captions;
 using Loonfactory.Google.Apis.YouTube.V3.I18nLanguages;
+using Loonfactory.Google.Apis.YouTube.V3.I18nRegions;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.Extensions.Options;
@@ -40,6 +41,16 @@ public class YouTubeDataApiBuilder(IServiceCollection services)
         where THandler : class, IYouTubeI18nLanguageHandler
     {
         Services.TryAddScoped<IYouTubeI18nLanguages, TYouTubeI18nLanguages>();
+        AddHandler<THandler>();
+
+        return this;
+    }
+
+    public virtual YouTubeDataApiBuilder AddYouTubeI18nRegions<TYouTubeI18nRegions, THandler>()
+        where TYouTubeI18nRegions : class, IYouTubeI18nRegions
+        where THandler : class, IYouTubeI18nRegionHandler
+    {
+        Services.TryAddScoped<IYouTubeI18nRegions, TYouTubeI18nRegions>();
         AddHandler<THandler>();
 
         return this;
