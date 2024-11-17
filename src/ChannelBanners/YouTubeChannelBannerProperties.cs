@@ -1,7 +1,5 @@
 // Licensed under the MIT license by loonfactory.
 
-using Microsoft.Extensions.Primitives;
-
 namespace Loonfactory.Google.Apis.YouTube.V3.ChannelBanners;
 
 public class YouTubeChannelBannerProperties : YouTubeProperties
@@ -30,7 +28,7 @@ public class YouTubeChannelBannerProperties : YouTubeProperties
     /// Initializes a new instance of <see cref="YouTubeChannelBannerProperties"/>.
     /// </summary>
     /// <inheritdoc />
-    public YouTubeChannelBannerProperties(IDictionary<string, string?> items, IDictionary<string, StringValues> parameters)
+    public YouTubeChannelBannerProperties(IDictionary<string, string?> items, IDictionary<string, object?> parameters)
         : base(items, parameters)
     { }
 

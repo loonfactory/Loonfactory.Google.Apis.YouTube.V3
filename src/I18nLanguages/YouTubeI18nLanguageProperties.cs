@@ -1,7 +1,5 @@
 // Licensed under the MIT license by loonfactory.
 
-using Microsoft.Extensions.Primitives;
-
 namespace Loonfactory.Google.Apis.YouTube.V3.I18nLanguages;
 
 public class YouTubeI18nLanguageProperties : YouTubeProperties
@@ -17,7 +15,7 @@ public class YouTubeI18nLanguageProperties : YouTubeProperties
         : base(items)
     { }
 
-    public YouTubeI18nLanguageProperties(IDictionary<string, string?> items, IDictionary<string, StringValues> parameters)
+    public YouTubeI18nLanguageProperties(IDictionary<string, string?> items, IDictionary<string, object?> parameters)
         : base(items, parameters)
     { }
 
