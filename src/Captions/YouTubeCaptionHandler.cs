@@ -29,7 +29,7 @@ public class YouTubeCaptionHandler(IOptionsMonitor<YouTubeOptions> options, ILog
             throw new InvalidOperationException("@TODO");
         }
 
-        if ((properties.Parts?.Length ?? 0) == 0)
+        if ((properties.Part?.Length ?? 0) == 0)
         {
             throw new InvalidOperationException("@TODO");
         }
@@ -96,7 +96,7 @@ public class YouTubeCaptionHandler(IOptionsMonitor<YouTubeOptions> options, ILog
             throw new InvalidOperationException("@TODO");
         }
 
-        if ((properties.Parts?.Length ?? 0) == 0)
+        if ((properties.Part?.Length ?? 0) == 0)
         {
             throw new InvalidOperationException("@TODO");
         }
@@ -133,7 +133,7 @@ public class YouTubeCaptionHandler(IOptionsMonitor<YouTubeOptions> options, ILog
         ArgumentNullException.ThrowIfNull(properties);
         ArgumentNullException.ThrowIfNull(cancellationToken);
 
-        if ((properties.Parts?.Length ?? 0) == 0)
+        if ((properties.Part?.Length ?? 0) == 0)
         {
             throw new InvalidOperationException("@TODO");
         }
@@ -168,7 +168,7 @@ public class YouTubeCaptionHandler(IOptionsMonitor<YouTubeOptions> options, ILog
         ArgumentNullException.ThrowIfNull(properties);
         ArgumentNullException.ThrowIfNull(cancellationToken);
 
-        if ((properties.Parts?.Length ?? 0) == 0)
+        if ((properties.Part?.Length ?? 0) == 0)
         {
             throw new InvalidOperationException("@TODO");
         }

@@ -1,7 +1,5 @@
 // Licensed under the MIT license by loonfactory.
 
-using Microsoft.Extensions.Primitives;
-
 namespace Loonfactory.Google.Apis.YouTube.V3.Captions;
 
 /// <summary>
@@ -41,7 +39,7 @@ public class YouTubeCaptionProperties : YouTubeProperties
     /// Initializes a new instance of <see cref="YouTubeCaptionProperties"/>.
     /// </summary>
     /// <inheritdoc />
-    public YouTubeCaptionProperties(IDictionary<string, string?> items, IDictionary<string, StringValues> parameters)
+    public YouTubeCaptionProperties(IDictionary<string, string?> items, IDictionary<string, object?> parameters)
         : base(items, parameters)
     { }
 
@@ -69,7 +67,7 @@ public class YouTubeCaptionProperties : YouTubeProperties
         set => SetParameter(VideoIdKey, value);
     }
 
-    public string[]? Parts
+    public string[]? Part
     {
         get => GetParameter<string[]>(PartsKey);
         set => SetParameter(PartsKey, value);

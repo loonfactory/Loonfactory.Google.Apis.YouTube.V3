@@ -2,7 +2,6 @@
 
 using System.Globalization;
 using System.Text.Json.Serialization;
-using Microsoft.Extensions.Primitives;
 
 namespace Loonfactory.Google.Apis.YouTube.V3;
 
@@ -14,7 +13,7 @@ namespace Loonfactory.Google.Apis.YouTube.V3;
 /// </remarks>
 /// <param name="items">State values dictionary to use.</param>
 /// <param name="parameters">Parameters dictionary to use.</param>
-public class YouTubeProperties(IDictionary<string, string?>? items, IDictionary<string, StringValues>? parameters)
+public class YouTubeProperties(IDictionary<string, string?>? items, IDictionary<string, object?>? parameters)
 {
     internal const string UtcDateTimeFormat = "r";
 
@@ -45,7 +44,7 @@ public class YouTubeProperties(IDictionary<string, string?>? items, IDictionary<
     /// <returns>A copy.</returns>
     public YouTubeProperties Clone()
         => new(new Dictionary<string, string?>(Items, StringComparer.Ordinal),
-            new Dictionary<string, StringValues>(Parameters, StringComparer.Ordinal));
+            new Dictionary<string, object?>(Parameters, StringComparer.Ordinal));
 
     /// <summary>
     /// State values about the authentication session.
@@ -57,7 +56,7 @@ public class YouTubeProperties(IDictionary<string, string?>? items, IDictionary<
     /// serialization or persistence, only for flowing data between call sites.
     /// </summary>
     [JsonIgnore]
-    public IDictionary<string, StringValues> Parameters { get; } = parameters ?? new Dictionary<string, StringValues>(StringComparer.Ordinal);
+    public IDictionary<string, object?> Parameters { get; } = parameters ?? new Dictionary<string, object?>(StringComparer.Ordinal);
 
     /// <summary>
     /// Get a string value from the <see cref="Items"/> collection.
@@ -101,7 +100,7 @@ public class YouTubeProperties(IDictionary<string, string?>? items, IDictionary<
     /// <typeparam name="T">Parameter type.</typeparam>
     /// <param name="key">Parameter key.</param>
     /// <param name="value">Value to set.</param>
-    public void SetParameter(string key, StringValues value)
+    public void SetParameter<T>(string key, T value)
         => Parameters[key] = value;
 
     /// <summary>

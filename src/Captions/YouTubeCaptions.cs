@@ -112,7 +112,7 @@ public class YouTubeCaptions(
         var result = await handler.HandleCaptionListAsync(new YouTubeCaptionProperties
         {
             VideoId = videoId,
-            Parts = part,
+            Part = part,
             Id = id,
             OnBehalfOfContentOwner = onBehalfOfContentOwner,
             AccessToken = await AccessTokenProvider.GetAccessTokenAsync(cancellationToken).ConfigureAwait(false)
@@ -184,7 +184,7 @@ public class YouTubeCaptions(
 
         var properties = new YouTubeCaptionProperties
         {
-            Parts = part,
+            Part = part,
             OnBehalfOfContentOwner = onBehalfOfContentOwner,
             AccessToken = await AccessTokenProvider.GetAccessTokenAsync(cancellationToken).ConfigureAwait(false)
         };
@@ -217,7 +217,7 @@ public class YouTubeCaptions(
 
         var properties = new YouTubeCaptionProperties
         {
-            Parts = part,
+            Part = part,
             OnBehalfOfContentOwner = onBehalfOfContentOwner,
             AccessToken = await AccessTokenProvider.GetAccessTokenAsync(cancellationToken).ConfigureAwait(false)
         };

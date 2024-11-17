@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.WebUtilities;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
+using Microsoft.Extensions.Primitives;
 
 namespace Loonfactory.Google.Apis.YouTube.V3;
 
@@ -93,9 +94,14 @@ public abstract class YouTubeHandler : IYouTubeHandler
     /// <returns>The challenge url.</returns>
     protected virtual string BuildChallengeUrl<T>(string uri, in T properties) where T : YouTubeProperties
     {
-        var parameters = properties.Parameters.ToList();
+        var parameters = properties.Parameters.Select(item => new KeyValuePair<string, StringValues>(
+            item.Key,
+            item.Value is IEnumerable<object> values
+                ? values.Select(obj => obj.ToString()).ToArray()
+                : item.Value?.ToString()
+        )).ToList();
         parameters.Add(new("key", Options.Key));
 
-        return QueryHelpers.AddQueryString(uri, parameters.AsEnumerable());
+        return QueryHelpers.AddQueryString(uri, parameters);
     }
 }
