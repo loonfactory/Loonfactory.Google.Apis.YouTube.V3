@@ -1,6 +1,7 @@
 // Licensed under the MIT license by loonfactory.
 
 using Loonfactory.Google.Apis.YouTube.V3.Captions;
+using Loonfactory.Google.Apis.YouTube.V3.ChannelBanners;
 using Loonfactory.Google.Apis.YouTube.V3.I18nLanguages;
 using Loonfactory.Google.Apis.YouTube.V3.I18nRegions;
 using Microsoft.Extensions.DependencyInjection;
@@ -31,6 +32,16 @@ public class YouTubeDataApiBuilder(IServiceCollection services)
         where THandler : class, IYouTubeCaptionHandler
     {
         Services.TryAddScoped<IYouTubeCaptions, TYouTubeCaptions>();
+        AddHandler<THandler>();
+
+        return this;
+    }
+
+    public virtual YouTubeDataApiBuilder AddYouTubeChannelBanners<TYouTubeChannelBanners, THandler>()
+        where TYouTubeChannelBanners : class, IYouTubeChannelBanners
+        where THandler : class, IYouTubeChannelBannerHandler
+    {
+        Services.TryAddScoped<IYouTubeChannelBanners, TYouTubeChannelBanners>();
         AddHandler<THandler>();
 
         return this;
