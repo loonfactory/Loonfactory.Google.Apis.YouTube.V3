@@ -3,6 +3,7 @@
 using Loonfactory.Google.Apis.YouTube.V3.Captions;
 using Loonfactory.Google.Apis.YouTube.V3.ChannelBanners;
 using Loonfactory.Google.Apis.YouTube.V3.Channels;
+using Loonfactory.Google.Apis.YouTube.V3.ChannelSections;
 using Loonfactory.Google.Apis.YouTube.V3.I18nLanguages;
 using Loonfactory.Google.Apis.YouTube.V3.I18nRegions;
 using Microsoft.Extensions.DependencyInjection;
@@ -49,6 +50,7 @@ public static class YouTubeDataApiServiceCollectionExtensions
         builder.AddYouTubeCaptions<YouTubeCaptions, YouTubeCaptionHandler>();
         builder.AddYouTubeChannelBanners<YouTubeChannelBanners, YouTubeChannelBannerHandler>();
         builder.AddYouTubeChannels<YouTubeChannels, YouTubeChannelHandler>();
+        builder.AddYouTubeChannelSections<YouTubeChannelSections, YouTubeChannelSectionHandler>();
         builder.AddYouTubeI18nLanguges<YouTubeI18nLanguages, YouTubeI18nLanguageHandler>();
         builder.AddYouTubeI18nRegions<YouTubeI18nRegions, YouTubeI18nRegionHandler>();
 
