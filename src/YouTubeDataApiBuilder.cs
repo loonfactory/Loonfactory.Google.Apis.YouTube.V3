@@ -4,6 +4,7 @@ using Loonfactory.Google.Apis.YouTube.V3.Captions;
 using Loonfactory.Google.Apis.YouTube.V3.ChannelBanners;
 using Loonfactory.Google.Apis.YouTube.V3.Channels;
 using Loonfactory.Google.Apis.YouTube.V3.ChannelSections;
+using Loonfactory.Google.Apis.YouTube.V3.Comments;
 using Loonfactory.Google.Apis.YouTube.V3.I18nLanguages;
 using Loonfactory.Google.Apis.YouTube.V3.I18nRegions;
 using Microsoft.Extensions.DependencyInjection;
@@ -84,6 +85,16 @@ public class YouTubeDataApiBuilder(IServiceCollection services)
         where THandler : class, IYouTubeChannelSectionHandler
     {
         Services.TryAddScoped<IYouTubeChannelSections, TYouTubeChannelSections>();
+        AddHandler<THandler>();
+
+        return this;
+    }
+
+    public virtual YouTubeDataApiBuilder AddYouTubeComments<TYouTubeComments, THandler>()
+        where TYouTubeComments : class, IYouTubeComments
+        where THandler : class, IYouTubeCommentHandler
+    {
+        Services.TryAddScoped<IYouTubeComments, TYouTubeComments>();
         AddHandler<THandler>();
 
         return this;
