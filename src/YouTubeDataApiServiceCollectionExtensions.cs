@@ -5,6 +5,7 @@ using Loonfactory.Google.Apis.YouTube.V3.ChannelBanners;
 using Loonfactory.Google.Apis.YouTube.V3.Channels;
 using Loonfactory.Google.Apis.YouTube.V3.ChannelSections;
 using Loonfactory.Google.Apis.YouTube.V3.Comments;
+using Loonfactory.Google.Apis.YouTube.V3.CommentThreads;
 using Loonfactory.Google.Apis.YouTube.V3.I18nLanguages;
 using Loonfactory.Google.Apis.YouTube.V3.I18nRegions;
 using Microsoft.Extensions.DependencyInjection;
@@ -53,6 +54,7 @@ public static class YouTubeDataApiServiceCollectionExtensions
         builder.AddYouTubeChannels<YouTubeChannels, YouTubeChannelHandler>();
         builder.AddYouTubeChannelSections<YouTubeChannelSections, YouTubeChannelSectionHandler>();
         builder.AddYouTubeComments<YouTubeComments, YouTubeCommentHandler>();
+        builder.AddYouTubeCommentThreads<YouTubeCommentThreads, YouTubeCommentThreadHandler>();
         builder.AddYouTubeI18nLanguges<YouTubeI18nLanguages, YouTubeI18nLanguageHandler>();
         builder.AddYouTubeI18nRegions<YouTubeI18nRegions, YouTubeI18nRegionHandler>();
 
