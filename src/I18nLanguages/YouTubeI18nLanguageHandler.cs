@@ -20,16 +20,13 @@ public class YouTubeI18nLanguageHandler(IOptionsMonitor<YouTubeOptions> options,
             throw new InvalidOperationException("@TODO");
         }
 
-        var endpoint = BuildChallengeUrl(YouTubeI18nLanguageDefaults.ListEndpoint, properties);
-
-        var request = new HttpRequestMessage(HttpMethod.Get, endpoint);
-        if (properties.AccessToken != null)
-        {
-            request.Headers.Authorization = new AuthenticationHeaderValue("Bearer", properties.AccessToken);
-        }
-
-        var response = await Backchannel.SendAsync(request, cancellationToken).ConfigureAwait(false);
-
+        var response = await SendAsync(
+            HttpMethod.Get,
+            YouTubeI18nLanguageDefaults.ListEndpoint,
+            properties,
+            cancellationToken
+        ).ConfigureAwait(false);
+        
         return response.IsSuccessStatusCode switch
         {
             true => YouTubeResult<YouTubeI18nLanguageListResource>.Success((

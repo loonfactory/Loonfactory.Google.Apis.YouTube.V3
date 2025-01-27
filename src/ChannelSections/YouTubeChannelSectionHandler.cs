@@ -36,17 +36,13 @@ public class YouTubeChannelSectionHandler(IOptionsMonitor<YouTubeOptions> option
             throw new InvalidOperationException("The ChannelSection id must be provided in the properties.");
         }
 
-        if (string.IsNullOrEmpty(properties.AccessToken))
-        {
-            throw new InvalidOperationException("An access token must be provided in the properties.");
-        }
+        var response = await AuthorizationSendAsync(
+            HttpMethod.Delete,
+            YouTubeChannelSectionDefaults.DeleteEndpoint,
+            properties,
+            cancellationToken
+        ).ConfigureAwait(false);
 
-        var endpoint = BuildChallengeUrl(YouTubeChannelSectionDefaults.DeleteEndpoint, properties);
-
-        var request = new HttpRequestMessage(HttpMethod.Delete, endpoint);
-        request.Headers.Authorization = new AuthenticationHeaderValue("Bearer", properties.AccessToken);
-
-        var response = await Backchannel.SendAsync(request, cancellationToken).ConfigureAwait(false);
         return response.IsSuccessStatusCode switch
         {
             true => YouTubeResult.NoResult,
@@ -58,15 +54,13 @@ public class YouTubeChannelSectionHandler(IOptionsMonitor<YouTubeOptions> option
     {
         ArgumentNullException.ThrowIfNull(properties);
 
-        var endpoint = BuildChallengeUrl(YouTubeChannelSectionDefaults.ListEndpoint, properties);
+        var response = await SendAsync(
+            HttpMethod.Get,
+            YouTubeChannelSectionDefaults.ListEndpoint,
+            properties,
+            cancellationToken
+        ).ConfigureAwait(false);
 
-        var request = new HttpRequestMessage(HttpMethod.Get, endpoint);
-        if (properties.AccessToken != null)
-        {
-            request.Headers.Authorization = new AuthenticationHeaderValue("Bearer", properties.AccessToken);
-        }
-
-        var response = await Backchannel.SendAsync(request, cancellationToken).ConfigureAwait(false);
         if (!response.IsSuccessStatusCode)
         {
             throw new NotImplementedException("Handling of unsuccessful HTTP responses is not yet implemented.");

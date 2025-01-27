@@ -16,18 +16,13 @@ public class YouTubeCommentThreadHandler(IOptionsMonitor<YouTubeOptions> options
     {
         ArgumentNullException.ThrowIfNull(properties);
 
-        var endpoint = BuildChallengeUrl(YouTubecommentThreadDefaults.ListEndpoint, properties);
+        var response = await SendAsync(
+            HttpMethod.Get,
+            YouTubecommentThreadDefaults.ListEndpoint,
+            properties,
+            cancellationToken
+        ).ConfigureAwait(false);
 
-        var request = new HttpRequestMessage(HttpMethod.Get, endpoint);
-        if (properties.AccessToken != null)
-        {
-            request.Headers.Authorization = new AuthenticationHeaderValue(
-                "Bearer",
-                properties.AccessToken
-            );
-        }
-
-        var response = await Backchannel.SendAsync(request, cancellationToken).ConfigureAwait(false);
         if (!response.IsSuccessStatusCode)
         {
             throw new NotImplementedException("Handling of unsuccessful HTTP responses is not yet implemented.");
