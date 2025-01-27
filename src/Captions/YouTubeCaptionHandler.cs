@@ -34,17 +34,12 @@ public class YouTubeCaptionHandler(IOptionsMonitor<YouTubeOptions> options, ILog
             throw new InvalidOperationException("@TODO");
         }
 
-        if (string.IsNullOrEmpty(properties.AccessToken))
-        {
-            throw new InvalidOperationException("An access token must be provided in the properties.");
-        }
-
-        var endpoint = BuildChallengeUrl($"{YouTubeCaptionDefaults.DownloadEndpoint}{properties.Id}", properties);
-
-        var request = new HttpRequestMessage(HttpMethod.Get, endpoint);
-        request.Headers.Authorization = new AuthenticationHeaderValue("Bearer", properties.AccessToken);
-
-        var response = await Backchannel.SendAsync(request, cancellationToken).ConfigureAwait(false);
+        var response = await AuthorizationSendAsync(
+            HttpMethod.Get,
+            $"{YouTubeCaptionDefaults.DownloadEndpoint}{properties.Id}",
+            properties,
+            cancellationToken
+        ).ConfigureAwait(false);
 
         return response.IsSuccessStatusCode switch
         {

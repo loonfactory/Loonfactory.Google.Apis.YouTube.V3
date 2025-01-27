@@ -20,15 +20,12 @@ public class YouTubeI18nRegionHandler(IOptionsMonitor<YouTubeOptions> options, I
             throw new InvalidOperationException("@TODO");
         }
 
-        var endpoint = BuildChallengeUrl(YouTubeI18nRegionsDefaults.ListEndpoint, properties);
-
-        var request = new HttpRequestMessage(HttpMethod.Get, endpoint);
-        if (properties.AccessToken != null)
-        {
-            request.Headers.Authorization = new AuthenticationHeaderValue("Bearer", properties.AccessToken);
-        }
-
-        var response = await Backchannel.SendAsync(request, cancellationToken).ConfigureAwait(false);
+        var response = await SendAsync(
+            HttpMethod.Get,
+            YouTubeI18nRegionsDefaults.ListEndpoint,
+            properties,
+            cancellationToken
+        ).ConfigureAwait(false);
 
         return response.IsSuccessStatusCode switch
         {

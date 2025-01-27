@@ -21,17 +21,13 @@ public class YouTubeCommentHandler(IOptionsMonitor<YouTubeOptions> options, ILog
             throw new InvalidOperationException("The Comment id must be provided in the properties.");
         }
 
-        if (string.IsNullOrEmpty(properties.AccessToken))
-        {
-            throw new InvalidOperationException("An access token must be provided in the properties.");
-        }
+        var response = await AuthorizationSendAsync(
+            HttpMethod.Delete,
+            YouTubeCommentDefaults.DeleteEndpoint,
+            properties,
+            cancellationToken
+        ).ConfigureAwait(false);
 
-        var endpoint = BuildChallengeUrl(YouTubeCommentDefaults.DeleteEndpoint, properties);
-
-        var request = new HttpRequestMessage(HttpMethod.Delete, endpoint);
-        request.Headers.Authorization = new AuthenticationHeaderValue("Bearer", properties.AccessToken);
-
-        var response = await Backchannel.SendAsync(request, cancellationToken).ConfigureAwait(false);
         return response.IsSuccessStatusCode switch
         {
             true => YouTubeResult.NoResult,
@@ -43,18 +39,13 @@ public class YouTubeCommentHandler(IOptionsMonitor<YouTubeOptions> options, ILog
     {
         ArgumentNullException.ThrowIfNull(properties);
 
-        var endpoint = BuildChallengeUrl(YouTubeCommentDefaults.ListEndpoint, properties);
+        var response = await SendAsync(
+            HttpMethod.Get,
+            YouTubeCommentDefaults.ListEndpoint,
+            properties,
+            cancellationToken
+        ).ConfigureAwait(false);
 
-        var request = new HttpRequestMessage(HttpMethod.Get, endpoint);
-        if (properties.AccessToken != null)
-        {
-            request.Headers.Authorization = new AuthenticationHeaderValue(
-                "Bearer",
-                properties.AccessToken
-            );
-        }
-
-        var response = await Backchannel.SendAsync(request, cancellationToken).ConfigureAwait(false);
         if (!response.IsSuccessStatusCode)
         {
             throw new NotImplementedException("Handling of unsuccessful HTTP responses is not yet implemented.");
@@ -126,27 +117,18 @@ public class YouTubeCommentHandler(IOptionsMonitor<YouTubeOptions> options, ILog
         ArgumentNullException.ThrowIfNull(properties);
         ArgumentNullException.ThrowIfNull(cancellationToken);
 
-        if (string.IsNullOrEmpty(properties.AccessToken))
-        {
-            throw new InvalidOperationException("An access token must be provided in the properties.");
-        }
-
-        var endpoint = BuildChallengeUrl(YouTubeCommentDefaults.SetModerationStatusEndpoint, properties);
-
-        var request = new HttpRequestMessage(HttpMethod.Post, endpoint);
-        request.Headers.Authorization = new AuthenticationHeaderValue(
-            "Bearer",
-            properties.AccessToken
-        );
-
-        return InternalHandleSetModerationStatusAsync(request, properties, cancellationToken);
+        return InternalHandleSetModerationStatusAsync(properties, cancellationToken);
 
         async Task<YouTubeResult> InternalHandleSetModerationStatusAsync(
-            HttpRequestMessage request,
             YouTubeCommentProperties properties,
             CancellationToken cancellationToken)
         {
-            var response = await Backchannel.SendAsync(request, cancellationToken).ConfigureAwait(false);
+            var response = await AuthorizationSendAsync(
+                HttpMethod.Post,
+                YouTubeCommentDefaults.SetModerationStatusEndpoint,
+                properties,
+                cancellationToken
+            ).ConfigureAwait(false);
 
             return response.IsSuccessStatusCode switch
             {

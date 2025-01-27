@@ -1,5 +1,6 @@
 // Licensed under the MIT license by loonfactory.
 
+using System.Net.Http.Headers;
 using System.Text.Encodings.Web;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.WebUtilities;
@@ -94,14 +95,66 @@ public abstract class YouTubeHandler : IYouTubeHandler
     /// <returns>The challenge url.</returns>
     protected virtual string BuildChallengeUrl<T>(string uri, in T properties) where T : YouTubeProperties
     {
-        var parameters = properties.Parameters.Select(item => new KeyValuePair<string, StringValues>(
-            item.Key,
-            item.Value is IEnumerable<object> values
-                ? values.Select(obj => obj.ToString()).ToArray()
-                : item.Value?.ToString()
-        )).ToList();
+        var parameters = properties.Parameters
+            .Where(item => item.Key != YouTubeProperties.AccessTokenKey)
+            .Select(item => new KeyValuePair<string, StringValues>(
+                item.Key,
+                item.Value is IEnumerable<object> values
+                 ? values.Select(obj => obj.ToString()).ToArray()
+                    : item.Value?.ToString()
+            )).ToList();
+
         parameters.Add(new("key", Options.Key));
 
         return QueryHelpers.AddQueryString(uri, parameters);
+    }
+
+    protected internal virtual HttpRequestMessage CreateHttpRequestMessage(
+        HttpMethod method,
+        string requestUri,
+        YouTubeProperties properties
+    )
+    {
+        var endpoint = BuildChallengeUrl(requestUri, properties);
+        return new HttpRequestMessage(method, endpoint);
+    }
+
+    protected internal virtual Task<HttpResponseMessage> SendAsync(
+       HttpMethod method,
+       string requestUri,
+       YouTubeProperties properties,
+       CancellationToken cancellationToken = default
+    )
+    {
+        var request = CreateHttpRequestMessage(method, requestUri, properties);
+        if (!string.IsNullOrWhiteSpace(properties.AccessToken))
+        {
+            request.Headers.Authorization = new AuthenticationHeaderValue(
+                "Bearer",
+                properties.AccessToken
+            );
+        }
+
+        return Backchannel.SendAsync(request, cancellationToken);
+    }
+
+    protected internal virtual Task<HttpResponseMessage> AuthorizationSendAsync(
+        HttpMethod method,
+        string requestUri,
+        YouTubeProperties properties,
+        CancellationToken cancellationToken = default
+    )
+    {
+        ThrowIfAccessTokenNullOrEmpty(properties.AccessToken);
+
+        return SendAsync(method, requestUri, properties, cancellationToken);
+    }
+
+    protected internal static void ThrowIfAccessTokenNullOrEmpty(string? accessToken)
+    {
+        if (string.IsNullOrEmpty(accessToken))
+        {
+            throw new InvalidOperationException("An access token must be provided in the properties.");
+        }
     }
 }
