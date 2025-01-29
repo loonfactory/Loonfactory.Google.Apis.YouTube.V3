@@ -9,6 +9,7 @@ using Loonfactory.Google.Apis.YouTube.V3.CommentThreads;
 using Loonfactory.Google.Apis.YouTube.V3.I18nLanguages;
 using Loonfactory.Google.Apis.YouTube.V3.I18nRegions;
 using Loonfactory.Google.Apis.YouTube.V3.Members;
+using Loonfactory.Google.Apis.YouTube.V3.MembershipsLevels;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.Extensions.Options;
@@ -122,6 +123,15 @@ public class YouTubeDataApiBuilder(IServiceCollection services)
         return this;
     }
 
+    public virtual YouTubeDataApiBuilder AddYouTubeMembershipsLevels<TYouTubeMembershipsLevels, THandler>()
+        where TYouTubeMembershipsLevels : class, IYouTubeMembershipsLevels
+        where THandler : class, IYouTubeMembershipsLevelHandler
+    {
+        Services.TryAddScoped<IYouTubeMembershipsLevels, TYouTubeMembershipsLevels>();
+        AddHandler<THandler>();
+
+        return this;
+    }
 
     protected void AddHandler<THandler>() where THandler : class, IYouTubeHandler
     {

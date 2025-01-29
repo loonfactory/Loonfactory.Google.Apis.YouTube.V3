@@ -9,6 +9,7 @@ using Loonfactory.Google.Apis.YouTube.V3.CommentThreads;
 using Loonfactory.Google.Apis.YouTube.V3.I18nLanguages;
 using Loonfactory.Google.Apis.YouTube.V3.I18nRegions;
 using Loonfactory.Google.Apis.YouTube.V3.Members;
+using Loonfactory.Google.Apis.YouTube.V3.MembershipsLevels;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 
@@ -59,6 +60,7 @@ public static class YouTubeDataApiServiceCollectionExtensions
         builder.AddYouTubeI18nLanguges<YouTubeI18nLanguages, YouTubeI18nLanguageHandler>();
         builder.AddYouTubeI18nRegions<YouTubeI18nRegions, YouTubeI18nRegionHandler>();
         builder.AddYouTubeMembers<YouTubeMembers, YouTubeMemberHandler>();
+        builder.AddYouTubeMembershipsLevels<YouTubeMembershipsLevels, YouTubeMembershipsLevelHandler>();
 
         return builder;
     }
