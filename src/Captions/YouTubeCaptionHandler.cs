@@ -1,7 +1,6 @@
 // Licensed under the MIT license by loonfactory.
 
 using System.Net.Http.Headers;
-using System.Net.Http.Json;
 using System.Text.Encodings.Web;
 using System.Text.Json;
 using Microsoft.Extensions.Logging;
@@ -178,38 +177,19 @@ public class YouTubeCaptionHandler(IOptionsMonitor<YouTubeOptions> options, ILog
         return InternalHandleCaptionUploadAsync(request, resource, content, properties, cancellationToken);
     }
 
-    private async Task<YouTubeResult<YouTubeCaptionResource>> InternalHandleCaptionUploadAsync(
+    private Task<YouTubeResult<YouTubeCaptionResource>> InternalHandleCaptionUploadAsync(
         HttpRequestMessage request,
         YouTubeCaptionResource resource,
         StreamContent? content,
         YouTubeCaptionProperties properties,
         CancellationToken cancellationToken)
     {
-        request.Headers.Authorization = new AuthenticationHeaderValue("Bearer", properties.AccessToken);
-
-        var jsonContent = JsonContent.Create(resource);
-
-        if (content != null)
-        {
-            request.Content = new MultipartContent("related") {
-                jsonContent,
-                content
-            };
-        }
-        else
-        {
-            request.Content = jsonContent;
-        }
-
-        var response = await Backchannel.SendAsync(request, cancellationToken).ConfigureAwait(false);
-        var body = await response.Content.ReadAsStringAsync(cancellationToken).ConfigureAwait(false);
-
-        return response.IsSuccessStatusCode switch
-        {
-            true => YouTubeResult<YouTubeCaptionResource>.Success(
-                JsonSerializer.Deserialize<YouTubeCaptionResource>(body, YouTubeDefaults.JsonSerializerOptions)!
-            ),
-            false => throw new NotImplementedException("Handling of unsuccessful HTTP responses is not yet implemented.")
-        };
+        return UploadAsync(
+            request,
+            resource,
+            content,
+            properties,
+            cancellationToken
+        );
     }
 }

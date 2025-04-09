@@ -1,7 +1,9 @@
 // Licensed under the MIT license by loonfactory.
 
 using System.Net.Http.Headers;
+using System.Net.Http.Json;
 using System.Text.Encodings.Web;
+using System.Text.Json;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.WebUtilities;
 using Microsoft.Extensions.Logging;
@@ -156,5 +158,42 @@ public abstract class YouTubeHandler : IYouTubeHandler
         {
             throw new InvalidOperationException("An access token must be provided in the properties.");
         }
+    }
+
+    protected virtual async Task<YouTubeResult<T>> UploadAsync<T, K>(
+        HttpRequestMessage request,
+        T resource,
+        StreamContent? content,
+        K properties,
+        CancellationToken cancellationToken
+    ) where T : class
+      where K : YouTubeProperties
+    {
+        request.Headers.Authorization = new AuthenticationHeaderValue("Bearer", properties.AccessToken);
+
+        var jsonContent = JsonContent.Create(resource);
+
+        if (content != null)
+        {
+            request.Content = new MultipartContent("related") {
+                jsonContent,
+                content
+            };
+        }
+        else
+        {
+            request.Content = jsonContent;
+        }
+
+        var response = await Backchannel.SendAsync(request, cancellationToken).ConfigureAwait(false);
+        var body = await response.Content.ReadAsStringAsync(cancellationToken).ConfigureAwait(false);
+
+        return response.IsSuccessStatusCode switch
+        {
+            true => YouTubeResult<T>.Success(
+                JsonSerializer.Deserialize<T>(body, YouTubeDefaults.JsonSerializerOptions)!
+            ),
+            false => throw new NotImplementedException("Handling of unsuccessful HTTP responses is not yet implemented.")
+        };
     }
 }
