@@ -17,8 +17,8 @@ public class YouTubeI18nRegionProperties : YouTubeProperties
         : base(items)
     { }
 
-    public YouTubeI18nRegionProperties(IDictionary<string, string?> items, IDictionary<string, StringValues> parameters)
-        : base(items, parameters)
+    public YouTubeI18nRegionProperties(IDictionary<string, string?> items, IDictionary<string, StringValues?> parameters)
+        : base(items, (IDictionary<string, object?>)parameters)
     { }
 
     public string?[]? Parts
