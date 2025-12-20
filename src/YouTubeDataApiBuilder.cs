@@ -35,121 +35,121 @@ public class YouTubeDataApiBuilder(IServiceCollection services)
         return this;
     }
 
-    public virtual YouTubeDataApiBuilder AddYouTubeCaptions<TYouTubeCaptions, THandler>()
-        where TYouTubeCaptions : class, IYouTubeCaptions
-        where THandler : class, IYouTubeCaptionHandler
+    public virtual YouTubeDataApiBuilder AddCaptions<TYouTubeCaptions, THandler>()
+        where TYouTubeCaptions : class, ICaptionsService
+        where THandler : class, ICaptionHandler
     {
-        Services.TryAddScoped<IYouTubeCaptions, TYouTubeCaptions>();
+        Services.TryAddScoped<ICaptionsService, TYouTubeCaptions>();
         AddHandler<THandler>();
 
         return this;
     }
 
-    public virtual YouTubeDataApiBuilder AddYouTubeChannelBanners<TYouTubeChannelBanners, THandler>()
-        where TYouTubeChannelBanners : class, IYouTubeChannelBanners
-        where THandler : class, IYouTubeChannelBannerHandler
+    public virtual YouTubeDataApiBuilder AddChannelBanners<TYouTubeChannelBanners, THandler>()
+        where TYouTubeChannelBanners : class, IChannelBanners
+        where THandler : class, IChannelBannerHandler
     {
-        Services.TryAddScoped<IYouTubeChannelBanners, TYouTubeChannelBanners>();
+        Services.TryAddScoped<IChannelBanners, TYouTubeChannelBanners>();
         AddHandler<THandler>();
 
         return this;
     }
 
-    public virtual YouTubeDataApiBuilder AddYouTubeChannels<TYouTubeChannels, THandler>()
-       where TYouTubeChannels : class, IYouTubeChannels
-       where THandler : class, IYouTubeChannelHandler
+    public virtual YouTubeDataApiBuilder AddChannels<TYouTubeChannels, THandler>()
+       where TYouTubeChannels : class, IChannelsService
+       where THandler : class, IChannelHandler
     {
-        Services.TryAddScoped<IYouTubeChannels, TYouTubeChannels>();
+        Services.TryAddScoped<IChannelsService, TYouTubeChannels>();
         AddHandler<THandler>();
 
         return this;
     }
 
-    public virtual YouTubeDataApiBuilder AddYouTubeI18nLanguges<TYouTubeI18nLanguages, THandler>()
-        where TYouTubeI18nLanguages : class, IYouTubeI18nLanguages
-        where THandler : class, IYouTubeI18nLanguageHandler
+    public virtual YouTubeDataApiBuilder AddI18nLanguges<TYouTubeI18nLanguages, THandler>()
+        where TYouTubeI18nLanguages : class, II18nLanguagesService
+        where THandler : class, II18nLanguageHandler
     {
-        Services.TryAddScoped<IYouTubeI18nLanguages, TYouTubeI18nLanguages>();
+        Services.TryAddScoped<II18nLanguagesService, TYouTubeI18nLanguages>();
         AddHandler<THandler>();
 
         return this;
     }
 
-    public virtual YouTubeDataApiBuilder AddYouTubeI18nRegions<TYouTubeI18nRegions, THandler>()
-        where TYouTubeI18nRegions : class, IYouTubeI18nRegions
-        where THandler : class, IYouTubeI18nRegionHandler
+    public virtual YouTubeDataApiBuilder AddI18nRegions<TYouTubeI18nRegions, THandler>()
+        where TYouTubeI18nRegions : class, II18nRegionsService
+        where THandler : class, II18nRegionHandler
     {
-        Services.TryAddScoped<IYouTubeI18nRegions, TYouTubeI18nRegions>();
+        Services.TryAddScoped<II18nRegionsService, TYouTubeI18nRegions>();
         AddHandler<THandler>();
 
         return this;
     }
 
-    public virtual YouTubeDataApiBuilder AddYouTubeChannelSections<TYouTubeChannelSections, THandler>()
-        where TYouTubeChannelSections : class, IYouTubeChannelSections
-        where THandler : class, IYouTubeChannelSectionHandler
+    public virtual YouTubeDataApiBuilder AddChannelSections<TYouTubeChannelSections, THandler>()
+        where TYouTubeChannelSections : class, IChannelSections
+        where THandler : class, IChannelSectionHandler
     {
-        Services.TryAddScoped<IYouTubeChannelSections, TYouTubeChannelSections>();
+        Services.TryAddScoped<IChannelSections, TYouTubeChannelSections>();
         AddHandler<THandler>();
 
         return this;
     }
 
-    public virtual YouTubeDataApiBuilder AddYouTubeComments<TYouTubeComments, THandler>()
-        where TYouTubeComments : class, IYouTubeComments
-        where THandler : class, IYouTubeCommentHandler
+    public virtual YouTubeDataApiBuilder AddComments<TYouTubeComments, THandler>()
+        where TYouTubeComments : class, ICommentsService
+        where THandler : class, ICommentHandler
     {
-        Services.TryAddScoped<IYouTubeComments, TYouTubeComments>();
+        Services.TryAddScoped<ICommentsService, TYouTubeComments>();
         AddHandler<THandler>();
 
         return this;
     }
 
-    public virtual YouTubeDataApiBuilder AddYouTubeCommentThreads<TYouTubeCommentThreads, THandler>()
-        where TYouTubeCommentThreads : class, IYouTubeCommentThreads
-        where THandler : class, IYouTubeCommentThreadHandler
+    public virtual YouTubeDataApiBuilder AddCommentThreads<TYouTubeCommentThreads, THandler>()
+        where TYouTubeCommentThreads : class, ICommentThreadsService
+        where THandler : class, ICommentThreadHandler
     {
-        Services.TryAddScoped<IYouTubeCommentThreads, TYouTubeCommentThreads>();
+        Services.TryAddScoped<ICommentThreadsService, TYouTubeCommentThreads>();
         AddHandler<THandler>();
 
         return this;
     }
 
-    public virtual YouTubeDataApiBuilder AddYouTubeMembers<TYouTubeMembers, THandler>()
-        where TYouTubeMembers : class, IYouTubeMembers
-        where THandler : class, IYouTubeMemberHandler
+    public virtual YouTubeDataApiBuilder AddMembers<TYouTubeMembers, THandler>()
+        where TYouTubeMembers : class, IMembersService
+        where THandler : class, IMemberHandler
     {
-        Services.TryAddScoped<IYouTubeMembers, TYouTubeMembers>();
+        Services.TryAddScoped<IMembersService, TYouTubeMembers>();
         AddHandler<THandler>();
 
         return this;
     }
 
-    public virtual YouTubeDataApiBuilder AddYouTubeMembershipsLevels<TYouTubeMembershipsLevels, THandler>()
-        where TYouTubeMembershipsLevels : class, IYouTubeMembershipsLevels
-        where THandler : class, IYouTubeMembershipsLevelHandler
+    public virtual YouTubeDataApiBuilder AddMembershipsLevels<TYouTubeMembershipsLevels, THandler>()
+        where TYouTubeMembershipsLevels : class, IMembershipsLevelsService
+        where THandler : class, IMembershipsLevelHandler
     {
-        Services.TryAddScoped<IYouTubeMembershipsLevels, TYouTubeMembershipsLevels>();
+        Services.TryAddScoped<IMembershipsLevelsService, TYouTubeMembershipsLevels>();
         AddHandler<THandler>();
 
         return this;
     }
 
-    public virtual YouTubeDataApiBuilder AddYouTubePlaylistItems<TYouTubePlaylistItems, THandler>()
-        where TYouTubePlaylistItems : class, IYouTubePlaylistItems
-        where THandler : class, IYouTubePlaylistItemHandler
+    public virtual YouTubeDataApiBuilder AddPlaylistItems<TYouTubePlaylistItems, THandler>()
+        where TYouTubePlaylistItems : class, IPlaylistItemsService
+        where THandler : class, IPlaylistItemHandler
     {
-        Services.TryAddScoped<IYouTubePlaylistItems, TYouTubePlaylistItems>();
+        Services.TryAddScoped<IPlaylistItemsService, TYouTubePlaylistItems>();
         AddHandler<THandler>();
 
         return this;
     }
 
-    public virtual YouTubeDataApiBuilder AddYouTubePlaylists<TYouTubePlaylists, THandler>()
-        where TYouTubePlaylists : class, IYouTubePlaylists
-        where THandler : class, IYouTubePlaylistHandler
+    public virtual YouTubeDataApiBuilder AddPlaylists<TYouTubePlaylists, THandler>()
+        where TYouTubePlaylists : class, IPlaylistsService
+        where THandler : class, IPlaylistHandler
     {
-        Services.TryAddScoped<IYouTubePlaylists, TYouTubePlaylists>();
+        Services.TryAddScoped<IPlaylistsService, TYouTubePlaylists>();
         AddHandler<THandler>();
 
         return this;
