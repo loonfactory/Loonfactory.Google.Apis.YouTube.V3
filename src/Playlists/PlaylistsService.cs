@@ -205,6 +205,7 @@ public class PlaylistsService(
             var properties = new PlaylistProperties
             {
                 Part = part,
+                OnBehalfOfContentOwner = onBehalfOfContentOwner,
                 AccessToken = await AccessTokenProvider.GetAccessTokenAsync(cancellationToken).ConfigureAwait(false)
             };
 

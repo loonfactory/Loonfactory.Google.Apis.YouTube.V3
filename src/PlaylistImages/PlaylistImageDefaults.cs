@@ -2,7 +2,7 @@
 
 namespace Loonfactory.Google.Apis.YouTube.V3.PlaylistImages;
 
-public class PlaylistImageDefaults
+public static class PlaylistImageDefaults
 {
     public static readonly string ListEndpoint = "https://www.googleapis.com/youtube/v3/playlistImages";
 

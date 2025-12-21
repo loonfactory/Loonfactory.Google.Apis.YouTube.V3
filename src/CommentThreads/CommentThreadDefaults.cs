@@ -2,7 +2,7 @@
 
 namespace Loonfactory.Google.Apis.YouTube.V3.CommentThreads;
 
-public class CommentThreadDefaults
+public static class CommentThreadDefaults
 {
     public static readonly string ListEndpoint = "https://www.googleapis.com/youtube/v3/commentThreads";
 

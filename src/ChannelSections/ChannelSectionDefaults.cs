@@ -2,7 +2,7 @@
 
 namespace Loonfactory.Google.Apis.YouTube.V3.ChannelSections;
 
-public class ChannelSectionDefaults
+public static class ChannelSectionDefaults
 {
     /// <summary>
     /// Endpoint URL for listing ChannelSections.

@@ -2,7 +2,7 @@
 
 namespace Loonfactory.Google.Apis.YouTube.V3.Captions;
 
-public class CaptionDefaults
+public static class CaptionDefaults
 {
     /// <summary>
     /// Endpoint URL for listing captions.
