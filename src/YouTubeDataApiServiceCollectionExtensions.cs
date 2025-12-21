@@ -52,17 +52,17 @@ public static class YouTubeDataApiServiceCollectionExtensions
         services.AddHttpContextAccessor();
         builder.AddAccessTokenProvider<HttpContextAccessTokenProvider>();
 
-        builder.AddYouTubeCaptions<YouTubeCaptions, YouTubeCaptionHandler>();
-        builder.AddYouTubeChannelBanners<YouTubeChannelBanners, YouTubeChannelBannerHandler>();
-        builder.AddYouTubeChannels<YouTubeChannels, YouTubeChannelHandler>();
-        builder.AddYouTubeChannelSections<YouTubeChannelSections, YouTubeChannelSectionHandler>();
-        builder.AddYouTubeComments<YouTubeComments, YouTubeCommentHandler>();
-        builder.AddYouTubeCommentThreads<YouTubeCommentThreads, YouTubeCommentThreadHandler>();
-        builder.AddYouTubeI18nLanguges<YouTubeI18nLanguages, YouTubeI18nLanguageHandler>();
-        builder.AddYouTubeI18nRegions<YouTubeI18nRegions, YouTubeI18nRegionHandler>();
-        builder.AddYouTubeMembers<YouTubeMembers, YouTubeMemberHandler>();
-        builder.AddYouTubeMembershipsLevels<YouTubeMembershipsLevels, YouTubeMembershipsLevelHandler>();
-        builder.AddYouTubePlaylists<YouTubePlaylists, YouTubePlaylistHandler>();
+        builder.AddCaptions<ICaptionsService, CaptionHandler>();
+        builder.AddChannelBanners<IChannelBanners, ChannelBannerHandler>();
+        builder.AddChannels<IChannelsService, ChannelHandler>();
+        builder.AddChannelSections<IChannelSections, ChannelSectionHandler>();
+        builder.AddComments<ICommentsService, CommentHandler>();
+        builder.AddCommentThreads<ICommentThreadsService, CommentThreadHandler>();
+        builder.AddI18nLanguges<I18nLanguagesService, I18nLanguageHandler>();
+        builder.AddI18nRegions<I18nRegionsService, I18nRegionHandler>();
+        builder.AddMembers<IMembersService, MemberHandler>();
+        builder.AddMembershipsLevels<IMembershipsLevelsService, MembershipsLevelHandler>();
+        builder.AddPlaylists<IPlaylistsService, PlaylistHandler>();
 
         return builder;
     }
