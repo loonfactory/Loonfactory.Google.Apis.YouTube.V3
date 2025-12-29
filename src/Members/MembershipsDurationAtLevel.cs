@@ -5,6 +5,6 @@ namespace Loonfactory.Google.Apis.YouTube.V3.Members;
 public class MembershipsDurationAtLevel
 {
     public string? Level { get; set; }
-    public DateTime? MemberSince { get; set; }
+    public DateTimeOffset? MemberSince { get; set; }
     public int? MemberTotalDurationMonths { get; set; }
 }

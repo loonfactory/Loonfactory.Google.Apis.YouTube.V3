@@ -17,7 +17,7 @@ public class CaptionSnippet
     /// <summary>
     /// The date and time when the caption track was last updated. The value is specified in ISO 8601 format.
     /// </summary>
-    public DateTime? LastUpdated { get; set; }
+    public DateTimeOffset? LastUpdated { get; set; }
 
     /// <summary>
     /// The caption track's type. 
