@@ -19,6 +19,6 @@ public class CommentSnippet
     public string? ViewerRating { get; set; }
     public uint? LikeCount { get; set; }
     public string? ModerationStatus { get; set; }
-    public DateTime? PublishedAt { get; set; }
-    public DateTime? UpdatedAt { get; set; }
+    public DateTimeOffset? PublishedAt { get; set; }
+    public DateTimeOffset? UpdatedAt { get; set; }
 }
