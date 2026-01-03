@@ -4,13 +4,13 @@ namespace Loonfactory.Google.Apis.YouTube.V3.Comments;
 
 public static class CommentDefaults
 {
-    public static readonly string ListEndpoint = "https://www.googleapis.com/youtube/v3/comments";
+    private const string ApiRootUrl = "https://www.googleapis.com/youtube/v3";
+    public static readonly string ListEndpoint = $"{ApiRootUrl}/comments";
 
-    public static readonly string InsertEndpoint = "https://www.googleapis.com/youtube/v3/comments";
+    public static readonly string InsertEndpoint = $"{ApiRootUrl}/comments";
 
-    public static readonly string UpdateEndpoint = "https://www.googleapis.com/youtube/v3/comments";
+    public static readonly string UpdateEndpoint = $"{ApiRootUrl}/comments";
+    public static readonly string DeleteEndpoint = $"{ApiRootUrl}/comments";
 
-    public static readonly string DeleteEndpoint = "https://www.googleapis.com/youtube/v3/Comments";
-
-    public static readonly string SetModerationStatusEndpoint = "https://www.googleapis.com/youtube/v3/comments/setModerationStatus";
+    public static readonly string SetModerationStatusEndpoint = $"{ApiRootUrl}/comments/setModerationStatus";
 }
