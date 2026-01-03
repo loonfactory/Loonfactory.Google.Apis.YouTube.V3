@@ -4,7 +4,8 @@ namespace Loonfactory.Google.Apis.YouTube.V3.CommentThreads;
 
 public static class CommentThreadDefaults
 {
-    public static readonly string ListEndpoint = "https://www.googleapis.com/youtube/v3/commentThreads";
+    private const string ApiRootUrl = "https://www.googleapis.com/youtube/v3";
+    public static readonly string ListEndpoint = $"{ApiRootUrl}/commentThreads";
 
-    public static readonly string InsertEndpoint = "https://www.googleapis.com/youtube/v3/commentThreads";
+    public static readonly string InsertEndpoint = $"{ApiRootUrl}/commentThreads";
 }

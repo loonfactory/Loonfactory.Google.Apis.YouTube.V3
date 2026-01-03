@@ -4,6 +4,7 @@ namespace Loonfactory.Google.Apis.YouTube.V3.Channels;
 
 public static class ChannelDefaults
 {
-    public static readonly string ListEndpoint = "https://www.googleapis.com/youtube/v3/channels";
-    public static readonly string UpdateEndpoint = "https://www.googleapis.com/youtube/v3/channels";
+    private const string ApiRootUrl = "https://www.googleapis.com/youtube/v3";
+    public static readonly string ListEndpoint = $"{ApiRootUrl}/channels";
+    public static readonly string UpdateEndpoint = $"{ApiRootUrl}/channels";
 }
