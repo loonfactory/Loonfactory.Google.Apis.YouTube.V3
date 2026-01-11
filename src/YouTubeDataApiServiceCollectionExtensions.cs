@@ -11,6 +11,7 @@ using Loonfactory.Google.Apis.YouTube.V3.I18nRegions;
 using Loonfactory.Google.Apis.YouTube.V3.Members;
 using Loonfactory.Google.Apis.YouTube.V3.MembershipsLevels;
 using Loonfactory.Google.Apis.YouTube.V3.Playlists;
+using Loonfactory.Google.Apis.YouTube.V3.Subscriptions;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 
@@ -63,6 +64,7 @@ public static class YouTubeDataApiServiceCollectionExtensions
         builder.AddMembers<IMembersService, MemberHandler>();
         builder.AddMembershipsLevels<IMembershipsLevelsService, MembershipsLevelHandler>();
         builder.AddPlaylists<IPlaylistsService, PlaylistHandler>();
+        builder.AddSubscriptions<ISubscriptionService, SubscriptionHandler>();
 
         return builder;
     }

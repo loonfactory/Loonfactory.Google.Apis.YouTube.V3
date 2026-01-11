@@ -12,6 +12,7 @@ using Loonfactory.Google.Apis.YouTube.V3.Members;
 using Loonfactory.Google.Apis.YouTube.V3.MembershipsLevels;
 using Loonfactory.Google.Apis.YouTube.V3.PlaylistItems;
 using Loonfactory.Google.Apis.YouTube.V3.Playlists;
+using Loonfactory.Google.Apis.YouTube.V3.Subscriptions;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.Extensions.Options;
@@ -150,6 +151,16 @@ public class YouTubeDataApiBuilder(IServiceCollection services)
         where THandler : class, IPlaylistHandler
     {
         Services.TryAddScoped<IPlaylistsService, TYouTubePlaylists>();
+        AddHandler<THandler>();
+
+        return this;
+    }
+
+    public virtual YouTubeDataApiBuilder AddSubscriptions<TYouTubeSubscriptions, THandler>()
+        where TYouTubeSubscriptions : class, ISubscriptionService
+        where THandler : class, ISubscriptionHandler
+    {
+        Services.TryAddScoped<ISubscriptionService, TYouTubeSubscriptions>();
         AddHandler<THandler>();
 
         return this;
