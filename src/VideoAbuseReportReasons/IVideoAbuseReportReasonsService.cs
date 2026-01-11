@@ -8,7 +8,7 @@ public interface IVideoAbuseReportReasonsService
 {
     Task<VideoAbuseReportReasonListResponse> ListAsync(
         StringValues part,
-        string? hl = "en_US",
+        string? hl = null,
         StringValues? id = null,
         CancellationToken cancellationToken = default);
 }

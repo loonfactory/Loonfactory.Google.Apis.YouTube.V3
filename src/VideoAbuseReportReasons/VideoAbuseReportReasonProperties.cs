@@ -8,7 +8,6 @@ public class VideoAbuseReportReasonProperties : YouTubeProperties
 {
     public static readonly string PartKey = "part";
     public static readonly string HlKey = "hl";
-    public static readonly string IdKey = "id";
 
     public VideoAbuseReportReasonProperties()
     { }
@@ -21,21 +20,15 @@ public class VideoAbuseReportReasonProperties : YouTubeProperties
         : base(items, parameters)
     { }
 
-    public StringValues Part
+    public StringValues? Part
     {
-        get => GetParameter<StringValues>(PartKey);
+        get => GetParameter<StringValues?>(PartKey);
         set => SetParameter(PartKey, value);
     }
 
     public string? Hl
     {
-        get => GetParameter<string>(HlKey);
+        get => GetParameter<string?>(HlKey);
         set => SetParameter(HlKey, value);
-    }
-
-    public StringValues? Id
-    {
-        get => GetParameter<StringValues>(IdKey);
-        set => SetParameter(IdKey, value);
     }
 }

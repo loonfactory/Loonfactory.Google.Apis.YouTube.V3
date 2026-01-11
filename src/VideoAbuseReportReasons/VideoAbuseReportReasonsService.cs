@@ -28,7 +28,6 @@ public class VideoAbuseReportReasonsService(
         {
             Part = part,
             Hl = hl,
-            Id = id,
             AccessToken = await AccessTokenProvider.GetAccessTokenAsync(cancellationToken).ConfigureAwait(false)
         };
 

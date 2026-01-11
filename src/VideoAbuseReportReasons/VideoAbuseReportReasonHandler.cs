@@ -18,10 +18,14 @@ public class VideoAbuseReportReasonHandler(
         CancellationToken cancellationToken)
     {
         ArgumentNullException.ThrowIfNull(properties);
-
-        if (properties.Part.Count == 0)
+        if (properties.Part is null)
         {
-            throw new InvalidOperationException("The part parameter must be provided in the properties.");
+            throw new ArgumentNullException(properties.Part, "properties.Part must be set.");
+        }
+
+        if (properties.Part?.Count == 0)
+        {
+            throw new ArgumentException("The properties.Part parameter must be provided in the properties.");
         }
 
         var response = await SendAsync(
