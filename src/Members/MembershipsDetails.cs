@@ -7,6 +7,6 @@ public class MembershipsDetails
     public string? HighestAccessibleLevel { get; set; }
     public string? HighestAccessibleLevelDisplayName { get; set; }
     public IEnumerable<string>? AccessibleLevels { get; set; }
-    public YouTubeMembershipsDurationResource? MembershipsDuration { get; set; }
+    public MembershipsDuration? MembershipsDuration { get; set; }
     public IEnumerable<MembershipsDurationAtLevel>? MembershipsDurationAtLevel { get; set; }
 }
