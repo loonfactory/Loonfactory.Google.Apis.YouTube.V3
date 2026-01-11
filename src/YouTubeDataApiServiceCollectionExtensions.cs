@@ -66,7 +66,7 @@ public static class YouTubeDataApiServiceCollectionExtensions
         builder.AddMembershipsLevels<IMembershipsLevelsService, MembershipsLevelHandler>();
         builder.AddPlaylists<IPlaylistsService, PlaylistHandler>();
         builder.AddSubscriptions<ISubscriptionService, SubscriptionHandler>();
-        builder.AddVideoAbuseReportReasons<IVideoAbuseReportReasonsService, VideoAbuseReportReasonHandler>();
+        builder.AddVideoAbuseReportReasons<VideoAbuseReportReasonsService, VideoAbuseReportReasonHandler>();
 
         return builder;
     }

@@ -15,8 +15,7 @@ public class VideoAbuseReportReasonsService(
 
     public async Task<VideoAbuseReportReasonListResponse> ListAsync(
         StringValues part,
-        string? hl = "en_US",
-        StringValues? id = null,
+        string? hl = null,
         CancellationToken cancellationToken = default)
     {
         ArgumentNullException.ThrowIfNull(part);

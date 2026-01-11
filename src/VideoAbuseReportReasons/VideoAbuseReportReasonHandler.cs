@@ -20,7 +20,7 @@ public class VideoAbuseReportReasonHandler(
         ArgumentNullException.ThrowIfNull(properties);
         if (properties.Part is null)
         {
-            throw new ArgumentNullException(properties.Part, "properties.Part must be set.");
+            throw new ArgumentNullException(nameof(properties), "The properties.Part parameter is null.");
         }
 
         if (properties.Part?.Count == 0)
