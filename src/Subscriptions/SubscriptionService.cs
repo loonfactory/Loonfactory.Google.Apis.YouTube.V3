@@ -106,7 +106,7 @@ public class SubscriptionService(
             cancellationToken);
     }
 
-    public Task<SubscriptionListResource> ListByMySubscribersAsnyc(
+    public Task<SubscriptionListResource> ListByMySubscribersAsync(
         StringValues part,
         bool mySubscribers,
         uint? maxResults = null,
@@ -140,7 +140,7 @@ public class SubscriptionService(
         CancellationToken cancellationToken)
     {
         var handler = await Handlers.GetHandlerAsync<SubscriptionHandler>()
-                                     .ConfigureAwait(false) ?? throw new InvalidOperationException("YouTubePlaylistItemHandler could not be obtained.");
+                                     .ConfigureAwait(false) ?? throw new InvalidOperationException("SubscriptionHandler could not be obtained.");
 
         var properties = new SubscriptionProperties
         {
@@ -171,14 +171,15 @@ public class SubscriptionService(
     {
         ArgumentNullException.ThrowIfNull(part);
         ArgumentNullException.ThrowIfNull(resource);
+
         if (resource.Snippet == null)
         {
-            throw new InvalidOperationException("Snippet must be set.");
+            throw new ArgumentNullException(nameof(resource), "resource.Snippet must be set.");
         }
 
-        if (string.IsNullOrEmpty(resource.Snippet.Title))
+        if (resource.Snippet.ResourceId == null)
         {
-            throw new InvalidOperationException("Snippet.Title must be set.");
+            throw new ArgumentNullException(nameof(resource), "resource.Snippet.ResourceId must be set.");
         }
 
         return InternalInsertAsync(
@@ -197,7 +198,7 @@ public class SubscriptionService(
             CancellationToken cancellationToken)
         {
             var handler = await Handlers.GetHandlerAsync<SubscriptionHandler>()
-                                         .ConfigureAwait(false) ?? throw new InvalidOperationException("YouTubePlaylistItemHandler could not be obtained.");
+                                        .ConfigureAwait(false) ?? throw new InvalidOperationException("SubscriptionHandler could not be obtained.");
 
             var properties = new SubscriptionProperties
             {
@@ -221,8 +222,9 @@ public class SubscriptionService(
         string? onBehalfOfContentOwner = null,
         CancellationToken cancellationToken = default)
     {
+        ArgumentException.ThrowIfNullOrWhiteSpace(id);
         var handler = await Handlers.GetHandlerAsync<SubscriptionHandler>()
-                                     .ConfigureAwait(false) ?? throw new InvalidOperationException("YouTubePlaylistItemHandler could not be obtained.");
+                                    .ConfigureAwait(false) ?? throw new InvalidOperationException("SubscriptionHandler could not be obtained.");
 
         var properties = new SubscriptionProperties
         {

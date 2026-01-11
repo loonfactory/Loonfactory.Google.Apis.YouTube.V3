@@ -45,23 +45,24 @@ public class SubscriptionHandler(IOptionsMonitor<YouTubeOptions> options, ILogge
         ArgumentNullException.ThrowIfNull(properties);
         ArgumentNullException.ThrowIfNull(cancellationToken);
 
-        var endpoint = BuildChallengeUrl(SubscriptionDefaults.InsertEndpoint, properties);
-        var request = new HttpRequestMessage(HttpMethod.Post, endpoint);
-        return InternalHandleSubscriptionUploadAsync(request, resource, properties, cancellationToken);
+        return InternalHandleSubscriptionUploadAsync(resource, properties, cancellationToken);
     }
-    private Task<YouTubeResult<SubscriptionResource>> InternalHandleSubscriptionUploadAsync(
-        HttpRequestMessage request,
+
+    private async Task<YouTubeResult<SubscriptionResource>> InternalHandleSubscriptionUploadAsync(
         SubscriptionResource resource,
         SubscriptionProperties properties,
         CancellationToken cancellationToken)
     {
-        return UploadAsync(
+        var endpoint = BuildChallengeUrl(SubscriptionDefaults.InsertEndpoint, properties);
+        using var request = new HttpRequestMessage(HttpMethod.Post, endpoint);
+
+        return await UploadAsync(
             request,
             resource,
             content: null,
             properties,
             cancellationToken
-        );
+        ).ConfigureAwait(false);
     }
 
     public virtual async Task<YouTubeResult> HandleSubscriptionDeleteAsync(
@@ -72,7 +73,7 @@ public class SubscriptionHandler(IOptionsMonitor<YouTubeOptions> options, ILogge
 
         if (string.IsNullOrEmpty(properties.Id))
         {
-            throw new InvalidOperationException("The playlist item id must be provided in the properties.");
+            throw new InvalidOperationException("The subscription id must be provided in the properties.");
         }
 
         var response = await AuthorizationSendAsync(

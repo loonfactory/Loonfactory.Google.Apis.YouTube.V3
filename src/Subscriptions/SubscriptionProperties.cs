@@ -35,14 +35,14 @@ public class SubscriptionProperties : YouTubeProperties
         set => SetParameter(PartKey, value);
     }
     
-    public string? ChannelId
+    public StringValues? ChannelId
     {
-        get => GetParameter<string>(ChannelIdKey);
+        get => GetParameter<StringValues>(ChannelIdKey);
         set => SetParameter(ChannelIdKey, value);
     }
-    public string? Id
+    public StringValues? Id
     {
-        get => GetParameter<string>(IdKey);
+        get => GetParameter<StringValues>(IdKey);
         set => SetParameter(IdKey, value);
     }
 

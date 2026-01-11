@@ -9,5 +9,5 @@ public class SubscriberSnippet
     public string? Title { get; set; }
     public string? Description { get; set; }
     public string? ChannelId { get; set; }
-    public Dictionary<string, YouTubeThumbnailResource>? Thumnails { get; set; }
+    public Dictionary<string, YouTubeThumbnailResource>? Thumbnails { get; set; }
 }

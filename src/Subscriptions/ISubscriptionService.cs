@@ -46,7 +46,7 @@ public interface ISubscriptionService
         string? pageToken = null,
         CancellationToken cancellationToken = default);
 
-    Task<SubscriptionListResource> ListByMySubscribersAsnyc(
+    Task<SubscriptionListResource> ListByMySubscribersAsync(
         StringValues part,
         bool mySubscribers,
         uint? maxResults = null,
