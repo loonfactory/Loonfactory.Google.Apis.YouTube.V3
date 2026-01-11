@@ -4,7 +4,7 @@ namespace Loonfactory.Google.Apis.YouTube.V3.Subscriptions;
 
 public interface ISubscriptionHandler : IYouTubeHandler
 {
-    Task<YouTubeResult<SubscriptionListResource>> HandleSubscriptionListAsync(
+    Task<YouTubeResult<SubscriptionListResponse>> HandleSubscriptionListAsync(
         SubscriptionProperties properties,
         CancellationToken cancellationToken);
 

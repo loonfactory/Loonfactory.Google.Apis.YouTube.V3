@@ -6,7 +6,7 @@ namespace Loonfactory.Google.Apis.YouTube.V3.Subscriptions;
 
 public interface ISubscriptionService
 {
-    Task<SubscriptionListResource> ListByChannelIdAsync(
+    Task<SubscriptionListResponse> ListByChannelIdAsync(
         StringValues part,
         string channelId,
         uint? maxResults = null,
@@ -16,7 +16,7 @@ public interface ISubscriptionService
         string? pageToken = null,
         CancellationToken cancellationToken = default);
 
-    Task<SubscriptionListResource> ListByIdAsync(
+    Task<SubscriptionListResponse> ListByIdAsync(
         StringValues part,
         StringValues id,
         uint? maxResults = null,
@@ -26,7 +26,7 @@ public interface ISubscriptionService
         string? pageToken = null,
         CancellationToken cancellationToken = default);
 
-    Task<SubscriptionListResource> ListByMineAsync(
+    Task<SubscriptionListResponse> ListByMineAsync(
         StringValues part,
         bool mine,
         uint? maxResults = null,
@@ -36,7 +36,7 @@ public interface ISubscriptionService
         string? pageToken = null,
         CancellationToken cancellationToken = default);
 
-    Task<SubscriptionListResource> ListByMyRecentSubscribersAsync(
+    Task<SubscriptionListResponse> ListByMyRecentSubscribersAsync(
         StringValues part,
         bool myRecentSubscribers,
         uint? maxResults = null,
@@ -46,7 +46,7 @@ public interface ISubscriptionService
         string? pageToken = null,
         CancellationToken cancellationToken = default);
 
-    Task<SubscriptionListResource> ListByMySubscribersAsync(
+    Task<SubscriptionListResponse> ListByMySubscribersAsync(
         StringValues part,
         bool mySubscribers,
         uint? maxResults = null,

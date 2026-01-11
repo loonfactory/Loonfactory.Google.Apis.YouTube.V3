@@ -12,7 +12,7 @@ public class SubscriptionService(
 
     public IAccessTokenProvider AccessTokenProvider { get; } = accessTokenProvider;
 
-    public Task<SubscriptionListResource> ListByChannelIdAsync(
+    public Task<SubscriptionListResponse> ListByChannelIdAsync(
         StringValues part,
         string channelId,
         uint? maxResults = null,
@@ -36,7 +36,7 @@ public class SubscriptionService(
             cancellationToken);
     }
 
-    public Task<SubscriptionListResource> ListByIdAsync(
+    public Task<SubscriptionListResponse> ListByIdAsync(
         StringValues part,
         StringValues id,
         uint? maxResults = null,
@@ -60,7 +60,7 @@ public class SubscriptionService(
             cancellationToken);
     }
 
-    public Task<SubscriptionListResource> ListByMineAsync(
+    public Task<SubscriptionListResponse> ListByMineAsync(
         StringValues part,
         bool mine,
         uint? maxResults = null,
@@ -83,7 +83,7 @@ public class SubscriptionService(
             cancellationToken);
     }
 
-    public Task<SubscriptionListResource> ListByMyRecentSubscribersAsync(
+    public Task<SubscriptionListResponse> ListByMyRecentSubscribersAsync(
         StringValues part,
         bool myRecentSubscribers,
         uint? maxResults = null,
@@ -106,7 +106,7 @@ public class SubscriptionService(
             cancellationToken);
     }
 
-    public Task<SubscriptionListResource> ListByMySubscribersAsync(
+    public Task<SubscriptionListResponse> ListByMySubscribersAsync(
         StringValues part,
         bool mySubscribers,
         uint? maxResults = null,
@@ -129,7 +129,7 @@ public class SubscriptionService(
             cancellationToken);
     }
 
-    private async Task<SubscriptionListResource> ListAsync(
+    private async Task<SubscriptionListResponse> ListAsync(
         StringValues part,
         KeyValuePair<string, object> filter,
         uint? maxResults,

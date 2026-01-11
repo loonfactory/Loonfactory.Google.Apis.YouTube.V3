@@ -4,7 +4,7 @@ using System.Text.Json.Serialization;
 
 namespace Loonfactory.Google.Apis.YouTube.V3.Subscriptions;
 
-public class SubscriptionListResource
+public class SubscriptionListResponse
 {
     public string? Kind { get; set; }
     /// <summary>

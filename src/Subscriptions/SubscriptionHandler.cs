@@ -10,7 +10,7 @@ namespace Loonfactory.Google.Apis.YouTube.V3.Subscriptions;
 public class SubscriptionHandler(IOptionsMonitor<YouTubeOptions> options, ILoggerFactory logger, UrlEncoder encoder)
     : YouTubeHandler(options, logger, encoder), ISubscriptionHandler
 {
-    public virtual async Task<YouTubeResult<SubscriptionListResource>> HandleSubscriptionListAsync(
+    public virtual async Task<YouTubeResult<SubscriptionListResponse>> HandleSubscriptionListAsync(
         SubscriptionProperties properties,
         CancellationToken cancellationToken)
     {
@@ -28,8 +28,8 @@ public class SubscriptionHandler(IOptionsMonitor<YouTubeOptions> options, ILogge
             throw new NotImplementedException("Handling of unsuccessful HTTP responses is not yet implemented.");
         }
 
-        return YouTubeResult<SubscriptionListResource>.Success(
-            (await response.Content.ReadFromJsonAsync<SubscriptionListResource>(
+        return YouTubeResult<SubscriptionListResponse>.Success(
+            (await response.Content.ReadFromJsonAsync<SubscriptionListResponse>(
                 YouTubeDefaults.JsonSerializerOptions,
                 cancellationToken
             ).ConfigureAwait(false))!
