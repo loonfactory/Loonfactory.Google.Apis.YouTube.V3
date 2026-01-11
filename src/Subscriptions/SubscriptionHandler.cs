@@ -43,7 +43,6 @@ public class SubscriptionHandler(IOptionsMonitor<YouTubeOptions> options, ILogge
     {
         ArgumentNullException.ThrowIfNull(resource);
         ArgumentNullException.ThrowIfNull(properties);
-        ArgumentNullException.ThrowIfNull(cancellationToken);
 
         return InternalHandleSubscriptionUploadAsync(resource, properties, cancellationToken);
     }

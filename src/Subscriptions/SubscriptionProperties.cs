@@ -34,12 +34,13 @@ public class SubscriptionProperties : YouTubeProperties
         get => GetParameter<StringValues>(PartKey);
         set => SetParameter(PartKey, value);
     }
-    
+
     public StringValues? ChannelId
     {
         get => GetParameter<StringValues>(ChannelIdKey);
         set => SetParameter(ChannelIdKey, value);
     }
+
     public StringValues? Id
     {
         get => GetParameter<StringValues>(IdKey);
@@ -63,6 +64,7 @@ public class SubscriptionProperties : YouTubeProperties
         get => GetParameter<bool>(MySubscribersKey);
         set => SetParameter(MySubscribersKey, value);
     }
+
     public uint? MaxResults
     {
         get => GetParameter<uint>(MaxResultsKey);
