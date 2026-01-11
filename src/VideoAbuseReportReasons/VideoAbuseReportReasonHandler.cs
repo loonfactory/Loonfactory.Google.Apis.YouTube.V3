@@ -23,7 +23,7 @@ public class VideoAbuseReportReasonHandler(
             throw new ArgumentNullException(nameof(properties), "The properties.Part parameter is null.");
         }
 
-        if (properties.Part?.Count == 0)
+        if (properties.Part.Value.Count == 0)
         {
             throw new ArgumentException("The properties.Part parameter must be provided in the properties.");
         }
