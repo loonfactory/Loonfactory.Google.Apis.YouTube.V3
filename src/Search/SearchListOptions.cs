@@ -2,7 +2,7 @@
 
 using Microsoft.Extensions.Primitives;
 
-namespace Loonfactory.Google.Apis.YouTube.V3.Searchs;
+namespace Loonfactory.Google.Apis.YouTube.V3.Search;
 
 public class SearchListOptions
 {

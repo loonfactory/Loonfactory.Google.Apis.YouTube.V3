@@ -1,6 +1,6 @@
 // Licensed under the MIT license by loonfactory.
 
-namespace Loonfactory.Google.Apis.YouTube.V3.Searchs;
+namespace Loonfactory.Google.Apis.YouTube.V3.Search;
 
 /// <summary>
 /// Extension methods for <see cref="SearchProperties"/>.
