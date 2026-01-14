@@ -1,11 +1,10 @@
 // Licensed under the MIT license by loonfactory.
 
-namespace Loonfactory.Google.Apis.YouTube.V3.PlaylistItems;
+namespace Loonfactory.Google.Apis.YouTube.V3;
 
 /// <summary>
-/// Identifies the video associated with the playlist item.
 /// </summary>
-public class PlaylistItemId
+public class YouTubeResourceId
 {
     public string? Kind { get; set; }
     public string? VideoId { get; set; }
