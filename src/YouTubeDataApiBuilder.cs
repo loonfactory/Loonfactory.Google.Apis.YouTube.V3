@@ -12,6 +12,7 @@ using Loonfactory.Google.Apis.YouTube.V3.Members;
 using Loonfactory.Google.Apis.YouTube.V3.MembershipsLevels;
 using Loonfactory.Google.Apis.YouTube.V3.PlaylistItems;
 using Loonfactory.Google.Apis.YouTube.V3.Playlists;
+using Loonfactory.Google.Apis.YouTube.V3.Search;
 using Loonfactory.Google.Apis.YouTube.V3.Subscriptions;
 using Loonfactory.Google.Apis.YouTube.V3.VideoAbuseReportReasons;
 using Microsoft.Extensions.DependencyInjection;
@@ -152,6 +153,16 @@ public class YouTubeDataApiBuilder(IServiceCollection services)
         where THandler : class, IPlaylistHandler
     {
         Services.TryAddScoped<IPlaylistsService, TYouTubePlaylists>();
+        AddHandler<THandler>();
+
+        return this;
+    }
+
+    public virtual YouTubeDataApiBuilder AddSearch<TYouTubeSearch, THandler>()
+        where TYouTubeSearch : class, ISearchService
+        where THandler : class, ISearchHandler
+    {
+        Services.TryAddScoped<ISearchService, TYouTubeSearch>();
         AddHandler<THandler>();
 
         return this;

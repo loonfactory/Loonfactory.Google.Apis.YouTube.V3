@@ -17,7 +17,7 @@ public class PlaylistItemSnippet
     public uint? Position { get; set; }
     public DateTimeOffset? PublishedAt { get; set; }
     public string? ChannelTitle { get; set; }
-    public PlaylistItemId? ResourceId { get; set; }
+    public YouTubeResourceId? ResourceId { get; set; }
     public string? VideoOwnerChannelTitle { get; set; }
     public string? VideoOwnerChannelId { get; set; }
 }
