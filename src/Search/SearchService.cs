@@ -4,10 +4,12 @@ using Microsoft.Extensions.Primitives;
 namespace Loonfactory.Google.Apis.YouTube.V3.Search;
 
 public class SearchService(
+    IAccessTokenProvider accessTokenProvider,
     IYouTubeHandlerProvider handlers
 ) : ISearchService
 {
     public IYouTubeHandlerProvider Handlers { get; } = handlers;
+    public IAccessTokenProvider AccessTokenProvider { get; } = accessTokenProvider;
 
     public Task<SearchListResponse> ListAsync(
         StringValues part,
@@ -101,6 +103,18 @@ public class SearchService(
 
         var properties = options.ToSearchProperties();
         properties.Part = part;
+
+        if (properties.ForMine == true)
+        {
+            var token = await AccessTokenProvider.GetAccessTokenAsync(cancellationToken).ConfigureAwait(false);
+            if (string.IsNullOrWhiteSpace(token))
+            {
+                // @TODO: Replace InvalidOperationException with a YouTubeApiException aligned with the API's 403/401 error model.
+                throw new InvalidOperationException("@TODO");
+            }
+
+            properties.AccessToken = token;
+        }
 
         var result = await handler.HandleSearchListAsync(properties, cancellationToken).ConfigureAwait(false);
         return result.Succeeded switch

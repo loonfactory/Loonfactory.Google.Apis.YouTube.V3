@@ -17,5 +17,4 @@ public class SearchListResponse
     public string? RegionCode { get; set; }
     public YouTubePageInfo? PageInfo { get; set; }
     public IEnumerable<SearchResource>? Items { get; set; }
-
 }
