@@ -11,5 +11,5 @@ public class SubscriptionSnippet
     public string? Title { get; set; }
     public string? Description { get; set; }
     public SubscriptionResourceId? ResourceId { get; set; }
-    public Dictionary<string, YouTubeThumbnailResource>? Thumbnails { get; set; }
+    public Dictionary<string, Thumbnail>? Thumbnails { get; set; }
 }
