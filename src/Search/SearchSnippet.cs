@@ -10,7 +10,7 @@ public class SearchSnippet
     public string? ChannelId { get; set; }
     public string? Title { get; set; }
     public string? Description { get; set; }
-    public Dictionary<string, YouTubeThumbnailResource>? Thumbnails { get; set; }
+    public Dictionary<string, Thumbnail>? Thumbnails { get; set; }
     public string? ChannelTitle { get; set; }
     public string? LiveBroadcastContent { get; set; }
 }
