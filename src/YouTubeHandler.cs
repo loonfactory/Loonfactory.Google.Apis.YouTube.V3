@@ -128,7 +128,24 @@ public abstract class YouTubeHandler : IYouTubeHandler
        CancellationToken cancellationToken = default
     )
     {
-        var request = CreateHttpRequestMessage(method, requestUri, properties);
+        using var request = CreateHttpRequestMessage(method, requestUri, properties);
+        if (!string.IsNullOrWhiteSpace(properties.AccessToken))
+        {
+            request.Headers.Authorization = new AuthenticationHeaderValue(
+                "Bearer",
+                properties.AccessToken
+            );
+        }
+
+        return Backchannel.SendAsync(request, cancellationToken);
+    }
+
+    protected internal virtual Task<HttpResponseMessage> SendAsync(
+       HttpRequestMessage request,
+       YouTubeProperties properties,
+       CancellationToken cancellationToken = default
+    )
+    {
         if (!string.IsNullOrWhiteSpace(properties.AccessToken))
         {
             request.Headers.Authorization = new AuthenticationHeaderValue(
@@ -148,8 +165,20 @@ public abstract class YouTubeHandler : IYouTubeHandler
     )
     {
         ThrowIfAccessTokenNullOrEmpty(properties.AccessToken);
+        using var request = CreateHttpRequestMessage(method, requestUri, properties);
 
-        return SendAsync(method, requestUri, properties, cancellationToken);
+        return SendAsync(request, properties, cancellationToken);
+    }
+
+    protected internal virtual Task<HttpResponseMessage> AuthorizationSendAsync(
+        HttpRequestMessage request,
+        YouTubeProperties properties,
+        CancellationToken cancellationToken = default
+    )
+    {
+        ThrowIfAccessTokenNullOrEmpty(properties.AccessToken);
+
+        return SendAsync(request, properties, cancellationToken);
     }
 
     protected internal static void ThrowIfAccessTokenNullOrEmpty(string? accessToken)

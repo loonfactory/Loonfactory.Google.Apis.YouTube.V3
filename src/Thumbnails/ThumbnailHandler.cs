@@ -35,18 +35,14 @@ public class ThumbnailHandler(
             throw new ArgumentException("contentType must be provided.", nameof(contentType));
         }
 
-        // Upload the thumbnail as raw media.
-        properties.Parameters["uploadType"] = "media";
-
         var endpoint = BuildChallengeUrl(ThumbnailDefaults.SetEndpoint, properties);
         using var request = new HttpRequestMessage(HttpMethod.Post, endpoint);
-        request.Headers.Authorization = new AuthenticationHeaderValue("Bearer", properties.AccessToken);
-
+        
         using var content = new StreamContent(thumbnail);
         content.Headers.ContentType = new MediaTypeHeaderValue(contentType);
         request.Content = content;
 
-        var response = await Backchannel.SendAsync(request, cancellationToken).ConfigureAwait(false);
+        var response = await AuthorizationSendAsync(request, properties, cancellationToken).ConfigureAwait(false);
 
         return response.IsSuccessStatusCode switch
         {
