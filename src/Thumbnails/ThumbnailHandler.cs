@@ -8,50 +8,76 @@ using Microsoft.Extensions.Options;
 
 namespace Loonfactory.Google.Apis.YouTube.V3.Thumbnails;
 
+/// <inheritdoc />
 public class ThumbnailHandler(
     IOptionsMonitor<YouTubeOptions> options,
     ILoggerFactory logger,
     UrlEncoder encoder
 ) : YouTubeHandler(options, logger, encoder), IThumbnailHandler
 {
-    public virtual async Task<YouTubeResult<ThumbnailSetResponse>> HandleThumbnailSetAsync(
-        Stream thumbnail,
+    /// <inheritdoc />
+    public virtual Task<YouTubeResult<ThumbnailSetResponse>> HandleSetAsync(
+        Stream stream,
         string contentType,
         ThumbnailProperties properties,
         CancellationToken cancellationToken)
     {
-        ArgumentNullException.ThrowIfNull(thumbnail);
+        ArgumentNullException.ThrowIfNull(stream);
         ArgumentNullException.ThrowIfNull(properties);
+        ArgumentException.ThrowIfNullOrWhiteSpace(contentType);
 
         ThrowIfAccessTokenNullOrEmpty(properties.AccessToken);
-
         if (string.IsNullOrWhiteSpace(properties.VideoId))
         {
-            throw new InvalidOperationException("The videoId must be provided in the properties.");
+            throw new ArgumentException("The videoId must be provided in the properties.", nameof(properties));
         }
 
-        if (string.IsNullOrWhiteSpace(contentType))
+        if (!stream.CanRead)
         {
-            throw new ArgumentException("contentType must be provided.", nameof(contentType));
+            throw new ArgumentException("stream must be readable.", nameof(stream));
         }
 
+        if (!MediaTypeHeaderValue.TryParse(contentType, out var mediaTypeHeader))
+        {
+            throw new ArgumentException("Invalid contentType.", nameof(contentType));
+        }
+
+        if (mediaTypeHeader.MediaType is null ||
+            !ThumbnailDefaults.AllowedUploadContentTypes.Contains(mediaTypeHeader.MediaType))
+        {
+            var allowed = string.Join(", ", ThumbnailDefaults.AllowedUploadContentTypes.OrderBy(x => x, StringComparer.Ordinal));
+            throw new ArgumentException($"contentType must be one of: {allowed}.", nameof(contentType));
+        }
+
+        return InternalHandleSetAsync(stream, mediaTypeHeader, properties, cancellationToken);
+    }
+
+    private async Task<YouTubeResult<ThumbnailSetResponse>> InternalHandleSetAsync(
+        Stream stream,
+        MediaTypeHeaderValue mediaTypeHeader,
+        ThumbnailProperties properties,
+        CancellationToken cancellationToken)
+    {
         var endpoint = BuildChallengeUrl(ThumbnailDefaults.SetEndpoint, properties);
         using var request = new HttpRequestMessage(HttpMethod.Post, endpoint);
-        
-        using var content = new StreamContent(thumbnail);
-        content.Headers.ContentType = new MediaTypeHeaderValue(contentType);
-        request.Content = content;
 
-        var response = await AuthorizationSendAsync(request, properties, cancellationToken).ConfigureAwait(false);
+        using var streamContent = new StreamContent(stream);
+        streamContent.Headers.ContentType = mediaTypeHeader;
+        request.Content = streamContent;
 
-        return response.IsSuccessStatusCode switch
+        using var response = await AuthorizationSendAsync(request, properties, cancellationToken).ConfigureAwait(false);
+        if (!response.IsSuccessStatusCode)
         {
-            true => YouTubeResult<ThumbnailSetResponse>.Success((
-                await response.Content.ReadFromJsonAsync<ThumbnailSetResponse>(
-                    YouTubeDefaults.JsonSerializerOptions,
-                    cancellationToken
-                ).ConfigureAwait(false))!),
-            false => throw new NotImplementedException("Handling of unsuccessful HTTP responses is not yet implemented.")
-        };
+            //@TODO: Implement error handling
+            throw new InvalidOperationException("Thumbnail upload failed. [TODO: unify error handling]");
+        }
+
+        var result = await response.Content.ReadFromJsonAsync<ThumbnailSetResponse>(
+            YouTubeDefaults.JsonSerializerOptions,
+            cancellationToken
+        ).ConfigureAwait(false) ?? throw new InvalidOperationException("Thumbnail upload failed. [TODO: unify error handling]");
+
+        return YouTubeResult<ThumbnailSetResponse>.Success(result);
     }
+
 }

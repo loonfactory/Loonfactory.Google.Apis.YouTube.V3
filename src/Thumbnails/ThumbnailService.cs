@@ -91,7 +91,7 @@ public class ThumbnailService(
             AccessToken = token,
         };
 
-        var result = await handler.HandleThumbnailSetAsync(stream, contentType, properties, cancellationToken)
+        var result = await handler.HandleSetAsync(stream, contentType, properties, cancellationToken)
             .ConfigureAwait(false);
 
         if (!result.Succeeded)
