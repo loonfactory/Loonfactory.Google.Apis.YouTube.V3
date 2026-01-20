@@ -13,7 +13,7 @@ public class PlaylistItemSnippet
     public string? PlaylistId { get; set; }
     public string? Title { get; set; }
     public string? Description { get; set; }
-    public YouTubeThumbnailDetailsResource? Thumbnails { get; set; }
+    public ThumbnailResource? Thumbnails { get; set; }
     public uint? Position { get; set; }
     public DateTimeOffset? PublishedAt { get; set; }
     public string? ChannelTitle { get; set; }

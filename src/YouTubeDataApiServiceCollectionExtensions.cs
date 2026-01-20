@@ -13,6 +13,7 @@ using Loonfactory.Google.Apis.YouTube.V3.MembershipsLevels;
 using Loonfactory.Google.Apis.YouTube.V3.Playlists;
 using Loonfactory.Google.Apis.YouTube.V3.Search;
 using Loonfactory.Google.Apis.YouTube.V3.Subscriptions;
+using Loonfactory.Google.Apis.YouTube.V3.Thumbnails;
 using Loonfactory.Google.Apis.YouTube.V3.VideoAbuseReportReasons;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
@@ -68,6 +69,7 @@ public static class YouTubeDataApiServiceCollectionExtensions
         builder.AddPlaylists<IPlaylistsService, PlaylistHandler>();
         builder.AddSearch<SearchService, SearchHandler>();
         builder.AddSubscriptions<ISubscriptionService, SubscriptionHandler>();
+        builder.AddThumbnails<ThumbnailService, ThumbnailHandler>();
         builder.AddVideoAbuseReportReasons<VideoAbuseReportReasonsService, VideoAbuseReportReasonHandler>();
 
         return builder;
