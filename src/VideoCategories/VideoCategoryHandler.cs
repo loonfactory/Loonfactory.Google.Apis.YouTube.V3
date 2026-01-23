@@ -20,7 +20,7 @@ public class VideoCategoryHandler(
         CancellationToken cancellationToken)
     {
         ArgumentNullException.ThrowIfNull(properties);
-        if (properties.Part?.Count == 0)
+        if (properties.Part is null || properties.Part?.Count == 0)
         {
             throw new ArgumentException("The properties.Part parameter must be provided in the properties.");
         }
