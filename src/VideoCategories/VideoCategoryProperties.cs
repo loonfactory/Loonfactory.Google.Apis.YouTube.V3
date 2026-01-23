@@ -28,9 +28,9 @@ public class VideoCategoryProperties : YouTubeProperties
     /// <summary>
     /// Gets or sets the resource parts to include in the response.
     /// </summary>
-    public StringValues Part
+    public StringValues? Part
     {
-        get => GetParameter<StringValues>(PartKey);
+        get => GetParameter<StringValues?>(PartKey);
         set => SetParameter(PartKey, value);
     }
 
@@ -48,7 +48,7 @@ public class VideoCategoryProperties : YouTubeProperties
     /// </summary>
     public StringValues? Id
     {
-        get => GetParameter<StringValues>(IdKey);
+        get => GetParameter<StringValues?>(IdKey);
         set => SetParameter(IdKey, value);
     }
 

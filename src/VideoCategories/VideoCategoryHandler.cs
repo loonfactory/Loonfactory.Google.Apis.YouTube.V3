@@ -20,9 +20,7 @@ public class VideoCategoryHandler(
         CancellationToken cancellationToken)
     {
         ArgumentNullException.ThrowIfNull(properties);
-        ArgumentNullException.ThrowIfNull(properties.Part);
-
-        if (properties.Part.Count == 0)
+        if (properties.Part?.Count == 0)
         {
             throw new ArgumentException("The properties.Part parameter must be provided in the properties.");
         }
@@ -50,9 +48,9 @@ public class VideoCategoryHandler(
         var result = await response.Content.ReadFromJsonAsync<VideoCategoryListResponse>(
             YouTubeDefaults.JsonSerializerOptions,
             cancellationToken
-        ).ConfigureAwait(false);
+        ).ConfigureAwait(false) ?? throw new InvalidOperationException("Failed to deserialize video category list response.");
 
-        return YouTubeResult<VideoCategoryListResponse>.Success(result!);
+        return YouTubeResult<VideoCategoryListResponse>.Success(result);
     }
 
 }
