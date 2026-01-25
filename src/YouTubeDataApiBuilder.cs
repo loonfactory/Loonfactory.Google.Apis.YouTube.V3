@@ -16,6 +16,7 @@ using Loonfactory.Google.Apis.YouTube.V3.Search;
 using Loonfactory.Google.Apis.YouTube.V3.Subscriptions;
 using Loonfactory.Google.Apis.YouTube.V3.Thumbnails;
 using Loonfactory.Google.Apis.YouTube.V3.VideoAbuseReportReasons;
+using Loonfactory.Google.Apis.YouTube.V3.VideoCategories;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.Extensions.Options;
@@ -184,6 +185,16 @@ public class YouTubeDataApiBuilder(IServiceCollection services)
         where THandler : class, IVideoAbuseReportReasonHandler
     {
         Services.TryAddScoped<IVideoAbuseReportReasonsService, TYouTubeVideoAbuseReportReasons>();
+        AddHandler<THandler>();
+
+        return this;
+    }
+
+    public virtual YouTubeDataApiBuilder AddVideoCategories<TYouTubeVideoCategories, THandler>()
+        where TYouTubeVideoCategories : class, IVideoCategoryService
+        where THandler : class, IVideoCategoryHandler
+    {
+        Services.TryAddScoped<IVideoCategoryService, TYouTubeVideoCategories>();
         AddHandler<THandler>();
 
         return this;
