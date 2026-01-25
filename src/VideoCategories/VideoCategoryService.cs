@@ -94,8 +94,7 @@ public class VideoCategoryService(
         CancellationToken cancellationToken = default)
     {
         var handler = await Handlers.GetHandlerAsync<VideoCategoryHandler>()
-                                    .ConfigureAwait(false)
-                     ?? throw new InvalidOperationException("VideoCategoryHandler could not be obtained.");
+                                    .ConfigureAwait(false) ?? throw new InvalidOperationException("VideoCategoryHandler could not be obtained.");
 
         var properties = new VideoCategoryProperties
         {

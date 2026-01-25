@@ -42,7 +42,7 @@ public class VideoCategoryHandler(
 
         if (!response.IsSuccessStatusCode)
         {
-            throw new InvalidOperationException("Video categories list request failed. [@TODO: unify error handling]");
+            return YouTubeResult<VideoCategoryListResponse>.Fail(new InvalidOperationException("Video categories list request failed. [@TODO: unify error handling]"));
         }
 
         var result = await response.Content.ReadFromJsonAsync<VideoCategoryListResponse>(
