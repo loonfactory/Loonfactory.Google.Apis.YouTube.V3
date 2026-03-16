@@ -1,7 +1,6 @@
 // Licensed under the MIT license by loonfactory.
 
 using System.Net.Http.Json;
-using System.Text.Encodings.Web;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 
@@ -10,9 +9,8 @@ namespace Loonfactory.Google.Apis.YouTube.V3.VideoCategories;
 /// <inheritdoc />
 public class VideoCategoryHandler(
     IOptionsMonitor<YouTubeOptions> options,
-    ILoggerFactory logger,
-    UrlEncoder encoder
-) : YouTubeHandler(options, logger, encoder), IVideoCategoryHandler
+    ILoggerFactory logger
+) : YouTubeHandler(options, logger), IVideoCategoryHandler
 {
     /// <inheritdoc />
     public virtual Task<YouTubeResult<VideoCategoryListResponse>> HandleVideoCategoryListAsync(

@@ -1,7 +1,6 @@
 // Licensed under the MIT license by loonfactory.
 
 using System.Net.Http.Json;
-using System.Text.Encodings.Web;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 
@@ -9,9 +8,8 @@ namespace Loonfactory.Google.Apis.YouTube.V3.I18nLanguages;
 
 public class I18nLanguageHandler(
     IOptionsMonitor<YouTubeOptions> options,
-    ILoggerFactory logger,
-    UrlEncoder encoder
-) : YouTubeHandler(options, logger, encoder), II18nLanguageHandler
+    ILoggerFactory logger
+) : YouTubeHandler(options, logger), II18nLanguageHandler
 {
     public async Task<YouTubeResult<I18nLanguageListResponse>> HandleI18nLanguageListAsync(I18nLanguageProperties properties, CancellationToken cancellationToken)
     {

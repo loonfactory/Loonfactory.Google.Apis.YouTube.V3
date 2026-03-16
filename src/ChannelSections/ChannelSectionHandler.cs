@@ -17,8 +17,10 @@ namespace Loonfactory.Google.Apis.YouTube.V3.ChannelSections;
 /// </remarks>
 /// <param name="options">The monitor for the options instance.</param>
 /// <param name="logger">The <see cref="ILoggerFactory"/>.</param>
-/// <param name="encoder">The <see cref="UrlEncoder"/>.</param>
-public class ChannelSectionHandler(IOptionsMonitor<YouTubeOptions> options, ILoggerFactory logger, UrlEncoder encoder) : YouTubeHandler(options, logger, encoder), IChannelSectionHandler
+public class ChannelSectionHandler(
+    IOptionsMonitor<YouTubeOptions> options,
+    ILoggerFactory logger
+) : YouTubeHandler(options, logger), IChannelSectionHandler
 {
     /// <summary>
     /// Asynchronously handles the deletion of a YouTube ChannelSection.

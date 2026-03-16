@@ -9,8 +9,8 @@ namespace Loonfactory.Google.Apis.YouTube.V3.I18nRegions;
 
 public class I18nRegionHandler(
     IOptionsMonitor<YouTubeOptions> options,
-    ILoggerFactory logger, UrlEncoder encoder
-) : YouTubeHandler(options, logger, encoder), II18nRegionHandler
+    ILoggerFactory logger
+) : YouTubeHandler(options, logger), II18nRegionHandler
 {
     public async Task<YouTubeResult<I18nRegionListResponse>> HandleI18nRegionListAsync(I18nRegionProperties properties, CancellationToken cancellationToken)
     {

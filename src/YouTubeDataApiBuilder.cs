@@ -190,6 +190,11 @@ public class YouTubeDataApiBuilder(IServiceCollection services)
         return this;
     }
 
+    public virtual YouTubeDataApiBuilder AddVideoCategories()
+    {
+        return AddVideoCategories<VideoCategoryService, VideoCategoryHandler>();
+    }
+
     public virtual YouTubeDataApiBuilder AddVideoCategories<TYouTubeVideoCategories, THandler>()
         where TYouTubeVideoCategories : class, IVideoCategoryService
         where THandler : class, IVideoCategoryHandler

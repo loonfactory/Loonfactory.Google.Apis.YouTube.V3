@@ -1,14 +1,15 @@
 // Licensed under the MIT license by loonfactory.
 
 using System.Net.Http.Json;
-using System.Text.Encodings.Web;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 
 namespace Loonfactory.Google.Apis.YouTube.V3.Search;
 
-public class SearchHandler(IOptionsMonitor<YouTubeOptions> options, ILoggerFactory logger, UrlEncoder encoder)
-    : YouTubeHandler(options, logger, encoder), ISearchHandler
+public class SearchHandler(
+    IOptionsMonitor<YouTubeOptions> options,
+    ILoggerFactory logger
+) : YouTubeHandler(options, logger), ISearchHandler
 {
     public virtual async Task<YouTubeResult<SearchListResponse>> HandleSearchListAsync(
         SearchProperties properties,

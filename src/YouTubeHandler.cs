@@ -25,11 +25,6 @@ public abstract class YouTubeHandler : IYouTubeHandler
     protected ILogger Logger { get; }
 
     /// <summary>
-    /// Gets the <see cref="UrlEncoder"/>.
-    /// </summary>
-    protected UrlEncoder UrlEncoder { get; }
-
-    /// <summary>
     /// Gets the current time, primarily for unit testing.
     /// </summary>
     protected TimeProvider TimeProvider { get; private set; } = TimeProvider.System;
@@ -55,11 +50,9 @@ public abstract class YouTubeHandler : IYouTubeHandler
     /// </summary>
     /// <param name="options">The monitor for the options instance.</param>
     /// <param name="logger">The <see cref="ILoggerFactory"/>.</param>
-    /// <param name="encoder">The <see cref="UrlEncoder"/>.</param>
-    protected YouTubeHandler(IOptionsMonitor<YouTubeOptions> options, ILoggerFactory logger, UrlEncoder encoder)
+    protected YouTubeHandler(IOptionsMonitor<YouTubeOptions> options, ILoggerFactory logger)
     {
         Logger = logger.CreateLogger(this.GetType().FullName!);
-        UrlEncoder = encoder;
         OptionsMonitor = options;
     }
 

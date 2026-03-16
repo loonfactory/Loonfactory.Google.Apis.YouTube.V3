@@ -1,7 +1,6 @@
 // Licensed under the MIT license by loonfactory.
 
 using System.Net.Http.Headers;
-using System.Text.Encodings.Web;
 using System.Text.Json;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
@@ -10,9 +9,8 @@ namespace Loonfactory.Google.Apis.YouTube.V3.ChannelBanners;
 
 public class ChannelBannerHandler(
     IOptionsMonitor<YouTubeOptions> options,
-    ILoggerFactory logger,
-    UrlEncoder encoder
-) : YouTubeHandler(options, logger, encoder), IChannelBannerHandler
+    ILoggerFactory logger
+) : YouTubeHandler(options, logger), IChannelBannerHandler
 {
     public virtual Task<YouTubeResult<ChannelBannerResource>> HandleChannelBannerInsertAsync(
         StreamContent? content,
