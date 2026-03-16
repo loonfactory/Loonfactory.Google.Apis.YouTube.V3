@@ -16,6 +16,7 @@ using Loonfactory.Google.Apis.YouTube.V3.Subscriptions;
 using Loonfactory.Google.Apis.YouTube.V3.Thumbnails;
 using Loonfactory.Google.Apis.YouTube.V3.VideoAbuseReportReasons;
 using Loonfactory.Google.Apis.YouTube.V3.VideoCategories;
+using Loonfactory.Google.Apis.YouTube.V3.Videos;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 
@@ -73,6 +74,7 @@ public static class YouTubeDataApiServiceCollectionExtensions
         builder.AddThumbnails<ThumbnailService, ThumbnailHandler>();
         builder.AddVideoAbuseReportReasons<VideoAbuseReportReasonsService, VideoAbuseReportReasonHandler>();
         builder.AddVideoCategories<VideoCategoryService, VideoCategoryHandler>();
+        builder.AddVideos<VideosService, VideoHandler>();
 
         return builder;
     }
