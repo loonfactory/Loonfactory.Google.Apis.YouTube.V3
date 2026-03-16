@@ -2,7 +2,6 @@
 
 using System.Net.Http.Headers;
 using System.Net.Http.Json;
-using System.Text.Encodings.Web;
 using System.Text.Json;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.WebUtilities;
@@ -23,11 +22,6 @@ public abstract class YouTubeHandler : IYouTubeHandler
     /// Gets the <see cref="ILogger"/>.
     /// </summary>
     protected ILogger Logger { get; }
-
-    /// <summary>
-    /// Gets the <see cref="UrlEncoder"/>.
-    /// </summary>
-    protected UrlEncoder UrlEncoder { get; }
 
     /// <summary>
     /// Gets the current time, primarily for unit testing.
@@ -51,22 +45,19 @@ public abstract class YouTubeHandler : IYouTubeHandler
     protected HttpClient Backchannel => Options.Backchannel;
 
     /// <summary>
-    /// Initializes a new instance of <see cref="YouTubeCaptionHandler" />.
+    /// Initializes a new instance of <see cref="YouTubeHandler" />.
     /// </summary>
     /// <param name="options">The monitor for the options instance.</param>
     /// <param name="logger">The <see cref="ILoggerFactory"/>.</param>
-    /// <param name="encoder">The <see cref="UrlEncoder"/>.</param>
-    protected YouTubeHandler(IOptionsMonitor<YouTubeOptions> options, ILoggerFactory logger, UrlEncoder encoder)
+    protected YouTubeHandler(IOptionsMonitor<YouTubeOptions> options, ILoggerFactory logger)
     {
         Logger = logger.CreateLogger(this.GetType().FullName!);
-        UrlEncoder = encoder;
         OptionsMonitor = options;
     }
 
     /// <summary>
     /// Initialize the handler, resolve the options and validate them.
     /// </summary>
-    /// <param name="context"></param>
     /// <returns></returns>
     public async Task InitializeAsync()
     {
@@ -79,7 +70,7 @@ public abstract class YouTubeHandler : IYouTubeHandler
     }
 
     /// <summary>
-    /// Initializes the events object, called once per request by <see cref="InitializeAsync(YouTubeScheme, HttpContext context)"/>.
+    /// Initializes the events object, called once per request by <see cref="InitializeAsync()"/>.
     /// </summary>
     protected virtual Task InitializeEventsAsync() => Task.CompletedTask;
 

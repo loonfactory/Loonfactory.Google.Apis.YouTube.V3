@@ -16,12 +16,10 @@ namespace Loonfactory.Google.Apis.YouTube.V3.Captions;
 /// </remarks>
 /// <param name="options">The monitor for the options instance.</param>
 /// <param name="logger">The <see cref="ILoggerFactory"/>.</param>
-/// <param name="encoder">The <see cref="UrlEncoder"/>.</param>
 public class CaptionHandler(
     IOptionsMonitor<YouTubeOptions> options,
-    ILoggerFactory logger,
-    UrlEncoder encoder
-) : YouTubeHandler(options, logger, encoder), ICaptionHandler
+    ILoggerFactory logger
+) : YouTubeHandler(options, logger), ICaptionHandler
 {
     public virtual async Task<YouTubeResult<Stream>> HandleCaptionDownloadAsync(CaptionProperties properties, CancellationToken cancellationToken)
     {

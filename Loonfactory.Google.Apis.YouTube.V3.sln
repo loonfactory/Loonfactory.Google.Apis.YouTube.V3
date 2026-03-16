@@ -7,22 +7,59 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Loonfactory.Google.Apis.You
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Loonfactory.Google.Apis.YouTube.V3.Example", "example\Loonfactory.Google.Apis.YouTube.V3.Example.csproj", "{77C34E26-2FAE-49EC-99D7-EC18A6C9A6C9}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Loonfactory.Google.Apis.YouTube.V3.Tests", "tests\Loonfactory.Google.Apis.YouTube.V3.Tests\Loonfactory.Google.Apis.YouTube.V3.Tests.csproj", "{6C8E8DE1-7205-95C7-4FB8-81CC26EF9EBC}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
+		Debug|x64 = Debug|x64
+		Debug|x86 = Debug|x86
 		Release|Any CPU = Release|Any CPU
-	EndGlobalSection
-	GlobalSection(SolutionProperties) = preSolution
-		HideSolutionNode = FALSE
+		Release|x64 = Release|x64
+		Release|x86 = Release|x86
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
 		{9FCEF778-48EE-4D4D-8422-750EB3B37C90}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{9FCEF778-48EE-4D4D-8422-750EB3B37C90}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9FCEF778-48EE-4D4D-8422-750EB3B37C90}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{9FCEF778-48EE-4D4D-8422-750EB3B37C90}.Debug|x64.Build.0 = Debug|Any CPU
+		{9FCEF778-48EE-4D4D-8422-750EB3B37C90}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{9FCEF778-48EE-4D4D-8422-750EB3B37C90}.Debug|x86.Build.0 = Debug|Any CPU
 		{9FCEF778-48EE-4D4D-8422-750EB3B37C90}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{9FCEF778-48EE-4D4D-8422-750EB3B37C90}.Release|Any CPU.Build.0 = Release|Any CPU
+		{9FCEF778-48EE-4D4D-8422-750EB3B37C90}.Release|x64.ActiveCfg = Release|Any CPU
+		{9FCEF778-48EE-4D4D-8422-750EB3B37C90}.Release|x64.Build.0 = Release|Any CPU
+		{9FCEF778-48EE-4D4D-8422-750EB3B37C90}.Release|x86.ActiveCfg = Release|Any CPU
+		{9FCEF778-48EE-4D4D-8422-750EB3B37C90}.Release|x86.Build.0 = Release|Any CPU
 		{77C34E26-2FAE-49EC-99D7-EC18A6C9A6C9}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{77C34E26-2FAE-49EC-99D7-EC18A6C9A6C9}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{77C34E26-2FAE-49EC-99D7-EC18A6C9A6C9}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{77C34E26-2FAE-49EC-99D7-EC18A6C9A6C9}.Debug|x64.Build.0 = Debug|Any CPU
+		{77C34E26-2FAE-49EC-99D7-EC18A6C9A6C9}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{77C34E26-2FAE-49EC-99D7-EC18A6C9A6C9}.Debug|x86.Build.0 = Debug|Any CPU
 		{77C34E26-2FAE-49EC-99D7-EC18A6C9A6C9}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{77C34E26-2FAE-49EC-99D7-EC18A6C9A6C9}.Release|Any CPU.Build.0 = Release|Any CPU
+		{77C34E26-2FAE-49EC-99D7-EC18A6C9A6C9}.Release|x64.ActiveCfg = Release|Any CPU
+		{77C34E26-2FAE-49EC-99D7-EC18A6C9A6C9}.Release|x64.Build.0 = Release|Any CPU
+		{77C34E26-2FAE-49EC-99D7-EC18A6C9A6C9}.Release|x86.ActiveCfg = Release|Any CPU
+		{77C34E26-2FAE-49EC-99D7-EC18A6C9A6C9}.Release|x86.Build.0 = Release|Any CPU
+		{6C8E8DE1-7205-95C7-4FB8-81CC26EF9EBC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6C8E8DE1-7205-95C7-4FB8-81CC26EF9EBC}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6C8E8DE1-7205-95C7-4FB8-81CC26EF9EBC}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{6C8E8DE1-7205-95C7-4FB8-81CC26EF9EBC}.Debug|x64.Build.0 = Debug|Any CPU
+		{6C8E8DE1-7205-95C7-4FB8-81CC26EF9EBC}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{6C8E8DE1-7205-95C7-4FB8-81CC26EF9EBC}.Debug|x86.Build.0 = Debug|Any CPU
+		{6C8E8DE1-7205-95C7-4FB8-81CC26EF9EBC}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6C8E8DE1-7205-95C7-4FB8-81CC26EF9EBC}.Release|Any CPU.Build.0 = Release|Any CPU
+		{6C8E8DE1-7205-95C7-4FB8-81CC26EF9EBC}.Release|x64.ActiveCfg = Release|Any CPU
+		{6C8E8DE1-7205-95C7-4FB8-81CC26EF9EBC}.Release|x64.Build.0 = Release|Any CPU
+		{6C8E8DE1-7205-95C7-4FB8-81CC26EF9EBC}.Release|x86.ActiveCfg = Release|Any CPU
+		{6C8E8DE1-7205-95C7-4FB8-81CC26EF9EBC}.Release|x86.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {082BD76C-E970-44EA-88E6-2497E144ED4B}
 	EndGlobalSection
 EndGlobal

@@ -2,7 +2,6 @@
 
 using System.Net.Http.Headers;
 using System.Net.Http.Json;
-using System.Text.Encodings.Web;
 using System.Text.Json;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
@@ -11,9 +10,8 @@ namespace Loonfactory.Google.Apis.YouTube.V3.Channels;
 
 public class ChannelHandler(
     IOptionsMonitor<YouTubeOptions> options,
-    ILoggerFactory logger,
-    UrlEncoder encoder
-) : YouTubeHandler(options, logger, encoder), IChannelHandler
+    ILoggerFactory logger
+) : YouTubeHandler(options, logger), IChannelHandler
 {
     public virtual Task<YouTubeResult<CaptionListResponse>> HandleChannelListAsync(ChannelProperties properties, CancellationToken cancellationToken)
     {

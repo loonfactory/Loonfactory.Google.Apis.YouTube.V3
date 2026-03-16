@@ -7,7 +7,10 @@ using Microsoft.Extensions.Options;
 
 namespace Loonfactory.Google.Apis.YouTube.V3.Members;
 
-public class MemberHandler(IOptionsMonitor<YouTubeOptions> options, ILoggerFactory logger, UrlEncoder encoder) : YouTubeHandler(options, logger, encoder), IMemberHandler
+public class MemberHandler(
+    IOptionsMonitor<YouTubeOptions> options,
+    ILoggerFactory logger
+) : YouTubeHandler(options, logger), IMemberHandler
 {
     public virtual async Task<YouTubeResult<MemberListResponse>> HandleMemberListAsync(MemberProperties properties, CancellationToken cancellationToken)
     {
