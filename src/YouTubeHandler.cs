@@ -2,7 +2,6 @@
 
 using System.Net.Http.Headers;
 using System.Net.Http.Json;
-using System.Text.Encodings.Web;
 using System.Text.Json;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.WebUtilities;
@@ -46,7 +45,7 @@ public abstract class YouTubeHandler : IYouTubeHandler
     protected HttpClient Backchannel => Options.Backchannel;
 
     /// <summary>
-    /// Initializes a new instance of <see cref="YouTubeCaptionHandler" />.
+    /// Initializes a new instance of <see cref="YouTubeHandler" />.
     /// </summary>
     /// <param name="options">The monitor for the options instance.</param>
     /// <param name="logger">The <see cref="ILoggerFactory"/>.</param>
@@ -59,7 +58,6 @@ public abstract class YouTubeHandler : IYouTubeHandler
     /// <summary>
     /// Initialize the handler, resolve the options and validate them.
     /// </summary>
-    /// <param name="context"></param>
     /// <returns></returns>
     public async Task InitializeAsync()
     {
@@ -72,7 +70,7 @@ public abstract class YouTubeHandler : IYouTubeHandler
     }
 
     /// <summary>
-    /// Initializes the events object, called once per request by <see cref="InitializeAsync(YouTubeScheme, HttpContext context)"/>.
+    /// Initializes the events object, called once per request by <see cref="InitializeAsync()"/>.
     /// </summary>
     protected virtual Task InitializeEventsAsync() => Task.CompletedTask;
 

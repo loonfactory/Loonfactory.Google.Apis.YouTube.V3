@@ -10,9 +10,10 @@ public class TestHttpMessageHandler : HttpMessageHandler
     {
         if (Sender != null)
         {
-            return Task.FromResult(Sender(request));
+            var response = Sender(request);
+            return Task.FromResult(response ?? new HttpResponseMessage());
         }
 
-        return Task.FromResult<HttpResponseMessage>(null);
+        return Task.FromResult(new HttpResponseMessage());
     }
 }
