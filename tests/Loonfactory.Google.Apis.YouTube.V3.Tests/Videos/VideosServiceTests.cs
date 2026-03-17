@@ -52,6 +52,7 @@ public sealed class VideosServiceTests(VideosServiceFixture fixture) : IClassFix
 
         Assert.Equal("youtube#videoListResponse", response.Kind);
         Assert.Single(response.Items!);
+        Assert.Equal("ytAgeRestricted", response.Items!.Single().ContentDetails!.ContentRating!.YtRating);
     }
 
     [Fact]
@@ -300,6 +301,11 @@ public sealed class VideosServiceFixture : IAsyncLifetime
           "kind": "youtube#video",
           "etag": "video-etag",
           "id": "abc123",
+          "contentDetails": {
+            "contentRating": {
+              "ytRating": "ytAgeRestricted"
+            }
+          },
           "snippet": {
             "title": "Test video",
             "categoryId": "22"

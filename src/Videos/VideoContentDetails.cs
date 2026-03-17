@@ -8,6 +8,7 @@ public class VideoContentDetails
     public string? Dimension { get; set; }
     public string? Definition { get; set; }
     public string? Caption { get; set; }
+    public VideoContentRating? ContentRating { get; set; }
     public bool? LicensedContent { get; set; }
     public string? Projection { get; set; }
 }
