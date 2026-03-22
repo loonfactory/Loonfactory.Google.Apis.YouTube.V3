@@ -1,0 +1,78 @@
+{
+  "kind": "youtube#videoListResponse",
+  "etag": "F4bXoRsap05l2sJcPldJQFhBBns",
+  "items": [
+    {
+      "kind": "youtube#video",
+      "etag": "10lhRp97WIlHee0GUxNGg4eMTA8",
+      "id": "0e3GPea1Tyg",
+      "snippet": {
+        "publishedAt": "2021-11-24T21:00:01Z",
+        "channelId": "UCX6OQ3DkcsbYNE6H8uQQuVA",
+        "title": "$456,000 Squid Game In Real Life!",
+        "description": "desc",
+        "thumbnails": {
+          "default": {
+            "url": "https://i.ytimg.com/vi/0e3GPea1Tyg/default.jpg",
+            "width": 120,
+            "height": 90
+          }
+        },
+        "channelTitle": "MrBeast",
+        "categoryId": "24",
+        "liveBroadcastContent": "none",
+        "defaultLanguage": "en",
+        "localized": {
+          "title": "$456,000 Squid Game In Real Life!",
+          "description": "desc"
+        },
+        "defaultAudioLanguage": "en"
+      },
+      "contentDetails": {
+        "duration": "PT25M42S",
+        "dimension": "2d",
+        "definition": "hd",
+        "caption": "true",
+        "licensedContent": true,
+        "contentRating": {},
+        "projection": "rectangular"
+      },
+      "status": {
+        "uploadStatus": "processed",
+        "privacyStatus": "public",
+        "license": "youtube",
+        "embeddable": true,
+        "publicStatsViewable": true,
+        "madeForKids": false
+      },
+      "statistics": {
+        "viewCount": "914000309",
+        "likeCount": "19894449",
+        "favoriteCount": "0",
+        "commentCount": "645441"
+      },
+      "player": {
+        "embedHtml": "<iframe></iframe>"
+      },
+      "topicDetails": {
+        "topicCategories": [
+          "https://en.wikipedia.org/wiki/Lifestyle_(sociology)"
+        ]
+      },
+      "recordingDetails": {},
+      "localizations": {
+        "ko": {
+          "title": "한국어 제목",
+          "description": "한국어 설명"
+        }
+      },
+      "paidProductPlacementDetails": {
+        "hasPaidProductPlacement": false
+      }
+    }
+  ],
+  "pageInfo": {
+    "totalResults": 1,
+    "resultsPerPage": 1
+  }
+}

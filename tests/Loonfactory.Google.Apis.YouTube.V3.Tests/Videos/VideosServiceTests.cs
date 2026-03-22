@@ -93,6 +93,50 @@ public sealed class VideosServiceTests(VideosServiceFixture fixture) : IClassFix
     }
 
     [Fact]
+    public async Task ListByMyRatingAsync_SendsExpectedQuery()
+    {
+        HttpRequestMessage? captured = null;
+
+        fixture.BackchannelHandler.Sender = request =>
+        {
+            captured = request;
+            return new HttpResponseMessage(HttpStatusCode.OK)
+            {
+                Content = new StringContent(VideosServiceFixture.ValidVideosListJson, Encoding.UTF8, "application/json")
+            };
+        };
+
+        using var scope = fixture.Services.CreateScope();
+        var service = scope.ServiceProvider.GetRequiredService<IVideosService>();
+
+        await service.ListByMyRatingAsync(
+            part: "snippet",
+            myRating: "like",
+            maxResults: 5,
+            pageToken: "PAGE_2",
+            hl: "ko",
+            maxHeight: 720,
+            maxWidth: 1280,
+            onBehalfOfContentOwner: "owner-1",
+            cancellationToken: default);
+
+        Assert.NotNull(captured);
+        Assert.Equal(HttpMethod.Get, captured!.Method);
+        Assert.Equal("https://www.googleapis.com/youtube/v3/videos", captured.RequestUri!.GetLeftPart(UriPartial.Path));
+
+        var query = QueryHelpers.ParseQuery(captured.RequestUri.Query);
+        Assert.Equal("snippet", query["part"]);
+        Assert.Equal("like", query["myRating"]);
+        Assert.Equal("5", query["maxResults"]);
+        Assert.Equal("PAGE_2", query["pageToken"]);
+        Assert.Equal("ko", query["hl"]);
+        Assert.Equal("720", query["maxHeight"]);
+        Assert.Equal("1280", query["maxWidth"]);
+        Assert.Equal("owner-1", query["onBehalfOfContentOwner"]);
+        Assert.Equal("test-api-key", query["key"]);
+    }
+
+    [Fact]
     public async Task InsertAsync_SendsExpectedRequest_WithAuthorizationHeader()
     {
         HttpRequestMessage? captured = null;
@@ -145,6 +189,69 @@ public sealed class VideosServiceTests(VideosServiceFixture fixture) : IClassFix
 
         Assert.Contains("\"title\":\"Test video\"", capturedBody);
         Assert.Contains("\"categoryId\":\"22\"", capturedBody);
+    }
+
+    [Fact]
+    public async Task UpdateAsync_SendsExpectedRequest_WithAuthorizationHeader()
+    {
+        HttpRequestMessage? captured = null;
+        string? capturedBody = null;
+
+        fixture.BackchannelHandler.Sender = request =>
+        {
+            captured = request;
+            if (request.Content is not null)
+            {
+                using var stream = request.Content.ReadAsStream();
+                using var reader = new StreamReader(stream);
+                capturedBody = reader.ReadToEnd();
+            }
+
+            return new HttpResponseMessage(HttpStatusCode.OK)
+            {
+                Content = new StringContent(VideosServiceFixture.ValidVideoResourceJson, Encoding.UTF8, "application/json")
+            };
+        };
+
+        using var scope = fixture.Services.CreateScope();
+        var service = scope.ServiceProvider.GetRequiredService<IVideosService>();
+
+        await service.UpdateAsync(
+            part: "snippet,status",
+            resource: new VideoResource
+            {
+                Id = "abc123",
+                Snippet = new VideoSnippet
+                {
+                    Title = "Updated title",
+                    CategoryId = "22"
+                },
+                Status = new VideoStatus
+                {
+                    PrivacyStatus = "public"
+                }
+            },
+            notifySubscribers: false,
+            onBehalfOfContentOwner: "owner-1",
+            cancellationToken: default);
+
+        Assert.NotNull(captured);
+        Assert.Equal(HttpMethod.Put, captured!.Method);
+        Assert.Equal("https://www.googleapis.com/upload/youtube/v3/videos", captured.RequestUri!.GetLeftPart(UriPartial.Path));
+
+        var query = QueryHelpers.ParseQuery(captured.RequestUri.Query);
+        Assert.Equal("snippet,status", query["part"]);
+        Assert.Equal("False", query["notifySubscribers"]);
+        Assert.Equal("owner-1", query["onBehalfOfContentOwner"]);
+        Assert.Equal("test-api-key", query["key"]);
+
+        Assert.NotNull(captured.Headers.Authorization);
+        Assert.Equal("Bearer", captured.Headers.Authorization!.Scheme);
+        Assert.Equal("test-access-token", captured.Headers.Authorization.Parameter);
+
+        Assert.Contains("\"id\":\"abc123\"", capturedBody);
+        Assert.Contains("\"title\":\"Updated title\"", capturedBody);
+        Assert.Contains("\"privacyStatus\":\"public\"", capturedBody);
     }
 
     [Fact]
@@ -287,6 +394,26 @@ public sealed class VideosServiceTests(VideosServiceFixture fixture) : IClassFix
 
         await Assert.ThrowsAsync<ArgumentException>(() =>
             service.RateAsync(id: "abc123", rating: " "));
+    }
+
+    [Fact]
+    public async Task ListByMyRatingAsync_ThrowsWhenMyRatingIsWhitespace()
+    {
+        using var scope = fixture.Services.CreateScope();
+        var service = scope.ServiceProvider.GetRequiredService<IVideosService>();
+
+        await Assert.ThrowsAsync<ArgumentException>(() =>
+            service.ListByMyRatingAsync(part: "snippet", myRating: " "));
+    }
+
+    [Fact]
+    public async Task UpdateAsync_ThrowsWhenResourceIdIsMissing()
+    {
+        using var scope = fixture.Services.CreateScope();
+        var service = scope.ServiceProvider.GetRequiredService<IVideosService>();
+
+        await Assert.ThrowsAsync<InvalidOperationException>(() =>
+            service.UpdateAsync(part: "snippet", resource: new VideoResource()));
     }
 }
 

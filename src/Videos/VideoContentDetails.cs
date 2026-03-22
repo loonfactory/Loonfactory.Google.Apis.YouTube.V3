@@ -10,5 +10,7 @@ public class VideoContentDetails
     public string? Caption { get; set; }
     public VideoContentRating? ContentRating { get; set; }
     public bool? LicensedContent { get; set; }
+    public VideoRegionRestriction? RegionRestriction { get; set; }
     public string? Projection { get; set; }
+    public bool? HasCustomThumbnail { get; set; }
 }

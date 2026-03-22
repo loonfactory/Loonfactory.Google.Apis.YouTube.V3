@@ -24,6 +24,7 @@ public class VideoContentRating
     public string? CscfRating { get; set; }
     public string? CzfilmRating { get; set; }
     public string? DjctqRating { get; set; }
+    public IEnumerable<string>? DjctqRatingReasons { get; set; }
     public string? EcbmctRating { get; set; }
     public string? EefilmRating { get; set; }
     public string? EgfilmRating { get; set; }
@@ -48,7 +49,7 @@ public class VideoContentRating
     public string? McstRating { get; set; }
     public string? MdaRating { get; set; }
     public string? MedietilsynetRating { get; set; }
-    public string? MeusRating { get; set; }
+    public string? MekuRating { get; set; }
     public string? MibacRating { get; set; }
     public string? MocRating { get; set; }
     public string? MoctwRating { get; set; }

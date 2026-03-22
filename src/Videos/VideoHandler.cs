@@ -41,7 +41,7 @@ public class VideoHandler(
 
         if (filterCount != 1)
         {
-            throw new InvalidOperationException("Exactly one of id, chart, or myRating must be provided.");
+            throw new InvalidOperationException("Filters (specify exactly one of the following parameters): id, chart, myRating.");
         }
 
         using var response = await SendAsync(
