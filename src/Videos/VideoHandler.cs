@@ -79,6 +79,8 @@ public class VideoHandler(
             throw new InvalidOperationException("The part parameter must be provided in the properties.");
         }
 
+        ThrowIfAccessTokenNullOrEmpty(properties.AccessToken);
+
         var endpoint = BuildChallengeUrl(VideoDefaults.InsertEndpoint, properties);
         var request = new HttpRequestMessage(HttpMethod.Post, endpoint);
         return UploadAsync(request, resource, content, properties, cancellationToken);
@@ -103,6 +105,8 @@ public class VideoHandler(
         {
             throw new InvalidOperationException("The video id must be set on the resource.");
         }
+
+        ThrowIfAccessTokenNullOrEmpty(properties.AccessToken);
 
         var endpoint = BuildChallengeUrl(VideoDefaults.UpdateEndpoint, properties);
         var request = new HttpRequestMessage(HttpMethod.Put, endpoint);
