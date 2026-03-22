@@ -231,6 +231,21 @@ public class YouTubeDataApiBuilder(IServiceCollection services)
         return this;
     }
 
+    public virtual YouTubeDataApiBuilder AddWatermarks()
+    {
+        return AddWatermarks<WatermarkService, WatermarkHandler>();
+    }
+
+    public virtual YouTubeDataApiBuilder AddWatermarks<TYouTubeWatermarks, THandler>()
+        where TYouTubeWatermarks : class, IWatermarkService
+        where THandler : class, IWatermarkHandler
+    {
+        Services.TryAddScoped<IWatermarkService, TYouTubeWatermarks>();
+        AddHandler<THandler>();
+
+        return this;
+    }
+
     protected void AddHandler<THandler>() where THandler : class, IYouTubeHandler
     {
         Services.AddTransient<THandler>();
