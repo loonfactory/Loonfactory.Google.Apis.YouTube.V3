@@ -18,6 +18,7 @@ using Loonfactory.Google.Apis.YouTube.V3.Thumbnails;
 using Loonfactory.Google.Apis.YouTube.V3.VideoAbuseReportReasons;
 using Loonfactory.Google.Apis.YouTube.V3.VideoCategories;
 using Loonfactory.Google.Apis.YouTube.V3.Videos;
+using Loonfactory.Google.Apis.YouTube.V3.Watermarks;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.Extensions.Options;
@@ -226,6 +227,21 @@ public class YouTubeDataApiBuilder(IServiceCollection services)
         where THandler : class, IThumbnailHandler
     {
         Services.TryAddScoped<IThumbnailService, TYouTubeThumbnails>();
+        AddHandler<THandler>();
+
+        return this;
+    }
+
+    public virtual YouTubeDataApiBuilder AddWatermarks()
+    {
+        return AddWatermarks<WatermarkService, WatermarkHandler>();
+    }
+
+    public virtual YouTubeDataApiBuilder AddWatermarks<TYouTubeWatermarks, THandler>()
+        where TYouTubeWatermarks : class, IWatermarkService
+        where THandler : class, IWatermarkHandler
+    {
+        Services.TryAddScoped<IWatermarkService, TYouTubeWatermarks>();
         AddHandler<THandler>();
 
         return this;

@@ -4,16 +4,49 @@ namespace Loonfactory.Google.Apis.YouTube.V3.Tests;
 
 public class TestHttpMessageHandler : HttpMessageHandler
 {
-    public Func<HttpRequestMessage, HttpResponseMessage?>? Sender { get; set; }
+    private Func<HttpRequestMessage, HttpResponseMessage?>? _sender;
+    private Func<HttpRequestMessage, CancellationToken, Task<HttpResponseMessage?>>? _senderAsync;
 
-    protected override Task<HttpResponseMessage> SendAsync(HttpRequestMessage request, CancellationToken cancellationToken)
+    public Func<HttpRequestMessage, HttpResponseMessage?>? Sender
     {
-        if (Sender != null)
+        get => _sender;
+        set
         {
-            var response = Sender(request);
-            return Task.FromResult(response ?? new HttpResponseMessage());
+            _sender = value;
+            if (value != null)
+            {
+                _senderAsync = null;
+            }
+        }
+    }
+
+    public Func<HttpRequestMessage, CancellationToken, Task<HttpResponseMessage?>>? SenderAsync
+    {
+        get => _senderAsync;
+        set
+        {
+            _senderAsync = value;
+            if (value != null)
+            {
+                _sender = null;
+            }
+        }
+    }
+
+    protected override async Task<HttpResponseMessage> SendAsync(HttpRequestMessage request, CancellationToken cancellationToken)
+    {
+        if (_senderAsync != null)
+        {
+            var response = await _senderAsync(request, cancellationToken).ConfigureAwait(false);
+            return response ?? new HttpResponseMessage();
         }
 
-        return Task.FromResult(new HttpResponseMessage());
+        if (_sender != null)
+        {
+            var response = _sender(request);
+            return response ?? new HttpResponseMessage();
+        }
+
+        return new HttpResponseMessage();
     }
 }
