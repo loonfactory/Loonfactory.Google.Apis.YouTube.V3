@@ -28,13 +28,12 @@ public class WatermarkHandler(
             throw new ArgumentException("The channelId must be provided in the properties.", nameof(properties));
         }
 
-        var imageBytes = resource.ImageBytes?.ToArray();
-        if (imageBytes is null || imageBytes.Length == 0)
+        if (resource.ImageBytes is null || resource.ImageBytes.Length == 0)
         {
             throw new ArgumentException("resource.ImageBytes must be provided for metadata upload.", nameof(resource));
         }
 
-        return InternalHandleSetUploadAsync(resource, imageBytes, properties, cancellationToken);
+        return InternalHandleSetUploadAsync(resource, properties, cancellationToken);
     }
 
     /// <inheritdoc />
@@ -105,24 +104,13 @@ public class WatermarkHandler(
 
     private async Task<YouTubeResult> InternalHandleSetUploadAsync(
         WatermarkResource resource,
-        byte[] imageBytes,
         WatermarkProperties properties,
         CancellationToken cancellationToken)
     {
         var endpoint = BuildChallengeUrl(WatermarkDefaults.SetEndpoint, properties);
         using var request = new HttpRequestMessage(HttpMethod.Post, endpoint);
 
-        request.Content = JsonContent.Create(
-            new WatermarkSetRequest
-            {
-                Timing = resource.Timing,
-                Position = resource.Position,
-                ImageUrl = resource.ImageUrl,
-                ImageBytes = Convert.ToBase64String(imageBytes),
-                TargetChannelId = resource.TargetChannelId,
-            },
-            options: YouTubeDefaults.JsonSerializerOptions
-        );
+        request.Content = JsonContent.Create(resource, options: YouTubeDefaults.JsonSerializerOptions);
 
         using var response = await AuthorizationSendAsync(request, properties, cancellationToken).ConfigureAwait(false);
         if (!response.IsSuccessStatusCode)
@@ -143,17 +131,16 @@ public class WatermarkHandler(
         var endpoint = BuildChallengeUrl(WatermarkDefaults.SetUploadEndpoint, properties);
         using var request = new HttpRequestMessage(HttpMethod.Post, endpoint);
 
-        using var jsonContent = JsonContent.Create(
-            new WatermarkSetRequest
-            {
-                Timing = resource.Timing,
-                Position = resource.Position,
-                ImageUrl = resource.ImageUrl,
-                ImageBytes = null,
-                TargetChannelId = resource.TargetChannelId,
-            },
-            options: YouTubeDefaults.JsonSerializerOptions
-        );
+        var metadataResource = new WatermarkResource
+        {
+            Timing = resource.Timing,
+            Position = resource.Position,
+            ImageUrl = resource.ImageUrl,
+            ImageBytes = null,
+            TargetChannelId = resource.TargetChannelId,
+        };
+
+        using var jsonContent = JsonContent.Create(metadataResource, options: YouTubeDefaults.JsonSerializerOptions);
         using var streamContent = new StreamContent(stream);
         streamContent.Headers.ContentType = mediaTypeHeader;
 
@@ -172,14 +159,5 @@ public class WatermarkHandler(
         }
 
         return YouTubeResult.NoResult;
-    }
-
-    private sealed class WatermarkSetRequest
-    {
-        public WatermarkTiming? Timing { get; set; }
-        public WatermarkPosition? Position { get; set; }
-        public string? ImageUrl { get; set; }
-        public string? ImageBytes { get; set; }
-        public string? TargetChannelId { get; set; }
     }
 }

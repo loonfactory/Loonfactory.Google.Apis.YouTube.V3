@@ -8,7 +8,7 @@ namespace Loonfactory.Google.Apis.YouTube.V3;
 public sealed class WatermarkResourceSerializationTests
 {
     [Fact]
-    public void Serialize_DoesNotIncludeImageBytes()
+    public void Serialize_IncludesImageBytesAsBase64()
     {
         var resource = new WatermarkResource
         {
@@ -30,6 +30,6 @@ public sealed class WatermarkResourceSerializationTests
         var json = JsonSerializer.Serialize(resource, YouTubeDefaults.JsonSerializerOptions);
 
         Assert.Contains("\"targetChannelId\":\"UC_TARGET\"", json, StringComparison.Ordinal);
-        Assert.DoesNotContain("imageBytes", json, StringComparison.Ordinal);
+        Assert.Contains("\"imageBytes\":\"QUJD\"", json, StringComparison.Ordinal);
     }
 }

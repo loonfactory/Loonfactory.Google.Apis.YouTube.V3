@@ -25,7 +25,7 @@ public class WatermarkService(
         ArgumentException.ThrowIfNullOrWhiteSpace(channelId);
         ArgumentNullException.ThrowIfNull(resource);
 
-        if (resource.ImageBytes is null || !resource.ImageBytes.Any())
+        if (resource.ImageBytes is null || resource.ImageBytes.Length == 0)
         {
             throw new ArgumentException("resource.ImageBytes must be provided for metadata upload.", nameof(resource));
         }

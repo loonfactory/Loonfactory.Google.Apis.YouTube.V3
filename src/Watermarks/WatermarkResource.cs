@@ -1,7 +1,5 @@
 // Licensed under the MIT license by loonfactory.
 
-using System.Text.Json.Serialization;
-
 namespace Loonfactory.Google.Apis.YouTube.V3.Watermarks;
 
 /// <summary>
@@ -26,10 +24,9 @@ public class WatermarkResource
 
     /// <summary>
     /// The watermark image bytes.
-    /// This value is mapped by <see cref="WatermarkHandler"/> when using metadata upload.
+    /// Serialized as a base64 string in JSON requests.
     /// </summary>
-    [JsonIgnore]
-    public IEnumerable<byte>? ImageBytes { get; set; }
+    public byte[]? ImageBytes { get; set; }
 
     /// <summary>
     /// The channel ID that the watermark image links to.
