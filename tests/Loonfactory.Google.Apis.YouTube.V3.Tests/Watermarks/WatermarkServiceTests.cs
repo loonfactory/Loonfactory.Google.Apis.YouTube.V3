@@ -14,6 +14,60 @@ namespace Loonfactory.Google.Apis.YouTube.V3;
 public sealed class WatermarkServiceTests(WatermarkServiceFixture fixture) : IClassFixture<WatermarkServiceFixture>
 {
     [Fact]
+    public async Task SetAsync_WithImageBytes_SendsExpectedJsonRequest()
+    {
+        HttpRequestMessage? captured = null;
+        string? capturedBody = null;
+
+        fixture.BackchannelHandler.SenderAsync = async (request, cancellationToken) =>
+        {
+            captured = request;
+            capturedBody = await request.Content!.ReadAsStringAsync(cancellationToken);
+            return new HttpResponseMessage(HttpStatusCode.NoContent);
+        };
+
+        using var scope = fixture.Services.CreateScope();
+        var service = scope.ServiceProvider.GetRequiredService<IWatermarkService>();
+
+        await service.SetAsync(
+            channelId: "UC123",
+            resource: new WatermarkResource
+            {
+                TargetChannelId = "UC_TARGET",
+                ImageBytes = [0x41, 0x42, 0x43],
+                Position = new WatermarkPosition
+                {
+                    Type = "corner",
+                    CornerPosition = "topRight"
+                },
+                Timing = new WatermarkTiming
+                {
+                    Type = "offsetFromStart",
+                    OffsetMs = 0,
+                    DurationMs = 5000
+                }
+            },
+            onBehalfOfContentOwner: "owner-id",
+            cancellationToken: default);
+
+        Assert.NotNull(captured);
+        Assert.Equal(HttpMethod.Post, captured!.Method);
+        Assert.Equal("https://www.googleapis.com/youtube/v3/watermarks/set", captured.RequestUri!.GetLeftPart(UriPartial.Path));
+
+        var query = QueryHelpers.ParseQuery(captured.RequestUri.Query);
+        Assert.Equal("UC123", query["channelId"]);
+        Assert.Equal("owner-id", query["onBehalfOfContentOwner"]);
+        Assert.Equal("test-api-key", query["key"]);
+
+        Assert.Equal("Bearer", captured.Headers.Authorization?.Scheme);
+        Assert.Equal("test-access-token", captured.Headers.Authorization?.Parameter);
+        Assert.Equal("application/json", captured.Content?.Headers.ContentType?.MediaType);
+
+        Assert.NotNull(capturedBody);
+        Assert.Contains("\"imageBytes\":\"QUJD\"", capturedBody!, StringComparison.Ordinal);
+    }
+
+    [Fact]
     public async Task SetAsync_SendsExpectedRequest()
     {
         HttpRequestMessage? captured = null;
@@ -66,6 +120,55 @@ public sealed class WatermarkServiceTests(WatermarkServiceFixture fixture) : ICl
     }
 
     [Fact]
+    public async Task SetAsync_WithStream_UsesApplicationOctetStreamByDefault()
+    {
+        HttpRequestMessage? captured = null;
+        string? capturedBody = null;
+
+        fixture.BackchannelHandler.SenderAsync = async (request, cancellationToken) =>
+        {
+            captured = request;
+            capturedBody = await request.Content!.ReadAsStringAsync(cancellationToken);
+            return new HttpResponseMessage(HttpStatusCode.NoContent);
+        };
+
+        using var scope = fixture.Services.CreateScope();
+        var service = scope.ServiceProvider.GetRequiredService<IWatermarkService>();
+
+        using var stream = new MemoryStream([0x61, 0x62, 0x63]);
+
+        await service.SetAsync(
+            channelId: "UC123",
+            resource: new WatermarkResource
+            {
+                TargetChannelId = "UC_TARGET",
+            },
+            stream: stream,
+            onBehalfOfContentOwner: "owner-id",
+            cancellationToken: default);
+
+        Assert.NotNull(captured);
+        Assert.Equal(HttpMethod.Post, captured!.Method);
+        Assert.Equal("https://www.googleapis.com/upload/youtube/v3/watermarks/set", captured.RequestUri!.GetLeftPart(UriPartial.Path));
+
+        Assert.NotNull(capturedBody);
+        Assert.Contains("application/octet-stream", capturedBody!, StringComparison.OrdinalIgnoreCase);
+    }
+
+    [Fact]
+    public async Task SetAsync_WithStream_ThrowsWhenStreamIsNull()
+    {
+        using var scope = fixture.Services.CreateScope();
+        var service = scope.ServiceProvider.GetRequiredService<IWatermarkService>();
+
+        await Assert.ThrowsAsync<ArgumentNullException>(() =>
+            service.SetAsync(
+                channelId: "UC123",
+                resource: new WatermarkResource(),
+                stream: null!));
+    }
+
+    [Fact]
     public async Task SetAsync_ThrowsWhenUpstreamRequestFails()
     {
         fixture.BackchannelHandler.Sender = _ => new HttpResponseMessage(HttpStatusCode.BadRequest);
@@ -110,6 +213,18 @@ public sealed class WatermarkServiceTests(WatermarkServiceFixture fixture) : ICl
                 resource: new WatermarkResource(),
                 stream: stream,
                 contentType: "text/plain"));
+    }
+
+    [Fact]
+    public async Task SetAsync_WithImageBytes_ThrowsWhenImageBytesMissing()
+    {
+        using var scope = fixture.Services.CreateScope();
+        var service = scope.ServiceProvider.GetRequiredService<IWatermarkService>();
+
+        await Assert.ThrowsAsync<ArgumentException>(() =>
+            service.SetAsync(
+                channelId: "UC123",
+                resource: new WatermarkResource()));
     }
 
     [Fact]
@@ -190,7 +305,7 @@ public sealed class WatermarkServiceFixture : IAsyncLifetime
                             });
 
                         services.AddYouTubeDataApiCore()
-                                .AddAccessTokenProvider<TestAccessTokenProvider>()
+                                .AddAccessTokenProvider<WatermarkTestAccessTokenProvider>()
                                 .AddWatermarks();
                     }))
             .Build();
@@ -210,7 +325,7 @@ public sealed class WatermarkServiceFixture : IAsyncLifetime
     }
 }
 
-public sealed class TestAccessTokenProvider : IAccessTokenProvider
+public sealed class WatermarkTestAccessTokenProvider : IAccessTokenProvider
 {
     public Task<string?> GetAccessTokenAsync(CancellationToken cancellationToken = default)
     {

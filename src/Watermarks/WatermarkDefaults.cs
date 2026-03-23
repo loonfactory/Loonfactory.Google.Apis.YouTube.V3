@@ -13,9 +13,14 @@ public static class WatermarkDefaults
     private const string UploadApiRootUrl = "https://www.googleapis.com/upload/youtube/v3";
 
     /// <summary>
-    /// Endpoint URL for setting watermarks.
+    /// Endpoint URL for setting watermarks using metadata-only JSON requests.
     /// </summary>
-    public static readonly string SetEndpoint = $"{UploadApiRootUrl}/watermarks/set";
+    public static readonly string SetEndpoint = $"{ApiRootUrl}/watermarks/set";
+
+    /// <summary>
+    /// Endpoint URL for setting watermarks using media upload requests.
+    /// </summary>
+    public static readonly string SetUploadEndpoint = $"{UploadApiRootUrl}/watermarks/set";
 
     /// <summary>
     /// Endpoint URL for unsetting watermarks.

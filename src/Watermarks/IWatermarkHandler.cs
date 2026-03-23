@@ -8,7 +8,19 @@ namespace Loonfactory.Google.Apis.YouTube.V3.Watermarks;
 public interface IWatermarkHandler : IYouTubeHandler
 {
     /// <summary>
-    /// Handles a request to upload and set a channel watermark.
+    /// Handles a metadata-based request to set a channel watermark.
+    /// </summary>
+    /// <param name="resource">The watermark metadata resource. <see cref="WatermarkResource.ImageBytes"/> must be set.</param>
+    /// <param name="properties">The request properties.</param>
+    /// <param name="cancellationToken">The token to monitor for cancellation requests.</param>
+    /// <returns>The operation result.</returns>
+    Task<YouTubeResult> HandleSetUploadAsync(
+        WatermarkResource resource,
+        WatermarkProperties properties,
+        CancellationToken cancellationToken);
+
+    /// <summary>
+    /// Handles a stream upload request to set a channel watermark.
     /// </summary>
     /// <param name="resource">The watermark metadata resource.</param>
     /// <param name="stream">The watermark content to upload.</param>
@@ -16,7 +28,7 @@ public interface IWatermarkHandler : IYouTubeHandler
     /// <param name="properties">The request properties.</param>
     /// <param name="cancellationToken">The token to monitor for cancellation requests.</param>
     /// <returns>The operation result.</returns>
-    Task<YouTubeResult> HandleSetAsync(
+    Task<YouTubeResult> HandleSetStreamUploadAsync(
         WatermarkResource resource,
         Stream stream,
         string contentType,

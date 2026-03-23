@@ -19,6 +19,28 @@ public class WatermarkService(
     public Task SetAsync(
         string channelId,
         WatermarkResource resource,
+        string? onBehalfOfContentOwner = null,
+        CancellationToken cancellationToken = default)
+    {
+        ArgumentException.ThrowIfNullOrWhiteSpace(channelId);
+        ArgumentNullException.ThrowIfNull(resource);
+
+        if (resource.ImageBytes is null || !resource.ImageBytes.Any())
+        {
+            throw new ArgumentException("resource.ImageBytes must be provided for metadata upload.", nameof(resource));
+        }
+
+        return InternalSetUploadAsync(
+            channelId,
+            resource,
+            onBehalfOfContentOwner,
+            cancellationToken);
+    }
+
+    /// <inheritdoc />
+    public Task SetAsync(
+        string channelId,
+        WatermarkResource resource,
         Stream stream,
         string? onBehalfOfContentOwner = null,
         CancellationToken cancellationToken = default)
@@ -57,7 +79,7 @@ public class WatermarkService(
             throw new ArgumentException($"contentType must be one of: {allowed}.", nameof(contentType));
         }
 
-        return InternalSetAsync(
+        return InternalSetStreamUploadAsync(
             channelId,
             resource,
             stream,
@@ -78,7 +100,39 @@ public class WatermarkService(
         return InternalUnsetAsync(channelId, onBehalfOfContentOwner, cancellationToken);
     }
 
-    private async Task InternalSetAsync(
+    private async Task InternalSetUploadAsync(
+       string channelId,
+       WatermarkResource resource,
+       string? onBehalfOfContentOwner,
+       CancellationToken cancellationToken
+    )
+    {
+        var handler = await Handlers.GetHandlerAsync<WatermarkHandler>()
+            .ConfigureAwait(false) ?? throw new InvalidOperationException("WatermarkHandler could not be obtained.");
+
+        var token = await AccessTokenProvider.GetAccessTokenAsync(cancellationToken).ConfigureAwait(false);
+        if (string.IsNullOrWhiteSpace(token))
+        {
+            throw new InvalidOperationException("Access token could not be obtained.");
+        }
+
+        var properties = new WatermarkProperties
+        {
+            ChannelId = channelId,
+            OnBehalfOfContentOwner = onBehalfOfContentOwner,
+            AccessToken = token,
+        };
+
+        var result = await handler.HandleSetUploadAsync(resource, properties, cancellationToken)
+            .ConfigureAwait(false);
+
+        if (!result.Succeeded)
+        {
+            throw new InvalidOperationException("Watermark set request failed. [TODO: unify error handling]");
+        }
+    }
+
+    private async Task InternalSetStreamUploadAsync(
        string channelId,
        WatermarkResource resource,
        Stream stream,
@@ -103,7 +157,7 @@ public class WatermarkService(
             AccessToken = token,
         };
 
-        var result = await handler.HandleSetAsync(resource, stream, contentType, properties, cancellationToken)
+        var result = await handler.HandleSetStreamUploadAsync(resource, stream, contentType, properties, cancellationToken)
             .ConfigureAwait(false);
 
         if (!result.Succeeded)

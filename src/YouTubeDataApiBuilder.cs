@@ -18,6 +18,7 @@ using Loonfactory.Google.Apis.YouTube.V3.Thumbnails;
 using Loonfactory.Google.Apis.YouTube.V3.VideoAbuseReportReasons;
 using Loonfactory.Google.Apis.YouTube.V3.VideoCategories;
 using Loonfactory.Google.Apis.YouTube.V3.Videos;
+using Loonfactory.Google.Apis.YouTube.V3.Watermarks;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.Extensions.Options;

@@ -8,6 +8,19 @@ namespace Loonfactory.Google.Apis.YouTube.V3.Watermarks;
 public interface IWatermarkService
 {
     /// <summary>
+    /// Sets a channel watermark using JSON payload metadata that includes image bytes.
+    /// </summary>
+    /// <param name="channelId">The YouTube channel ID for which the watermark is being provided.</param>
+    /// <param name="resource">The watermark metadata resource. <see cref="WatermarkResource.ImageBytes"/> must be set.</param>
+    /// <param name="onBehalfOfContentOwner">Indicates that the authenticated CMS user is acting on behalf of the specified content owner.</param>
+    /// <param name="cancellationToken">The token to monitor for cancellation requests.</param>
+    Task SetAsync(
+        string channelId,
+        WatermarkResource resource,
+        string? onBehalfOfContentOwner = null,
+        CancellationToken cancellationToken = default);
+
+    /// <summary>
     /// Uploads a watermark image and applies it to the specified channel.
     /// </summary>
     /// <inheritdoc cref="SetAsync(string, WatermarkResource, Stream, string, string?, CancellationToken)" />
