@@ -87,9 +87,14 @@ public class WatermarkHandler(
             throw new ArgumentException("The channelId must be provided in the properties.", nameof(properties));
         }
 
-        using var response = await AuthorizationSendAsync(
+        using var request = CreateHttpRequestMessage(
             HttpMethod.Post,
             WatermarkDefaults.UnsetEndpoint,
+            properties
+        );
+
+        using var response = await AuthorizationSendAsync(
+            request,
             properties,
             cancellationToken
         ).ConfigureAwait(false);
@@ -140,8 +145,8 @@ public class WatermarkHandler(
             TargetChannelId = resource.TargetChannelId,
         };
 
-        using var jsonContent = JsonContent.Create(metadataResource, options: YouTubeDefaults.JsonSerializerOptions);
-        using var streamContent = new StreamContent(stream);
+        var jsonContent = JsonContent.Create(metadataResource, options: YouTubeDefaults.JsonSerializerOptions);
+        var streamContent = new StreamContent(stream);
         streamContent.Headers.ContentType = mediaTypeHeader;
 
         using var multipart = new MultipartContent("related")
