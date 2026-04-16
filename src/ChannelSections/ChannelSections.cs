@@ -83,7 +83,7 @@ public class ChannelSections(
         return result.Succeeded switch
         {
             true => result.Resource,
-            false => throw new NotImplementedException("@TODO")
+            false => throw result.Failure!
         };
     }
 
@@ -134,7 +134,7 @@ public class ChannelSections(
             return result.Succeeded switch
             {
                 true => result.Resource,
-                false => throw new NotImplementedException("@TODO")
+                false => throw result.Failure!
             };
         }
     }
@@ -171,7 +171,7 @@ public class ChannelSections(
             return result.Succeeded switch
             {
                 true => result.Resource,
-                false => throw new NotImplementedException("@TODO")
+                false => throw result.Failure!
             };
         }
     }

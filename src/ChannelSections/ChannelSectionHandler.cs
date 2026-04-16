@@ -1,9 +1,6 @@
 // Licensed under the MIT license by loonfactory.
 
-using System.Net.Http.Headers;
 using System.Net.Http.Json;
-using System.Text.Encodings.Web;
-using System.Text.Json;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 
@@ -29,7 +26,10 @@ public class ChannelSectionHandler(
     /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     /// <exception cref="ArgumentNullException">Thrown when <paramref name="properties"/> is <c>null</c>.</exception>
     /// <exception cref="InvalidOperationException">Thrown when required properties are missing or invalid.</exception>
-    public virtual async Task<YouTubeResult> HandleChannelSectionDeleteAsync(ChannelSectionProperties properties, CancellationToken cancellationToken)
+    public virtual Task<YouTubeResult> HandleChannelSectionDeleteAsync(
+        ChannelSectionProperties properties,
+        CancellationToken cancellationToken
+    )
     {
         ArgumentNullException.ThrowIfNull(properties);
 
@@ -38,39 +38,28 @@ public class ChannelSectionHandler(
             throw new InvalidOperationException("The ChannelSection id must be provided in the properties.");
         }
 
-        var response = await AuthorizationSendAsync(
+        return AuthorizationExecuteAsync(
             HttpMethod.Delete,
             ChannelSectionDefaults.DeleteEndpoint,
             properties,
             cancellationToken
-        ).ConfigureAwait(false);
-
-        return response.IsSuccessStatusCode switch
-        {
-            true => YouTubeResult.NoResult,
-            false => throw new NotImplementedException("Handling of unsuccessful HTTP responses is not yet implemented.")
-        };
+        );
     }
 
-    public virtual async Task<YouTubeResult<ChannelSectionListResponse>> HandleChannelSectionListAsync(ChannelSectionProperties properties, CancellationToken cancellationToken)
+    public virtual Task<YouTubeResult<ChannelSectionListResponse>> HandleChannelSectionListAsync(
+        ChannelSectionProperties properties,
+        CancellationToken cancellationToken
+    )
     {
         ArgumentNullException.ThrowIfNull(properties);
 
-        var response = await SendAsync(
+        return ExecuteAsync<ChannelSectionListResponse>(
             HttpMethod.Get,
             ChannelSectionDefaults.ListEndpoint,
             properties,
             cancellationToken
-        ).ConfigureAwait(false);
-
-        if (!response.IsSuccessStatusCode)
-        {
-            throw new NotImplementedException("Handling of unsuccessful HTTP responses is not yet implemented.");
-        }
-
-        return YouTubeResult<ChannelSectionListResponse>.Success(
-            (await response.Content.ReadFromJsonAsync<ChannelSectionListResponse>(YouTubeDefaults.JsonSerializerOptions, cancellationToken).ConfigureAwait(false))!
         );
+
     }
 
     public virtual Task<YouTubeResult<ChannelSectionResource>> HandleChannelSectionInsertAsync(
@@ -80,11 +69,13 @@ public class ChannelSectionHandler(
     {
         ArgumentNullException.ThrowIfNull(resource);
         ArgumentNullException.ThrowIfNull(properties);
-        ArgumentNullException.ThrowIfNull(cancellationToken);
 
         var endpoint = BuildChallengeUrl(ChannelSectionDefaults.InsertEndpoint, properties);
-        var request = new HttpRequestMessage(HttpMethod.Post, endpoint);
-        return InternalHandleChannelSectionUploadAsync(request, resource, properties, cancellationToken);
+        var request = new HttpRequestMessage(HttpMethod.Post, endpoint)
+        {
+            Content = JsonContent.Create(resource)
+        };
+        return AuthorizationExecuteAsync<ChannelSectionResource>(request, properties, cancellationToken);
     }
 
     public virtual Task<YouTubeResult<ChannelSectionResource>> HandleChannelSectionUpdateAsync(
@@ -94,36 +85,17 @@ public class ChannelSectionHandler(
     {
         ArgumentNullException.ThrowIfNull(resource);
         ArgumentNullException.ThrowIfNull(properties);
-        ArgumentNullException.ThrowIfNull(cancellationToken);
 
         if (string.IsNullOrEmpty(resource.Id))
         {
-            throw new InvalidOperationException("@TODO");
+            throw new InvalidOperationException("The ChannelSection id must be provided in the resource.");
         }
 
         var endpoint = BuildChallengeUrl(ChannelSectionDefaults.UpdateEndpoint, properties);
-        var request = new HttpRequestMessage(HttpMethod.Put, endpoint);
-        return InternalHandleChannelSectionUploadAsync(request, resource, properties, cancellationToken);
-    }
-
-    private async Task<YouTubeResult<ChannelSectionResource>> InternalHandleChannelSectionUploadAsync(
-        HttpRequestMessage request,
-        ChannelSectionResource resource,
-        ChannelSectionProperties properties,
-        CancellationToken cancellationToken)
-    {
-        request.Headers.Authorization = new AuthenticationHeaderValue("Bearer", properties.AccessToken);
-        request.Content = JsonContent.Create(resource);
-
-        var response = await Backchannel.SendAsync(request, cancellationToken).ConfigureAwait(false);
-        var body = await response.Content.ReadAsStringAsync(cancellationToken).ConfigureAwait(false);
-
-        return response.IsSuccessStatusCode switch
+        var request = new HttpRequestMessage(HttpMethod.Put, endpoint)
         {
-            true => YouTubeResult<ChannelSectionResource>.Success(
-                JsonSerializer.Deserialize<ChannelSectionResource>(body, YouTubeDefaults.JsonSerializerOptions)!
-            ),
-            false => throw new NotImplementedException("Handling of unsuccessful HTTP responses is not yet implemented.")
+            Content = JsonContent.Create(resource)
         };
+        return AuthorizationExecuteAsync<ChannelSectionResource>(request, properties, cancellationToken);
     }
 }

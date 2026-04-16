@@ -1,6 +1,5 @@
 // Licensed under the MIT license by loonfactory.
 
-using System.Net.Http.Json;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 
@@ -11,28 +10,20 @@ public class I18nLanguageHandler(
     ILoggerFactory logger
 ) : YouTubeHandler(options, logger), II18nLanguageHandler
 {
-    public async Task<YouTubeResult<I18nLanguageListResponse>> HandleI18nLanguageListAsync(I18nLanguageProperties properties, CancellationToken cancellationToken)
+    public Task<YouTubeResult<I18nLanguageListResponse>> HandleI18nLanguageListAsync(I18nLanguageProperties properties, CancellationToken cancellationToken)
     {
         ArgumentNullException.ThrowIfNull(properties);
 
         if ((properties.Parts?.Length ?? 0) == 0)
         {
-            throw new InvalidOperationException("@TODO");
+            throw new InvalidOperationException("The parts parameter must be provided in the properties.");
         }
 
-        var response = await SendAsync(
+        return ExecuteAsync<I18nLanguageListResponse>(
             HttpMethod.Get,
             I18nLanguageDefaults.ListEndpoint,
             properties,
             cancellationToken
-        ).ConfigureAwait(false);
-
-        return response.IsSuccessStatusCode switch
-        {
-            true => YouTubeResult<I18nLanguageListResponse>.Success((
-                await response.Content.ReadFromJsonAsync<I18nLanguageListResponse>(cancellationToken)
-                    .ConfigureAwait(false))!),
-            false => throw new NotImplementedException("Handling of unsuccessful HTTP responses is not yet implemented.")
-        };
+        );
     }
 }

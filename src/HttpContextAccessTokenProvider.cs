@@ -19,7 +19,7 @@ public class HttpContextAccessTokenProvider(
     public virtual Task<AuthenticationScheme?> GetGoogleSchemeAsync() => SchemeProvider.GetSchemeAsync(GoogleDefaults.AuthenticationScheme);
     public async Task<string?> GetAccessTokenAsync(CancellationToken cancellationToken = default)
     {
-        var context = HttpContextAccessor.HttpContext ?? throw new InvalidOperationException("@TODO");
+        var context = HttpContextAccessor.HttpContext ?? throw new InvalidOperationException("HttpContext is not available. Ensure this is called within an active HTTP request.");
         var authResult = await context.AuthenticateAsync().ConfigureAwait(false);
         if (authResult != null)
         {

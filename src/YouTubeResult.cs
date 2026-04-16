@@ -79,7 +79,11 @@ public class YouTubeResult<T> where T : class
     /// <param name="failureMessage">The failure message.</param>
     /// <returns>The result.</returns>
     public static YouTubeResult<T> Fail(string failureMessage)
-        => Fail(new YouTubeRequestFailureException(failureMessage));
+        => Fail(new YouTubeApiException(
+            new YouTubeApiRequestError
+            {
+                Message = failureMessage ?? "An unknown YouTube API error occurred."
+            }));
 
     /// <summary>
     /// Indicates that there was a failure during authentication.
@@ -88,11 +92,35 @@ public class YouTubeResult<T> where T : class
     /// <param name="properties">Additional state values for the authentication session.</param>
     /// <returns>The result.</returns>
     public static YouTubeResult<T> Fail(string failureMessage, YouTubeProperties? properties)
-        => Fail(new YouTubeRequestFailureException(failureMessage), properties);
+        => Fail(new YouTubeApiException(
+            new YouTubeApiRequestError
+            {
+                Message = failureMessage ?? "An unknown YouTube API error occurred."
+            }), properties);
 }
 
 public class YouTubeResult : YouTubeResult<object>
 {
     private static readonly YouTubeResult _noResult = new() { None = true };
     public static new YouTubeResult NoResult => _noResult;
+
+    public static new YouTubeResult Fail(Exception failure)
+        => new YouTubeResult() { Failure = failure };
+
+    public static new YouTubeResult Fail(Exception failure, YouTubeProperties? properties)
+        => new YouTubeResult() { Failure = failure, Properties = properties };
+
+    public static new YouTubeResult Fail(string failureMessage)
+        => Fail(new YouTubeApiException(
+            new YouTubeApiRequestError
+            {
+                Message = failureMessage ?? "An unknown YouTube API error occurred."
+            }));
+
+    public static new YouTubeResult Fail(string failureMessage, YouTubeProperties? properties)
+        => Fail(new YouTubeApiException(
+            new YouTubeApiRequestError
+            {
+                Message = failureMessage ?? "An unknown YouTube API error occurred."
+            }), properties);
 }

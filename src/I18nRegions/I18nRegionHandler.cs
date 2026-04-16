@@ -1,7 +1,5 @@
 // Licensed under the MIT license by loonfactory.
 
-using System.Net.Http.Json;
-using System.Text.Encodings.Web;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 
@@ -12,28 +10,20 @@ public class I18nRegionHandler(
     ILoggerFactory logger
 ) : YouTubeHandler(options, logger), II18nRegionHandler
 {
-    public async Task<YouTubeResult<I18nRegionListResponse>> HandleI18nRegionListAsync(I18nRegionProperties properties, CancellationToken cancellationToken)
+    public Task<YouTubeResult<I18nRegionListResponse>> HandleI18nRegionListAsync(I18nRegionProperties properties, CancellationToken cancellationToken)
     {
         ArgumentNullException.ThrowIfNull(properties);
 
         if ((properties.Parts?.Length ?? 0) == 0)
         {
-            throw new InvalidOperationException("@TODO");
+            throw new InvalidOperationException("The parts parameter must be provided in the properties.");
         }
 
-        var response = await SendAsync(
+        return ExecuteAsync<I18nRegionListResponse>(
             HttpMethod.Get,
             I18nRegionsDefaults.ListEndpoint,
             properties,
             cancellationToken
-        ).ConfigureAwait(false);
-
-        return response.IsSuccessStatusCode switch
-        {
-            true => YouTubeResult<I18nRegionListResponse>.Success((
-                await response.Content.ReadFromJsonAsync<I18nRegionListResponse>(cancellationToken)
-                    .ConfigureAwait(false))!),
-            false => throw new NotImplementedException("Handling of unsuccessful HTTP responses is not yet implemented.")
-        };
+        );
     }
 }

@@ -158,7 +158,7 @@ public class SubscriptionService(
         return result.Succeeded switch
         {
             true => result.Resource,
-            false => throw new NotImplementedException("@TODO")
+            false => throw result.Failure!
         };
     }
 
@@ -212,7 +212,7 @@ public class SubscriptionService(
             return result.Succeeded switch
             {
                 true => result.Resource,
-                false => throw new NotImplementedException("@TODO")
+                false => throw result.Failure!
             };
         }
     }
@@ -234,11 +234,9 @@ public class SubscriptionService(
         };
 
         var result = await handler.HandleSubscriptionDeleteAsync(properties, cancellationToken).ConfigureAwait(false);
-        if (result.Succeeded)
+        if (!result.Succeeded)
         {
-            return;
+            throw result.Failure!;
         }
-
-        throw new NotImplementedException("@TODO");
     }
 }

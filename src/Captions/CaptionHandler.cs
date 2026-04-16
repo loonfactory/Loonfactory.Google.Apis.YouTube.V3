@@ -1,8 +1,5 @@
 // Licensed under the MIT license by loonfactory.
 
-using System.Net.Http.Headers;
-using System.Text.Encodings.Web;
-using System.Text.Json;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 
@@ -21,18 +18,21 @@ public class CaptionHandler(
     ILoggerFactory logger
 ) : YouTubeHandler(options, logger), ICaptionHandler
 {
-    public virtual async Task<YouTubeResult<Stream>> HandleCaptionDownloadAsync(CaptionProperties properties, CancellationToken cancellationToken)
+    public virtual async Task<YouTubeResult<Stream>> HandleCaptionDownloadAsync(
+        CaptionProperties properties,
+        CancellationToken cancellationToken
+    )
     {
         ArgumentNullException.ThrowIfNull(properties);
 
         if (string.IsNullOrEmpty(properties.Id))
         {
-            throw new InvalidOperationException("@TODO");
+            throw new InvalidOperationException("The caption id must be provided in the properties.");
         }
 
         if ((properties.Part?.Length ?? 0) == 0)
         {
-            throw new InvalidOperationException("@TODO");
+            throw new InvalidOperationException("The part parameter must be provided in the properties.");
         }
 
         var response = await AuthorizationSendAsync(
@@ -42,11 +42,7 @@ public class CaptionHandler(
             cancellationToken
         ).ConfigureAwait(false);
 
-        return response.IsSuccessStatusCode switch
-        {
-            true => YouTubeResult<Stream>.Success(await response.Content.ReadAsStreamAsync(cancellationToken).ConfigureAwait(false)),
-            false => throw new NotImplementedException("Handling of unsuccessful HTTP responses is not yet implemented.")
-        };
+        return await HandleResponseAsync<Stream>(response, cancellationToken).ConfigureAwait(false);
     }
 
     /// <summary>
@@ -56,7 +52,10 @@ public class CaptionHandler(
     /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     /// <exception cref="ArgumentNullException">Thrown when <paramref name="properties"/> is <c>null</c>.</exception>
     /// <exception cref="InvalidOperationException">Thrown when required properties are missing or invalid.</exception>
-    public virtual async Task<YouTubeResult> HandleCaptionDeleteAsync(CaptionProperties properties, CancellationToken cancellationToken)
+    public virtual Task<YouTubeResult> HandleCaptionDeleteAsync(
+        CaptionProperties properties,
+        CancellationToken cancellationToken
+    )
     {
         ArgumentNullException.ThrowIfNull(properties);
 
@@ -65,57 +64,36 @@ public class CaptionHandler(
             throw new InvalidOperationException("The caption id must be provided in the properties.");
         }
 
-        if (string.IsNullOrEmpty(properties.AccessToken))
-        {
-            throw new InvalidOperationException("An access token must be provided in the properties.");
-        }
-
-        var endpoint = BuildChallengeUrl(CaptionDefaults.DeleteEndpoint, properties);
-
-        var request = new HttpRequestMessage(HttpMethod.Delete, endpoint);
-        request.Headers.Authorization = new AuthenticationHeaderValue("Bearer", properties.AccessToken);
-
-        var response = await Backchannel.SendAsync(request, cancellationToken).ConfigureAwait(false);
-        return response.IsSuccessStatusCode switch
-        {
-            true => YouTubeResult.NoResult,
-            false => throw new NotImplementedException("Handling of unsuccessful HTTP responses is not yet implemented.")
-        };
+        return AuthorizationExecuteAsync(
+            HttpMethod.Delete,
+            CaptionDefaults.DeleteEndpoint,
+            properties,
+            cancellationToken
+        );
     }
 
-    public virtual async Task<YouTubeResult<CaptionListResponse>> HandleCaptionListAsync(CaptionProperties properties, CancellationToken cancellationToken)
+    public virtual Task<YouTubeResult<CaptionListResponse>> HandleCaptionListAsync(
+        CaptionProperties properties,
+        CancellationToken cancellationToken
+    )
     {
         ArgumentNullException.ThrowIfNull(properties);
 
         if (string.IsNullOrEmpty(properties.VideoId))
         {
-            throw new InvalidOperationException("@TODO");
+            throw new InvalidOperationException("The videoId must be provided in the properties.");
         }
 
         if ((properties.Part?.Length ?? 0) == 0)
         {
-            throw new InvalidOperationException("@TODO");
+            throw new InvalidOperationException("The part parameter must be provided in the properties.");
         }
 
-        if (string.IsNullOrEmpty(properties.AccessToken))
-        {
-            throw new InvalidOperationException("An access token must be provided in the properties.");
-        }
-
-        var endpoint = BuildChallengeUrl(CaptionDefaults.ListEndpoint, properties);
-
-        var request = new HttpRequestMessage(HttpMethod.Get, endpoint);
-        request.Headers.Authorization = new AuthenticationHeaderValue("Bearer", properties.AccessToken);
-
-        var response = await Backchannel.SendAsync(request, cancellationToken).ConfigureAwait(false);
-        if (!response.IsSuccessStatusCode)
-        {
-            throw new NotImplementedException("Handling of unsuccessful HTTP responses is not yet implemented.");
-        }
-
-        var body = await response.Content.ReadAsStringAsync(cancellationToken).ConfigureAwait(false);
-        return YouTubeResult<CaptionListResponse>.Success(
-            JsonSerializer.Deserialize<CaptionListResponse>(body, YouTubeDefaults.JsonSerializerOptions)!
+        return AuthorizationExecuteAsync<CaptionListResponse>(
+            HttpMethod.Get,
+            CaptionDefaults.ListEndpoint,
+            properties,
+            cancellationToken
         );
     }
 
@@ -127,31 +105,36 @@ public class CaptionHandler(
     {
         ArgumentNullException.ThrowIfNull(resource);
         ArgumentNullException.ThrowIfNull(properties);
-        ArgumentNullException.ThrowIfNull(cancellationToken);
 
         if ((properties.Part?.Length ?? 0) == 0)
         {
-            throw new InvalidOperationException("@TODO");
+            throw new InvalidOperationException("The part parameter must be provided in the properties.");
         }
 
         if (string.IsNullOrEmpty(resource.Snippet?.VideoId))
         {
-            throw new InvalidOperationException("@TODO");
+            throw new InvalidOperationException("The snippet.videoId must be provided in the resource.");
         }
 
         if (string.IsNullOrEmpty(resource.Snippet?.Language))
         {
-            throw new InvalidOperationException("@TODO");
+            throw new InvalidOperationException("The snippet.language must be provided in the resource.");
         }
 
         if (string.IsNullOrEmpty(resource.Snippet?.Name))
         {
-            throw new InvalidOperationException("@TODO");
+            throw new InvalidOperationException("The snippet.name must be provided in the resource.");
         }
 
         var endpoint = BuildChallengeUrl(CaptionDefaults.InsertEndpoint, properties);
         var request = new HttpRequestMessage(HttpMethod.Post, endpoint);
-        return InternalHandleCaptionUploadAsync(request, resource, content, properties, cancellationToken);
+        return UploadAsync(
+            request,
+            resource,
+            content,
+            properties,
+            cancellationToken
+        );
     }
 
     public virtual Task<YouTubeResult<CaptionResource>> HandleCaptionUpdateAsync(
@@ -162,30 +145,19 @@ public class CaptionHandler(
     {
         ArgumentNullException.ThrowIfNull(resource);
         ArgumentNullException.ThrowIfNull(properties);
-        ArgumentNullException.ThrowIfNull(cancellationToken);
 
         if ((properties.Part?.Length ?? 0) == 0)
         {
-            throw new InvalidOperationException("@TODO");
+            throw new InvalidOperationException("The part parameter must be provided in the properties.");
         }
 
         if (string.IsNullOrEmpty(resource.Id))
         {
-            throw new InvalidOperationException("@TODO");
+            throw new InvalidOperationException("The caption id must be provided in the resource.");
         }
 
         var endpoint = BuildChallengeUrl(CaptionDefaults.UpdateEndpoint, properties);
         var request = new HttpRequestMessage(HttpMethod.Put, endpoint);
-        return InternalHandleCaptionUploadAsync(request, resource, content, properties, cancellationToken);
-    }
-
-    private Task<YouTubeResult<CaptionResource>> InternalHandleCaptionUploadAsync(
-        HttpRequestMessage request,
-        CaptionResource resource,
-        StreamContent? content,
-        CaptionProperties properties,
-        CancellationToken cancellationToken)
-    {
         return UploadAsync(
             request,
             resource,

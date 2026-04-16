@@ -82,7 +82,7 @@ public class CommentsService(
         return result.Succeeded switch
         {
             true => result.Resource,
-            false => throw new NotImplementedException("@TODO")
+            false => throw result.Failure!
         };
     }
 
@@ -123,7 +123,7 @@ public class CommentsService(
             return result.Succeeded switch
             {
                 true => result.Resource,
-                false => throw new NotImplementedException("@TODO")
+                false => throw result.Failure!
             };
         }
     }
@@ -156,7 +156,7 @@ public class CommentsService(
             return result.Succeeded switch
             {
                 true => result.Resource,
-                false => throw new NotImplementedException("@TODO")
+                false => throw result.Failure!
             };
         }
     }
@@ -173,12 +173,10 @@ public class CommentsService(
         };
 
         var result = await handler.HandleCommentDeleteAsync(properties, cancellationToken).ConfigureAwait(false);
-        if (result.Succeeded)
+        if (!result.Succeeded)
         {
-            return;
+            throw result.Failure!;
         }
-
-        throw new NotImplementedException("@TODO");
     }
 
     public async Task SetModerationStatusAsync(StringValues id, CommentModerationStatus moderationStatus, bool? banAuthor = null, CancellationToken cancellationToken = default)
@@ -195,11 +193,9 @@ public class CommentsService(
         };
 
         var result = await handler.HandleCommentDeleteAsync(properties, cancellationToken).ConfigureAwait(false);
-        if (result.Succeeded)
+        if (!result.Succeeded)
         {
-            return;
+            throw result.Failure!;
         }
-
-        throw new NotImplementedException("@TODO");
     }
 }

@@ -1,6 +1,5 @@
 // Licensed under the MIT license by loonfactory.
 
-using System.Net.Http.Json;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 
@@ -23,32 +22,11 @@ public class VideoCategoryHandler(
             throw new ArgumentException("The properties.Part parameter must be provided in the properties.");
         }
 
-        return InternalHandleVideoCategoryListAsync(properties, cancellationToken);
-    }
-
-    private async Task<YouTubeResult<VideoCategoryListResponse>> InternalHandleVideoCategoryListAsync(
-        VideoCategoryProperties properties,
-        CancellationToken cancellationToken
-    )
-    {
-        using var response = await SendAsync(
+        return ExecuteAsync<VideoCategoryListResponse>(
             HttpMethod.Get,
             VideoCategoryDefaults.ListEndpoint,
             properties,
             cancellationToken
-        ).ConfigureAwait(false);
-
-        if (!response.IsSuccessStatusCode)
-        {
-            return YouTubeResult<VideoCategoryListResponse>.Fail(new InvalidOperationException("Video categories list request failed. [@TODO: unify error handling]"));
-        }
-
-        var result = await response.Content.ReadFromJsonAsync<VideoCategoryListResponse>(
-            YouTubeDefaults.JsonSerializerOptions,
-            cancellationToken
-        ).ConfigureAwait(false) ?? throw new InvalidOperationException("Failed to deserialize video category list response.");
-
-        return YouTubeResult<VideoCategoryListResponse>.Success(result);
+        );
     }
-
 }
