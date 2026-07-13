@@ -151,12 +151,9 @@ public class VideosService(
         var result = await handler.HandleVideoListAsync(properties, cancellationToken)
                                   .ConfigureAwait(false);
 
-        if (!result.Succeeded)
-        {
-            throw new InvalidOperationException("Video list request failed. [TODO: unify error handling]");
-        }
-
-        return result.Resource;
+        return result.Succeeded
+            ? result.Resource
+            : throw result.Failure!;
     }
 
     public Task<VideoResource> InsertAsync(

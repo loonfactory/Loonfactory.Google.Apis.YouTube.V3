@@ -56,6 +56,52 @@ public sealed class VideosServiceTests(VideosServiceFixture fixture) : IClassFix
     }
 
     [Fact]
+    public async Task ListByIdAsync_PreservesCompleteYouTubeErrorResponse()
+    {
+        const string errorBody = """
+        {
+          "error": {
+            "code": 403,
+            "message": "The request cannot be completed because you have exceeded your quota.",
+            "errors": [
+              {
+                "domain": "youtube.quota",
+                "reason": "quotaExceeded",
+                "message": "The request cannot be completed because you have exceeded your quota."
+              }
+            ]
+          }
+        }
+        """;
+
+        fixture.BackchannelHandler.Sender = _ =>
+        {
+            var response = new HttpResponseMessage(HttpStatusCode.Forbidden)
+            {
+                Content = new StringContent(errorBody, Encoding.UTF8, "application/json")
+            };
+            response.Headers.Add("X-Goog-Request-Id", "request-123");
+            return response;
+        };
+
+        using var scope = fixture.Services.CreateScope();
+        var service = scope.ServiceProvider.GetRequiredService<IVideosService>();
+
+        var exception = await Assert.ThrowsAsync<YouTubeApiException>(() =>
+            service.ListByIdAsync(part: "snippet", id: "abc123"));
+
+        Assert.Equal(HttpStatusCode.Forbidden, exception.StatusCode);
+        Assert.Equal(403, exception.Error.Code);
+        Assert.Equal("The request cannot be completed because you have exceeded your quota.", exception.Error.Message);
+        Assert.Equal(errorBody, exception.RawResponseBody);
+        Assert.Equal("request-123", exception.ResponseHeaders["X-Goog-Request-Id"].Single());
+
+        var detail = Assert.Single(exception.Error.Errors!);
+        Assert.Equal("youtube.quota", detail.Domain);
+        Assert.Equal("quotaExceeded", detail.Reason);
+    }
+
+    [Fact]
     public async Task ListByChartAsync_SendsExpectedQuery()
     {
         HttpRequestMessage? captured = null;

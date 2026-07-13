@@ -3,7 +3,7 @@
 namespace Loonfactory.Google.Apis.YouTube.V3;
 
 /// <summary>
-/// Represents a detail entry from a YouTube API v1 error payload.
+/// Represents a detail entry from a YouTube Data API error payload.
 /// </summary>
 public sealed record YouTubeApiError
 {

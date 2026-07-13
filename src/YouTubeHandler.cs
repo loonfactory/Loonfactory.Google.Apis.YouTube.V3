@@ -329,21 +329,7 @@ public abstract class YouTubeHandler : IYouTubeHandler
             return YouTubeResult.NoResult;
         }
 
-        YouTubeApiRequestError? error = null;
-        if (!string.IsNullOrWhiteSpace(body))
-        {
-            error = JsonSerializer.Deserialize<YouTubeApiRequestError>(
-                body,
-                YouTubeDefaults.JsonSerializerOptions
-            );
-        }
-
-        error ??= new YouTubeApiRequestError
-        {
-            Code = (int)response.StatusCode,
-            Message = response.ReasonPhrase
-        };
-        return YouTubeResult.Fail(new YouTubeApiException(error));
+        return YouTubeResult.Fail(CreateApiException(response, body));
     }
 
     protected virtual async Task<YouTubeResult<T>> HandleResponseAsync<T>(
@@ -370,13 +356,27 @@ public abstract class YouTubeHandler : IYouTubeHandler
             );
         }
 
+        return YouTubeResult<T>.Fail(CreateApiException(response, body));
+    }
+
+    private static YouTubeApiException CreateApiException(HttpResponseMessage response, string? body)
+    {
         YouTubeApiRequestError? error = null;
+        Exception? parseException = null;
+
         if (!string.IsNullOrWhiteSpace(body))
         {
-            error = JsonSerializer.Deserialize<YouTubeApiRequestError>(
-                body,
-                YouTubeDefaults.JsonSerializerOptions
-            );
+            try
+            {
+                error = JsonSerializer.Deserialize<YouTubeApiErrorResponse>(
+                    body,
+                    YouTubeDefaults.JsonSerializerOptions
+                )?.Error;
+            }
+            catch (JsonException exception)
+            {
+                parseException = exception;
+            }
         }
 
         error ??= new YouTubeApiRequestError
@@ -385,6 +385,28 @@ public abstract class YouTubeHandler : IYouTubeHandler
             Message = response.ReasonPhrase
         };
 
-        return YouTubeResult<T>.Fail(new YouTubeApiException(error));
+        return new YouTubeApiException(
+            response.StatusCode,
+            error,
+            body,
+            CopyResponseHeaders(response),
+            parseException);
+    }
+
+    private static IReadOnlyDictionary<string, IReadOnlyList<string>> CopyResponseHeaders(HttpResponseMessage response)
+    {
+        var headers = new Dictionary<string, IReadOnlyList<string>>(StringComparer.OrdinalIgnoreCase);
+
+        foreach (var header in response.Headers)
+        {
+            headers[header.Key] = [.. header.Value];
+        }
+
+        foreach (var header in response.Content.Headers)
+        {
+            headers[header.Key] = [.. header.Value];
+        }
+
+        return headers;
     }
 }
