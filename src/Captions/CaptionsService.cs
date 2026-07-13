@@ -21,7 +21,8 @@ public class CaptionsService(
     public async Task DeleteAsync(
         string id,
         string? onBehalfOfContentOwner = null,
-        CancellationToken cancellationToken = default)
+        CancellationToken cancellationToken = default
+    )
     {
         ArgumentNullException.ThrowIfNull(id);
 
@@ -29,15 +30,26 @@ public class CaptionsService(
             .ConfigureAwait(false) ?? throw new InvalidOperationException("YouTubeCaptionHandler could not be obtained.");
 
         // Implement the deletion logic using the handler
-        await handler.HandleCaptionDeleteAsync(new CaptionProperties
+        var result = await handler.HandleCaptionDeleteAsync(new CaptionProperties
         {
             Id = id,
             OnBehalfOfContentOwner = onBehalfOfContentOwner,
             AccessToken = await AccessTokenProvider.GetAccessTokenAsync(cancellationToken).ConfigureAwait(false)
         }, cancellationToken).ConfigureAwait(false);
+
+        if (!result.Succeeded)
+        {
+            throw result.Failure!;
+        }
     }
 
-    public async Task<Stream> DownloadAsync(string id, string? onBehalfOfContentOwner = null, string? tfmt = null, string? tlang = null, CancellationToken cancellationToken = default)
+    public async Task<Stream> DownloadAsync(
+        string id,
+        string? onBehalfOfContentOwner = null,
+        string? tfmt = null,
+        string? tlang = null,
+        CancellationToken cancellationToken = default
+    )
     {
         ArgumentNullException.ThrowIfNull(id);
 
@@ -55,11 +67,15 @@ public class CaptionsService(
         return result.Succeeded switch
         {
             true => result.Resource,
-            false => throw new NotImplementedException("@TODO")
+            false => throw result.Failure!
         };
     }
 
-    public Task<CaptionResource> InsertAsync(StringValues part, CaptionResource resource, CancellationToken cancellationToken = default)
+    public Task<CaptionResource> InsertAsync(
+        StringValues part,
+        CaptionResource resource,
+        CancellationToken cancellationToken = default
+    )
     {
         ArgumentNullException.ThrowIfNull(part);
         ArgumentNullException.ThrowIfNull(resource);
@@ -67,7 +83,12 @@ public class CaptionsService(
         return InternalInsertAsync(part, null, resource, null, null, cancellationToken);
     }
 
-    public Task<CaptionResource> InsertAsync(StringValues part, string onBehalfOfContentOwner, CaptionResource resource, CancellationToken cancellationToken = default)
+    public Task<CaptionResource> InsertAsync(
+        StringValues part,
+        string onBehalfOfContentOwner,
+        CaptionResource resource,
+        CancellationToken cancellationToken = default
+    )
     {
         ArgumentNullException.ThrowIfNull(part);
         ArgumentNullException.ThrowIfNull(onBehalfOfContentOwner);
@@ -76,7 +97,12 @@ public class CaptionsService(
         return InternalInsertAsync(part, onBehalfOfContentOwner, resource, null, null, cancellationToken);
     }
 
-    public Task<CaptionResource> InsertAsync(StringValues part, CaptionResource resource, Stream stream, CancellationToken cancellationToken = default)
+    public Task<CaptionResource> InsertAsync(
+        StringValues part,
+        CaptionResource resource,
+        Stream stream,
+        CancellationToken cancellationToken = default
+    )
     {
         ArgumentNullException.ThrowIfNull(part);
         ArgumentNullException.ThrowIfNull(resource);
@@ -85,7 +111,13 @@ public class CaptionsService(
         return InternalInsertAsync(part, null, resource, stream, "application/octet-stream", cancellationToken);
     }
 
-    public Task<CaptionResource> InsertAsync(StringValues part, string onBehalfOfContentOwner, CaptionResource resource, Stream stream, CancellationToken cancellationToken = default)
+    public Task<CaptionResource> InsertAsync(
+        StringValues part,
+        string onBehalfOfContentOwner,
+        CaptionResource resource,
+        Stream stream,
+        CancellationToken cancellationToken = default
+    )
     {
         ArgumentNullException.ThrowIfNull(part);
         ArgumentNullException.ThrowIfNull(onBehalfOfContentOwner);
@@ -95,7 +127,14 @@ public class CaptionsService(
         return InternalInsertAsync(part, null, resource, stream, "application/octet-stream", cancellationToken);
     }
 
-    public Task<CaptionResource> InsertAsync(StringValues part, string onBehalfOfContentOwner, CaptionResource resource, Stream stream, string contentType, CancellationToken cancellationToken = default)
+    public Task<CaptionResource> InsertAsync(
+        StringValues part,
+        string onBehalfOfContentOwner,
+        CaptionResource resource,
+        Stream stream,
+        string contentType,
+        CancellationToken cancellationToken = default
+    )
     {
         ArgumentNullException.ThrowIfNull(part);
         ArgumentNullException.ThrowIfNull(onBehalfOfContentOwner);
@@ -105,7 +144,13 @@ public class CaptionsService(
         return InternalInsertAsync(part, onBehalfOfContentOwner, resource, stream, contentType, cancellationToken);
     }
 
-    public async Task<CaptionListResponse> ListAsync(StringValues part, string videoId, string? id = null, string? onBehalfOfContentOwner = null, CancellationToken cancellationToken = default)
+    public async Task<CaptionListResponse> ListAsync(
+        StringValues part,
+        string videoId,
+        string? id = null,
+        string? onBehalfOfContentOwner = null,
+        CancellationToken cancellationToken = default
+    )
     {
         var handler = await Handlers.GetHandlerAsync<CaptionHandler>()
                    .ConfigureAwait(false) ?? throw new InvalidOperationException("YouTubeCaptionHandler could not be obtained.");
@@ -122,11 +167,15 @@ public class CaptionsService(
         return result.Succeeded switch
         {
             true => result.Resource,
-            false => throw new NotImplementedException("@TODO")
+            false => throw result.Failure!
         };
     }
 
-    public Task<CaptionResource> UpdateAsync(StringValues part, CaptionResource resource, CancellationToken cancellationToken = default)
+    public Task<CaptionResource> UpdateAsync(
+        StringValues part,
+        CaptionResource resource,
+        CancellationToken cancellationToken = default
+    )
     {
         ArgumentNullException.ThrowIfNull(part);
         ArgumentNullException.ThrowIfNull(resource);
@@ -134,7 +183,12 @@ public class CaptionsService(
         return InternalUpdateAsync(part, null, resource, null, null, cancellationToken);
     }
 
-    public Task<CaptionResource> UpdateAsync(StringValues part, string? onBehalfOfContentOwner, CaptionResource resource, CancellationToken cancellationToken = default)
+    public Task<CaptionResource> UpdateAsync(
+        StringValues part,
+        string? onBehalfOfContentOwner,
+        CaptionResource resource,
+        CancellationToken cancellationToken = default
+    )
     {
         ArgumentNullException.ThrowIfNull(part);
         ArgumentNullException.ThrowIfNull(onBehalfOfContentOwner);
@@ -143,7 +197,12 @@ public class CaptionsService(
         return InternalUpdateAsync(part, onBehalfOfContentOwner, resource, null, null, cancellationToken);
     }
 
-    public Task<CaptionResource> UpdateAsync(StringValues part, CaptionResource resource, Stream stream, CancellationToken cancellationToken = default)
+    public Task<CaptionResource> UpdateAsync(
+        StringValues part,
+        CaptionResource resource,
+        Stream stream,
+        CancellationToken cancellationToken = default
+    )
     {
         ArgumentNullException.ThrowIfNull(part);
         ArgumentNullException.ThrowIfNull(resource);
@@ -152,7 +211,13 @@ public class CaptionsService(
         return InternalUpdateAsync(part, null, resource, stream, "application/octet-stream", cancellationToken);
     }
 
-    public Task<CaptionResource> UpdateAsync(StringValues part, string? onBehalfOfContentOwner, CaptionResource resource, Stream stream, CancellationToken cancellationToken = default)
+    public Task<CaptionResource> UpdateAsync(
+        StringValues part,
+        string? onBehalfOfContentOwner,
+        CaptionResource resource,
+        Stream stream,
+        CancellationToken cancellationToken = default
+    )
     {
         ArgumentNullException.ThrowIfNull(part);
         ArgumentNullException.ThrowIfNull(onBehalfOfContentOwner);
@@ -162,7 +227,14 @@ public class CaptionsService(
         return InternalUpdateAsync(part, onBehalfOfContentOwner, resource, stream, null, cancellationToken);
     }
 
-    public Task<CaptionResource> UpdateAsync(StringValues part, string? onBehalfOfContentOwner, CaptionResource resource, Stream stream, string contentType, CancellationToken cancellationToken = default)
+    public Task<CaptionResource> UpdateAsync(
+        StringValues part,
+        string? onBehalfOfContentOwner,
+        CaptionResource resource,
+        Stream stream,
+        string contentType,
+        CancellationToken cancellationToken = default
+    )
     {
         ArgumentNullException.ThrowIfNull(part);
         ArgumentNullException.ThrowIfNull(onBehalfOfContentOwner);
@@ -201,7 +273,7 @@ public class CaptionsService(
         return result.Succeeded switch
         {
             true => result.Resource,
-            false => throw new NotImplementedException("@TODO")
+            false => throw result.Failure!
         };
     }
 
@@ -234,7 +306,7 @@ public class CaptionsService(
         return result.Succeeded switch
         {
             true => result.Resource,
-            false => throw new NotImplementedException("@TODO")
+            false => throw result.Failure!
         };
     }
 }

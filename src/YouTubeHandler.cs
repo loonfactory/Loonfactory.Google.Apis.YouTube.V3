@@ -3,6 +3,7 @@
 using System.Net.Http.Headers;
 using System.Net.Http.Json;
 using System.Text.Json;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.WebUtilities;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
@@ -50,7 +51,7 @@ public abstract class YouTubeHandler : IYouTubeHandler
     /// <param name="logger">The <see cref="ILoggerFactory"/>.</param>
     protected YouTubeHandler(IOptionsMonitor<YouTubeOptions> options, ILoggerFactory logger)
     {
-        Logger = logger.CreateLogger(this.GetType().FullName!);
+        Logger = logger.CreateLogger(GetType().FullName!);
         OptionsMonitor = options;
     }
 
@@ -64,8 +65,11 @@ public abstract class YouTubeHandler : IYouTubeHandler
 
         TimeProvider = Options.TimeProvider ?? TimeProvider.System;
 
-        await InitializeEventsAsync().ConfigureAwait(false);
-        await InitializeHandlerAsync().ConfigureAwait(false);
+        await InitializeEventsAsync()
+            .ConfigureAwait(false);
+
+        await InitializeHandlerAsync()
+            .ConfigureAwait(false);
     }
 
     /// <summary>
@@ -97,7 +101,6 @@ public abstract class YouTubeHandler : IYouTubeHandler
             )).ToList();
 
         parameters.Add(new("key", Options.Key));
-
         return QueryHelpers.AddQueryString(uri, parameters);
     }
 
@@ -167,7 +170,6 @@ public abstract class YouTubeHandler : IYouTubeHandler
     )
     {
         ThrowIfAccessTokenNullOrEmpty(properties.AccessToken);
-
         return SendAsync(request, properties, cancellationToken);
     }
 
@@ -191,7 +193,6 @@ public abstract class YouTubeHandler : IYouTubeHandler
         request.Headers.Authorization = new AuthenticationHeaderValue("Bearer", properties.AccessToken);
 
         var jsonContent = JsonContent.Create(resource);
-
         if (content != null)
         {
             request.Content = new MultipartContent("related") {
@@ -204,15 +205,208 @@ public abstract class YouTubeHandler : IYouTubeHandler
             request.Content = jsonContent;
         }
 
-        var response = await Backchannel.SendAsync(request, cancellationToken).ConfigureAwait(false);
-        var body = await response.Content.ReadAsStringAsync(cancellationToken).ConfigureAwait(false);
+        var response = await Backchannel.SendAsync(request, cancellationToken)
+            .ConfigureAwait(false);
 
-        return response.IsSuccessStatusCode switch
+        return await HandleResponseAsync<T>(response, cancellationToken)
+            .ConfigureAwait(false);
+    }
+
+    protected virtual async Task<YouTubeResult> ExecuteAsync(
+        HttpMethod method,
+        string requestUri,
+        YouTubeProperties properties,
+        CancellationToken cancellationToken
+    )
+    {
+        using var request = CreateHttpRequestMessage(
+            method,
+            requestUri,
+            properties
+        );
+        var response = await SendAsync(request, properties, cancellationToken)
+            .ConfigureAwait(false);
+
+        return await HandleResponseAsync(response, cancellationToken)
+            .ConfigureAwait(false);
+    }
+
+    protected virtual async Task<YouTubeResult> ExecuteAsync(
+        HttpRequestMessage request,
+        YouTubeProperties properties,
+        CancellationToken cancellationToken
+    )
+    {
+        var response = await SendAsync(request, properties, cancellationToken)
+            .ConfigureAwait(false);
+
+        return await HandleResponseAsync(response, cancellationToken)
+            .ConfigureAwait(false);
+    }
+
+    protected virtual Task<YouTubeResult<T>> ExecuteAsync<T>(
+        HttpMethod method,
+        string requestUri,
+        YouTubeProperties properties,
+        CancellationToken cancellationToken
+    ) where T : class
+    {
+        using var request = CreateHttpRequestMessage(method, requestUri, properties);
+        return ExecuteAsync<T>(request, properties, cancellationToken);
+    }
+
+    protected virtual async Task<YouTubeResult<T>> ExecuteAsync<T>(
+        HttpRequestMessage request,
+        YouTubeProperties properties,
+        CancellationToken cancellationToken
+    ) where T : class
+    {
+        var response = await SendAsync(request, properties, cancellationToken).ConfigureAwait(false);
+        return await HandleResponseAsync<T>(response, cancellationToken).ConfigureAwait(false);
+    }
+
+    protected virtual Task<YouTubeResult> AuthorizationExecuteAsync(
+        HttpMethod method,
+        string requestUri,
+        YouTubeProperties properties,
+        CancellationToken cancellationToken
+    )
+    {
+        ThrowIfAccessTokenNullOrEmpty(properties.AccessToken);
+        return ExecuteAsync(method, requestUri, properties, cancellationToken);
+    }
+
+    protected virtual Task<YouTubeResult> AuthorizationExecuteAsync(
+        HttpRequestMessage request,
+        YouTubeProperties properties,
+        CancellationToken cancellationToken
+    )
+    {
+        ThrowIfAccessTokenNullOrEmpty(properties.AccessToken);
+        return ExecuteAsync(request, properties, cancellationToken);
+    }
+
+    protected virtual Task<YouTubeResult<T>> AuthorizationExecuteAsync<T>(
+        HttpMethod method,
+        string requestUri,
+        YouTubeProperties properties,
+        CancellationToken cancellationToken
+    ) where T : class
+    {
+        ThrowIfAccessTokenNullOrEmpty(properties.AccessToken);
+        return ExecuteAsync<T>(method, requestUri, properties, cancellationToken);
+    }
+
+    protected virtual Task<YouTubeResult<T>> AuthorizationExecuteAsync<T>(
+        HttpRequestMessage request,
+        YouTubeProperties properties,
+        CancellationToken cancellationToken
+    ) where T : class
+    {
+        ThrowIfAccessTokenNullOrEmpty(properties.AccessToken);
+        return ExecuteAsync<T>(request, properties, cancellationToken);
+    }
+
+    protected virtual async Task<YouTubeResult> HandleResponseAsync(
+        HttpResponseMessage response,
+        CancellationToken cancellationToken
+    )
+    {
+        string? body;
+        try
         {
-            true => YouTubeResult<T>.Success(
+            body = await response.Content
+                .ReadAsStringAsync(cancellationToken)
+                .ConfigureAwait(false);
+        }
+        catch (Exception ex)
+        {
+            return YouTubeResult.Fail(ex);
+        }
+
+        if (response.IsSuccessStatusCode)
+        {
+            return YouTubeResult.NoResult;
+        }
+
+        return YouTubeResult.Fail(CreateApiException(response, body));
+    }
+
+    protected virtual async Task<YouTubeResult<T>> HandleResponseAsync<T>(
+        HttpResponseMessage response,
+        CancellationToken cancellationToken
+    ) where T : class
+    {
+        string? body;
+        try
+        {
+            body = await response.Content
+                .ReadAsStringAsync(cancellationToken)
+                .ConfigureAwait(false);
+        }
+        catch (Exception ex)
+        {
+            return YouTubeResult<T>.Fail(ex);
+        }
+
+        if (response.IsSuccessStatusCode)
+        {
+            return YouTubeResult<T>.Success(
                 JsonSerializer.Deserialize<T>(body, YouTubeDefaults.JsonSerializerOptions)!
-            ),
-            false => throw new NotImplementedException("Handling of unsuccessful HTTP responses is not yet implemented.")
+            );
+        }
+
+        return YouTubeResult<T>.Fail(CreateApiException(response, body));
+    }
+
+    private static YouTubeApiException CreateApiException(HttpResponseMessage response, string? body)
+    {
+        YouTubeApiRequestError? error = null;
+        Exception? parseException = null;
+
+        if (!string.IsNullOrWhiteSpace(body))
+        {
+            try
+            {
+                error = JsonSerializer.Deserialize<YouTubeApiErrorResponse>(
+                    body,
+                    YouTubeDefaults.JsonSerializerOptions
+                )?.Error;
+            }
+            catch (JsonException exception)
+            {
+                parseException = exception;
+            }
+        }
+
+        error ??= new YouTubeApiRequestError
+        {
+            Code = (int)response.StatusCode,
+            Message = response.ReasonPhrase
         };
+
+        return new YouTubeApiException(
+            response.StatusCode,
+            error,
+            body,
+            CopyResponseHeaders(response),
+            parseException);
+    }
+
+    private static IReadOnlyDictionary<string, IReadOnlyList<string>> CopyResponseHeaders(HttpResponseMessage response)
+    {
+        var headers = new Dictionary<string, IReadOnlyList<string>>(StringComparer.OrdinalIgnoreCase);
+
+        foreach (var header in response.Headers)
+        {
+            headers[header.Key] = [.. header.Value];
+        }
+
+        foreach (var header in response.Content.Headers)
+        {
+            headers[header.Key] = [.. header.Value];
+        }
+
+        return headers;
     }
 }

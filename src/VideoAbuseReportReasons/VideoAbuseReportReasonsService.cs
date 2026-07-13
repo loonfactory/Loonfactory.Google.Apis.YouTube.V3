@@ -35,7 +35,7 @@ public class VideoAbuseReportReasonsService(
         return result.Succeeded switch
         {
             true => result.Resource,
-            false => throw new NotImplementedException("@TODO")
+            false => throw result.Failure!
         };
     }
 }

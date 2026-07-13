@@ -1,7 +1,5 @@
 // Licensed under the MIT license by loonfactory.
 
-using System.Text.Encodings.Web;
-using System.Text.Json;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 
@@ -12,29 +10,20 @@ public class MemberHandler(
     ILoggerFactory logger
 ) : YouTubeHandler(options, logger), IMemberHandler
 {
-    public virtual async Task<YouTubeResult<MemberListResponse>> HandleMemberListAsync(MemberProperties properties, CancellationToken cancellationToken)
+    public virtual Task<YouTubeResult<MemberListResponse>> HandleMemberListAsync(MemberProperties properties, CancellationToken cancellationToken)
     {
         ArgumentNullException.ThrowIfNull(properties);
 
         if ((properties.Parts?.Count ?? 0) == 0)
         {
-            throw new InvalidOperationException("@TODO");
+            throw new InvalidOperationException("The parts parameter must be provided in the properties.");
         }
 
-        var response = await AuthorizationSendAsync(
+        return AuthorizationExecuteAsync<MemberListResponse>(
             HttpMethod.Get,
             MemberDefaults.ListEndpoint,
             properties,
-            cancellationToken).ConfigureAwait(false);
-
-        if (!response.IsSuccessStatusCode)
-        {
-            throw new NotImplementedException("Handling of unsuccessful HTTP responses is not yet implemented.");
-        }
-
-        var body = await response.Content.ReadAsStringAsync(cancellationToken).ConfigureAwait(false);
-        return YouTubeResult<MemberListResponse>.Success(
-            JsonSerializer.Deserialize<MemberListResponse>(body, YouTubeDefaults.JsonSerializerOptions)!
+            cancellationToken
         );
     }
 }

@@ -1,6 +1,5 @@
 // Licensed under the MIT license by loonfactory.
 
-using System.Net.Http.Json;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 
@@ -11,31 +10,18 @@ public class PlaylistImageHandler(
     ILoggerFactory logger
 ) : YouTubeHandler(options, logger), IPlaylistImageHandler
 {
-    public virtual async Task<YouTubeResult<PlaylistImageListResponse>> HandlePlaylistImageListAsync(
+    public virtual Task<YouTubeResult<PlaylistImageListResponse>> HandlePlaylistImageListAsync(
         PlaylistImageProperties properties,
         CancellationToken cancellationToken
     )
     {
         ArgumentNullException.ThrowIfNull(properties);
-        ThrowIfAccessTokenNullOrEmpty(properties.AccessToken);
 
-        var response = await AuthorizationSendAsync(
+        return AuthorizationExecuteAsync<PlaylistImageListResponse>(
             HttpMethod.Get,
             PlaylistImageDefaults.ListEndpoint,
             properties,
             cancellationToken
-        ).ConfigureAwait(false);
-
-        if (!response.IsSuccessStatusCode)
-        {
-            throw new NotImplementedException("Handling of unsuccessful HTTP responses is not yet implemented.");
-        }
-
-        return YouTubeResult<PlaylistImageListResponse>.Success(
-            (await response.Content.ReadFromJsonAsync<PlaylistImageListResponse>(
-                YouTubeDefaults.JsonSerializerOptions,
-                cancellationToken
-            ).ConfigureAwait(false))!
         );
     }
 
@@ -47,11 +33,10 @@ public class PlaylistImageHandler(
     {
         ArgumentNullException.ThrowIfNull(resource);
         ArgumentNullException.ThrowIfNull(properties);
-        ArgumentNullException.ThrowIfNull(cancellationToken);
 
         var endpoint = BuildChallengeUrl(PlaylistImageDefaults.InsertEndpoint, properties);
         var request = new HttpRequestMessage(HttpMethod.Post, endpoint);
-        return InternalHandlePlaylistImageUploadAsync(request, resource, content, properties, cancellationToken);
+        return UploadAsync(request, resource, content, properties, cancellationToken);
     }
 
     public virtual Task<YouTubeResult<PlaylistImageResource>> HandlePlaylistImageUpdateAsync(
@@ -62,35 +47,18 @@ public class PlaylistImageHandler(
     {
         ArgumentNullException.ThrowIfNull(resource);
         ArgumentNullException.ThrowIfNull(properties);
-        ArgumentNullException.ThrowIfNull(cancellationToken);
 
         if (string.IsNullOrEmpty(resource.Id))
         {
-            throw new InvalidOperationException("@TODO");
+            throw new InvalidOperationException("The PlaylistImage id must be provided in the resource.");
         }
 
         var endpoint = BuildChallengeUrl(PlaylistImageDefaults.UpdateEndpoint, properties);
         var request = new HttpRequestMessage(HttpMethod.Put, endpoint);
-        return InternalHandlePlaylistImageUploadAsync(request, resource, content, properties, cancellationToken);
+        return UploadAsync(request, resource, content, properties, cancellationToken);
     }
 
-    private Task<YouTubeResult<PlaylistImageResource>> InternalHandlePlaylistImageUploadAsync(
-        HttpRequestMessage request,
-        PlaylistImageResource resource,
-        StreamContent content,
-        PlaylistImageProperties properties,
-        CancellationToken cancellationToken)
-    {
-        return UploadAsync(
-            request,
-            resource,
-            content,
-            properties,
-            cancellationToken
-        );
-    }
-
-    public virtual async Task<YouTubeResult> HandlePlaylistImageDeleteAsync(PlaylistImageProperties properties, CancellationToken cancellationToken)
+    public virtual Task<YouTubeResult> HandlePlaylistImageDeleteAsync(PlaylistImageProperties properties, CancellationToken cancellationToken)
     {
         ArgumentNullException.ThrowIfNull(properties);
 
@@ -99,18 +67,11 @@ public class PlaylistImageHandler(
             throw new InvalidOperationException("The PlaylistImage id must be provided in the properties.");
         }
 
-        var response = await AuthorizationSendAsync(
+        return AuthorizationExecuteAsync(
             HttpMethod.Delete,
             PlaylistImageDefaults.DeleteEndpoint,
             properties,
             cancellationToken
-        ).ConfigureAwait(false);
-
-        return response.IsSuccessStatusCode switch
-        {
-            true => YouTubeResult.NoResult,
-            false => throw new NotImplementedException("Handling of unsuccessful HTTP responses is not yet implemented.")
-        };
+        );
     }
-
 }

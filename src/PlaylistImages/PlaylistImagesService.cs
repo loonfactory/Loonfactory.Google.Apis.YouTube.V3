@@ -89,7 +89,7 @@ public class PlaylistImagesService(
         return result.Succeeded switch
         {
             true => result.Resource,
-            false => throw new NotImplementedException("@TODO")
+            false => throw result.Failure!
         };
     }
 
@@ -181,7 +181,7 @@ public class PlaylistImagesService(
         ).ConfigureAwait(false) switch
         {
             { Succeeded: true, Resource: var result } => result,
-            { Succeeded: false } => throw new NotImplementedException("@TODO"),
+            { Succeeded: false } result => throw result.Failure!,
             _ => throw new InvalidOperationException("Unexpected result.")
         };
     }
@@ -268,7 +268,7 @@ public class PlaylistImagesService(
         ).ConfigureAwait(false) switch
         {
             { Succeeded: true, Resource: var result } => result,
-            { Succeeded: false } => throw new NotImplementedException("@TODO"),
+            { Succeeded: false } result => throw result.Failure!,
             _ => throw new InvalidOperationException("Unexpected result.")
         };
     }

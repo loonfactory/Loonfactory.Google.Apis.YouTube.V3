@@ -151,12 +151,9 @@ public class VideosService(
         var result = await handler.HandleVideoListAsync(properties, cancellationToken)
                                   .ConfigureAwait(false);
 
-        if (!result.Succeeded)
-        {
-            throw new InvalidOperationException("Video list request failed. [TODO: unify error handling]");
-        }
-
-        return result.Resource;
+        return result.Succeeded
+            ? result.Resource
+            : throw result.Failure!;
     }
 
     public Task<VideoResource> InsertAsync(
@@ -230,7 +227,7 @@ public class VideosService(
         return result.Succeeded switch
         {
             true => result.Resource,
-            false => throw new NotImplementedException("@TODO")
+            false => throw result.Failure!
         };
     }
 
@@ -286,7 +283,7 @@ public class VideosService(
         return result.Succeeded switch
         {
             true => result.Resource,
-            false => throw new NotImplementedException("@TODO")
+            false => throw result.Failure!
         };
     }
 
@@ -311,12 +308,10 @@ public class VideosService(
         };
 
         var result = await handler.HandleVideoDeleteAsync(properties, cancellationToken).ConfigureAwait(false);
-        if (result.Succeeded)
+        if (!result.Succeeded)
         {
-            return;
+            throw result.Failure!;
         }
-
-        throw new NotImplementedException("@TODO");
     }
 
     public async Task RateAsync(
@@ -342,12 +337,10 @@ public class VideosService(
         };
 
         var result = await handler.HandleVideoRateAsync(properties, cancellationToken).ConfigureAwait(false);
-        if (result.Succeeded)
+        if (!result.Succeeded)
         {
-            return;
+            throw result.Failure!;
         }
-
-        throw new NotImplementedException("@TODO");
     }
 
     public async Task<VideoGetRatingResponse> GetRatingAsync(
@@ -374,7 +367,7 @@ public class VideosService(
         return result.Succeeded switch
         {
             true => result.Resource,
-            false => throw new NotImplementedException("@TODO")
+            false => throw result.Failure!
         };
     }
 
@@ -393,11 +386,9 @@ public class VideosService(
         };
 
         var result = await handler.HandleVideoReportAbuseAsync(resource, properties, cancellationToken).ConfigureAwait(false);
-        if (result.Succeeded)
+        if (!result.Succeeded)
         {
-            return;
+            throw result.Failure!;
         }
-
-        throw new NotImplementedException("@TODO");
     }
 }

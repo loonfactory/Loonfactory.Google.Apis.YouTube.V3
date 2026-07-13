@@ -12,7 +12,7 @@ public class VideoHandler(
     ILoggerFactory logger
 ) : YouTubeHandler(options, logger), IVideoHandler
 {
-    public virtual async Task<YouTubeResult<VideoListResponse>> HandleVideoListAsync(
+    public virtual Task<YouTubeResult<VideoListResponse>> HandleVideoListAsync(
         VideoProperties properties,
         CancellationToken cancellationToken)
     {
@@ -44,23 +44,11 @@ public class VideoHandler(
             throw new InvalidOperationException("Filters (specify exactly one of the following parameters): id, chart, myRating.");
         }
 
-        using var response = await SendAsync(
+        return ExecuteAsync<VideoListResponse>(
             HttpMethod.Get,
             VideoDefaults.ListEndpoint,
             properties,
             cancellationToken
-        ).ConfigureAwait(false);
-
-        if (!response.IsSuccessStatusCode)
-        {
-            throw new NotImplementedException("Handling of unsuccessful HTTP responses is not yet implemented.");
-        }
-
-        return YouTubeResult<VideoListResponse>.Success(
-            (await response.Content.ReadFromJsonAsync<VideoListResponse>(
-                YouTubeDefaults.JsonSerializerOptions,
-                cancellationToken
-            ).ConfigureAwait(false))!
         );
     }
 
@@ -72,7 +60,6 @@ public class VideoHandler(
     {
         ArgumentNullException.ThrowIfNull(resource);
         ArgumentNullException.ThrowIfNull(properties);
-        ArgumentNullException.ThrowIfNull(cancellationToken);
 
         if (StringValues.IsNullOrEmpty(properties.Part))
         {
@@ -94,7 +81,6 @@ public class VideoHandler(
     {
         ArgumentNullException.ThrowIfNull(resource);
         ArgumentNullException.ThrowIfNull(properties);
-        ArgumentNullException.ThrowIfNull(cancellationToken);
 
         if (StringValues.IsNullOrEmpty(properties.Part))
         {
@@ -113,7 +99,7 @@ public class VideoHandler(
         return UploadAsync(request, resource, content, properties, cancellationToken);
     }
 
-    public virtual async Task<YouTubeResult> HandleVideoDeleteAsync(
+    public virtual Task<YouTubeResult> HandleVideoDeleteAsync(
         VideoProperties properties,
         CancellationToken cancellationToken)
     {
@@ -124,21 +110,15 @@ public class VideoHandler(
             throw new InvalidOperationException("The video id must be provided in the properties.");
         }
 
-        using var response = await AuthorizationSendAsync(
+        return AuthorizationExecuteAsync(
             HttpMethod.Delete,
             VideoDefaults.DeleteEndpoint,
             properties,
             cancellationToken
-        ).ConfigureAwait(false);
-
-        return response.IsSuccessStatusCode switch
-        {
-            true => YouTubeResult.NoResult,
-            false => throw new NotImplementedException("Handling of unsuccessful HTTP responses is not yet implemented.")
-        };
+        );
     }
 
-    public virtual async Task<YouTubeResult> HandleVideoRateAsync(
+    public virtual Task<YouTubeResult> HandleVideoRateAsync(
         VideoProperties properties,
         CancellationToken cancellationToken)
     {
@@ -154,21 +134,15 @@ public class VideoHandler(
             throw new InvalidOperationException("The rating parameter must be provided in the properties.");
         }
 
-        using var response = await AuthorizationSendAsync(
+        return AuthorizationExecuteAsync(
             HttpMethod.Post,
             VideoDefaults.RateEndpoint,
             properties,
             cancellationToken
-        ).ConfigureAwait(false);
-
-        return response.IsSuccessStatusCode switch
-        {
-            true => YouTubeResult.NoResult,
-            false => throw new NotImplementedException("Handling of unsuccessful HTTP responses is not yet implemented.")
-        };
+        );
     }
 
-    public virtual async Task<YouTubeResult<VideoGetRatingResponse>> HandleVideoGetRatingAsync(
+    public virtual Task<YouTubeResult<VideoGetRatingResponse>> HandleVideoGetRatingAsync(
         VideoProperties properties,
         CancellationToken cancellationToken)
     {
@@ -179,27 +153,15 @@ public class VideoHandler(
             throw new InvalidOperationException("The video id must be provided in the properties.");
         }
 
-        using var response = await AuthorizationSendAsync(
+        return AuthorizationExecuteAsync<VideoGetRatingResponse>(
             HttpMethod.Get,
             VideoDefaults.GetRatingEndpoint,
             properties,
             cancellationToken
-        ).ConfigureAwait(false);
-
-        if (!response.IsSuccessStatusCode)
-        {
-            throw new NotImplementedException("Handling of unsuccessful HTTP responses is not yet implemented.");
-        }
-
-        return YouTubeResult<VideoGetRatingResponse>.Success(
-            (await response.Content.ReadFromJsonAsync<VideoGetRatingResponse>(
-                YouTubeDefaults.JsonSerializerOptions,
-                cancellationToken
-            ).ConfigureAwait(false))!
         );
     }
 
-    public virtual async Task<YouTubeResult> HandleVideoReportAbuseAsync(
+    public virtual Task<YouTubeResult> HandleVideoReportAbuseAsync(
         VideoReportAbuseRequest resource,
         VideoProperties properties,
         CancellationToken cancellationToken)
@@ -223,16 +185,11 @@ public class VideoHandler(
             Content = JsonContent.Create(resource)
         };
 
-        using var response = await AuthorizationSendAsync(
+        return AuthorizationExecuteAsync(
             request,
             properties,
             cancellationToken
-        ).ConfigureAwait(false);
-
-        return response.IsSuccessStatusCode switch
-        {
-            true => YouTubeResult.NoResult,
-            false => throw new NotImplementedException("Handling of unsuccessful HTTP responses is not yet implemented.")
-        };
+        );
     }
 }
+

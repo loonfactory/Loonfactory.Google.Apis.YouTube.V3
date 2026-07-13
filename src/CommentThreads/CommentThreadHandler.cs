@@ -1,8 +1,6 @@
 // Licensed under the MIT license by loonfactory.
 
-using System.Net.Http.Headers;
 using System.Net.Http.Json;
-using System.Text.Json;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 
@@ -13,26 +11,15 @@ public class CommentThreadHandler(
     ILoggerFactory logger
 ) : YouTubeHandler(options, logger), ICommentThreadHandler
 {
-    public virtual async Task<YouTubeResult<CommentListResponse>> HandleCommentThreadListAsync(CommentThreadProperties properties, CancellationToken cancellationToken)
+    public virtual Task<YouTubeResult<CommentListResponse>> HandleCommentThreadListAsync(CommentThreadProperties properties, CancellationToken cancellationToken)
     {
         ArgumentNullException.ThrowIfNull(properties);
 
-        var response = await SendAsync(
+        return ExecuteAsync<CommentListResponse>(
             HttpMethod.Get,
             CommentThreadDefaults.ListEndpoint,
             properties,
             cancellationToken
-        ).ConfigureAwait(false);
-
-        if (!response.IsSuccessStatusCode)
-        {
-            throw new NotImplementedException("Handling of unsuccessful HTTP responses is not yet implemented.");
-        }
-
-        return YouTubeResult<CommentListResponse>.Success(
-            (await response.Content.ReadFromJsonAsync<CommentListResponse>(
-                YouTubeDefaults.JsonSerializerOptions, cancellationToken
-            ).ConfigureAwait(false))!
         );
     }
 
@@ -43,36 +30,12 @@ public class CommentThreadHandler(
     {
         ArgumentNullException.ThrowIfNull(resource);
         ArgumentNullException.ThrowIfNull(properties);
-        ArgumentNullException.ThrowIfNull(cancellationToken);
-
-        if (string.IsNullOrEmpty(properties.AccessToken))
-        {
-            throw new InvalidOperationException("An access token must be provided in the properties.");
-        }
 
         var endpoint = BuildChallengeUrl(CommentThreadDefaults.InsertEndpoint, properties);
-        var request = new HttpRequestMessage(HttpMethod.Post, endpoint);
-        return InternalHandleCommentUploadAsync(request, resource, properties, cancellationToken);
-
-        async Task<YouTubeResult<CommentThreadResource>> InternalHandleCommentUploadAsync(
-            HttpRequestMessage request,
-            CommentThreadResource resource,
-            CommentThreadProperties properties,
-            CancellationToken cancellationToken)
+        var request = new HttpRequestMessage(HttpMethod.Post, endpoint)
         {
-            request.Headers.Authorization = new AuthenticationHeaderValue("Bearer", properties.AccessToken);
-            request.Content = JsonContent.Create(resource);
-
-            var response = await Backchannel.SendAsync(request, cancellationToken).ConfigureAwait(false);
-            var body = await response.Content.ReadAsStringAsync(cancellationToken).ConfigureAwait(false);
-
-            return response.IsSuccessStatusCode switch
-            {
-                true => YouTubeResult<CommentThreadResource>.Success(
-                    JsonSerializer.Deserialize<CommentThreadResource>(body, YouTubeDefaults.JsonSerializerOptions)!
-                ),
-                false => throw new NotImplementedException("Handling of unsuccessful HTTP responses is not yet implemented.")
-            };
-        }
+            Content = JsonContent.Create(resource)
+        };
+        return AuthorizationExecuteAsync<CommentThreadResource>(request, properties, cancellationToken);
     }
 }

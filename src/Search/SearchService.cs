@@ -109,8 +109,7 @@ public class SearchService(
             var token = await AccessTokenProvider.GetAccessTokenAsync(cancellationToken).ConfigureAwait(false);
             if (string.IsNullOrWhiteSpace(token))
             {
-                // @TODO: Replace InvalidOperationException with a YouTubeApiException aligned with the API's 403/401 error model.
-                throw new InvalidOperationException("@TODO");
+                throw new InvalidOperationException("An access token is required when 'forMine' is set to true.");
             }
 
             properties.AccessToken = token;
@@ -120,7 +119,7 @@ public class SearchService(
         return result.Succeeded switch
         {
             true => result.Resource,
-            false => throw new NotImplementedException("@TODO")
+            false => throw result.Failure!
         };
     }
 }

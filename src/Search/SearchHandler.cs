@@ -1,6 +1,5 @@
 // Licensed under the MIT license by loonfactory.
 
-using System.Net.Http.Json;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 
@@ -11,29 +10,17 @@ public class SearchHandler(
     ILoggerFactory logger
 ) : YouTubeHandler(options, logger), ISearchHandler
 {
-    public virtual async Task<YouTubeResult<SearchListResponse>> HandleSearchListAsync(
+    public virtual Task<YouTubeResult<SearchListResponse>> HandleSearchListAsync(
         SearchProperties properties,
         CancellationToken cancellationToken)
     {
         ArgumentNullException.ThrowIfNull(properties);
 
-        var response = await SendAsync(
+        return ExecuteAsync<SearchListResponse>(
             HttpMethod.Get,
             SearchDefaults.ListEndpoint,
             properties,
             cancellationToken
-        ).ConfigureAwait(false);
-
-        if (!response.IsSuccessStatusCode)
-        {
-            throw new NotImplementedException("Handling of unsuccessful HTTP responses is not yet implemented.");
-        }
-
-        return YouTubeResult<SearchListResponse>.Success(
-            (await response.Content.ReadFromJsonAsync<SearchListResponse>(
-                YouTubeDefaults.JsonSerializerOptions,
-                cancellationToken
-            ).ConfigureAwait(false))!
         );
     }
 

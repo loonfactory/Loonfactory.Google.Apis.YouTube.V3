@@ -76,7 +76,7 @@ public class WatermarkHandler(
     }
 
     /// <inheritdoc />
-    public virtual async Task<YouTubeResult> HandleUnsetAsync(
+    public virtual Task<YouTubeResult> HandleUnsetAsync(
         WatermarkProperties properties,
         CancellationToken cancellationToken)
     {
@@ -87,46 +87,33 @@ public class WatermarkHandler(
             throw new ArgumentException("The channelId must be provided in the properties.", nameof(properties));
         }
 
-        using var request = CreateHttpRequestMessage(
+        return AuthorizationExecuteAsync(
             HttpMethod.Post,
             WatermarkDefaults.UnsetEndpoint,
-            properties
-        );
-
-        using var response = await AuthorizationSendAsync(
-            request,
             properties,
             cancellationToken
-        ).ConfigureAwait(false);
-
-        if (!response.IsSuccessStatusCode)
-        {
-            throw new InvalidOperationException("Watermark unset request failed. [TODO: unify error handling]");
-        }
-
-        return YouTubeResult.NoResult;
+        );
     }
 
-    private async Task<YouTubeResult> InternalHandleSetUploadAsync(
+    private Task<YouTubeResult> InternalHandleSetUploadAsync(
         WatermarkResource resource,
         WatermarkProperties properties,
         CancellationToken cancellationToken)
     {
         var endpoint = BuildChallengeUrl(WatermarkDefaults.SetEndpoint, properties);
-        using var request = new HttpRequestMessage(HttpMethod.Post, endpoint);
-
-        request.Content = JsonContent.Create(resource, options: YouTubeDefaults.JsonSerializerOptions);
-
-        using var response = await AuthorizationSendAsync(request, properties, cancellationToken).ConfigureAwait(false);
-        if (!response.IsSuccessStatusCode)
+        using var request = new HttpRequestMessage(HttpMethod.Post, endpoint)
         {
-            throw new InvalidOperationException("Watermark set request failed. [TODO: unify error handling]");
-        }
+            Content = JsonContent.Create(resource, options: YouTubeDefaults.JsonSerializerOptions)
+        };
 
-        return YouTubeResult.NoResult;
+        return AuthorizationExecuteAsync(
+            request,
+            properties,
+            cancellationToken
+        );
     }
 
-    private async Task<YouTubeResult> InternalHandleSetStreamUploadAsync(
+    private Task<YouTubeResult> InternalHandleSetStreamUploadAsync(
         WatermarkResource resource,
         Stream stream,
         MediaTypeHeaderValue mediaTypeHeader,
@@ -157,12 +144,10 @@ public class WatermarkHandler(
 
         request.Content = multipart;
 
-        using var response = await AuthorizationSendAsync(request, properties, cancellationToken).ConfigureAwait(false);
-        if (!response.IsSuccessStatusCode)
-        {
-            throw new InvalidOperationException("Watermark set request failed. [TODO: unify error handling]");
-        }
-
-        return YouTubeResult.NoResult;
+        return AuthorizationExecuteAsync(
+            request,
+            properties,
+            cancellationToken
+        );
     }
 }

@@ -1,8 +1,6 @@
 // Licensed under the MIT license by loonfactory.
 
-using System.Net.Http.Headers;
 using System.Net.Http.Json;
-using System.Text.Json;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 
@@ -16,13 +14,13 @@ public class ChannelHandler(
     public virtual Task<YouTubeResult<CaptionListResponse>> HandleChannelListAsync(ChannelProperties properties, CancellationToken cancellationToken)
     {
         ArgumentNullException.ThrowIfNull(properties);
-        ArgumentNullException.ThrowIfNull(cancellationToken);
 
-        var endpoint = BuildChallengeUrl(ChannelDefaults.ListEndpoint, properties);
-        var request = new HttpRequestMessage(HttpMethod.Get, endpoint);
-        request.Headers.Authorization = new AuthenticationHeaderValue("Bearer", properties.AccessToken);
-
-        return InternalHandle<CaptionListResponse>(request, cancellationToken);
+        return AuthorizationExecuteAsync<CaptionListResponse>(
+            HttpMethod.Get,
+            ChannelDefaults.ListEndpoint,
+            properties,
+            cancellationToken
+        );
     }
 
     public virtual Task<YouTubeResult<ChannelResource>> HandleChannelUpdateAsync(ChannelProperties properties, ChannelResource resource, CancellationToken cancellationToken)
@@ -32,24 +30,11 @@ public class ChannelHandler(
         {
             Content = JsonContent.Create(resource),
         };
-        request.Headers.Authorization = new AuthenticationHeaderValue("Bearer", properties.AccessToken);
 
-        return InternalHandle<ChannelResource>(request, cancellationToken);
-    }
-
-    private async Task<YouTubeResult<T>> InternalHandle<T>(
-            HttpRequestMessage request,
-            CancellationToken cancellationToken) where T : class
-    {
-        var response = await Backchannel.SendAsync(request, cancellationToken).ConfigureAwait(false);
-        var body = await response.Content.ReadAsStringAsync(cancellationToken).ConfigureAwait(false);
-
-        return response.IsSuccessStatusCode switch
-        {
-            true => YouTubeResult<T>.Success(
-                JsonSerializer.Deserialize<T>(body, YouTubeDefaults.JsonSerializerOptions)!
-            ),
-            false => throw new NotImplementedException("Handling of unsuccessful HTTP responses is not yet implemented.")
-        };
+        return AuthorizationExecuteAsync<ChannelResource>(
+            request,
+            properties,
+            cancellationToken
+        );
     }
 }

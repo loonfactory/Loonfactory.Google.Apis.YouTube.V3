@@ -1,7 +1,6 @@
 // Licensed under the MIT license by loonfactory.
 
 using System.Net.Http.Headers;
-using System.Net.Http.Json;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 
@@ -47,35 +46,14 @@ public class ThumbnailHandler(
             throw new ArgumentException($"contentType must be one of: {allowed}.", nameof(contentType));
         }
 
-        return InternalHandleSetAsync(stream, mediaTypeHeader, properties, cancellationToken);
-    }
-
-    private async Task<YouTubeResult<ThumbnailSetResponse>> InternalHandleSetAsync(
-        Stream stream,
-        MediaTypeHeaderValue mediaTypeHeader,
-        ThumbnailProperties properties,
-        CancellationToken cancellationToken)
-    {
         var endpoint = BuildChallengeUrl(ThumbnailDefaults.SetEndpoint, properties);
-        using var request = new HttpRequestMessage(HttpMethod.Post, endpoint);
+        var request = new HttpRequestMessage(HttpMethod.Post, endpoint);
 
-        using var streamContent = new StreamContent(stream);
+        var streamContent = new StreamContent(stream);
         streamContent.Headers.ContentType = mediaTypeHeader;
         request.Content = streamContent;
 
-        using var response = await AuthorizationSendAsync(request, properties, cancellationToken).ConfigureAwait(false);
-        if (!response.IsSuccessStatusCode)
-        {
-            //@TODO: Implement error handling
-            throw new InvalidOperationException("Thumbnail upload failed. [TODO: unify error handling]");
-        }
-
-        var result = await response.Content.ReadFromJsonAsync<ThumbnailSetResponse>(
-            YouTubeDefaults.JsonSerializerOptions,
-            cancellationToken
-        ).ConfigureAwait(false) ?? throw new InvalidOperationException("Thumbnail upload failed. [TODO: unify error handling]");
-
-        return YouTubeResult<ThumbnailSetResponse>.Success(result);
+        return AuthorizationExecuteAsync<ThumbnailSetResponse>(request, properties, cancellationToken);
     }
 
 }
