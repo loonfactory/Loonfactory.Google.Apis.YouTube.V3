@@ -2,6 +2,7 @@
 
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
+using System.Net.Http.Headers;
 
 namespace Loonfactory.Google.Apis.YouTube.V3.Captions;
 
@@ -30,19 +31,20 @@ public class CaptionHandler(
             throw new InvalidOperationException("The caption id must be provided in the properties.");
         }
 
-        if ((properties.Part?.Length ?? 0) == 0)
-        {
-            throw new InvalidOperationException("The part parameter must be provided in the properties.");
-        }
+        ThrowIfAccessTokenNullOrEmpty(properties.AccessToken);
 
-        var response = await AuthorizationSendAsync(
+        using var request = CreateHttpRequestMessage(
             HttpMethod.Get,
             $"{CaptionDefaults.DownloadEndpoint}{properties.Id}",
-            properties,
-            cancellationToken
-        ).ConfigureAwait(false);
+            properties);
+        request.Headers.Authorization = new AuthenticationHeaderValue("Bearer", properties.AccessToken);
 
-        return await HandleResponseAsync<Stream>(response, cancellationToken).ConfigureAwait(false);
+        var response = await Backchannel.SendAsync(
+            request,
+            HttpCompletionOption.ResponseHeadersRead,
+            cancellationToken).ConfigureAwait(false);
+
+        return await HandleStreamResponseAsync(response, cancellationToken).ConfigureAwait(false);
     }
 
     /// <summary>

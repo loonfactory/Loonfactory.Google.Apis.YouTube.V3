@@ -359,6 +359,43 @@ public abstract class YouTubeHandler : IYouTubeHandler
         return YouTubeResult<T>.Fail(CreateApiException(response, body));
     }
 
+    protected virtual async Task<YouTubeResult<Stream>> HandleStreamResponseAsync(
+        HttpResponseMessage response,
+        CancellationToken cancellationToken
+    )
+    {
+        if (!response.IsSuccessStatusCode)
+        {
+            using (response)
+            {
+                string? body;
+                try
+                {
+                    body = await response.Content
+                        .ReadAsStringAsync(cancellationToken)
+                        .ConfigureAwait(false);
+                }
+                catch (Exception ex)
+                {
+                    return YouTubeResult<Stream>.Fail(ex);
+                }
+
+                return YouTubeResult<Stream>.Fail(CreateApiException(response, body));
+            }
+        }
+
+        try
+        {
+            return YouTubeResult<Stream>.Success(
+                await response.Content.ReadAsStreamAsync(cancellationToken).ConfigureAwait(false));
+        }
+        catch (Exception ex)
+        {
+            response.Dispose();
+            return YouTubeResult<Stream>.Fail(ex);
+        }
+    }
+
     private static YouTubeApiException CreateApiException(HttpResponseMessage response, string? body)
     {
         YouTubeApiRequestError? error = null;
