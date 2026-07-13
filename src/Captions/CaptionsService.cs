@@ -61,6 +61,8 @@ public class CaptionsService(
         {
             Id = id,
             OnBehalfOfContentOwner = onBehalfOfContentOwner,
+            Tfmt = tfmt,
+            Tlang = tlang,
             AccessToken = await AccessTokenProvider.GetAccessTokenAsync(cancellationToken).ConfigureAwait(false)
         }, cancellationToken).ConfigureAwait(false);
 

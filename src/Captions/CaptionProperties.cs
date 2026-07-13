@@ -16,6 +16,10 @@ public class CaptionProperties : YouTubeProperties
 
     public static readonly string PartsKey = "parts";
 
+    public static readonly string TfmtKey = "tfmt";
+
+    public static readonly string TlangKey = "tlang";
+
     /// <summary>
     /// The parameter key for the "onBehalfOfContentOwner" argument being used for a challenge request.
     /// </summary>
@@ -71,5 +75,17 @@ public class CaptionProperties : YouTubeProperties
     {
         get => GetParameter<string[]>(PartsKey);
         set => SetParameter(PartsKey, value);
+    }
+
+    public string? Tfmt
+    {
+        get => GetParameter<string>(TfmtKey);
+        set => SetParameter(TfmtKey, value);
+    }
+
+    public string? Tlang
+    {
+        get => GetParameter<string>(TlangKey);
+        set => SetParameter(TlangKey, value);
     }
 }
