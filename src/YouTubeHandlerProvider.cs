@@ -1,5 +1,6 @@
 // Licensed under the MIT license by loonfactory.
 
+using System.Collections.Concurrent;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace Loonfactory.Google.Apis.YouTube.V3;
@@ -14,8 +15,10 @@ public class YouTubeHandlerProvider(IServiceProvider serviceProvider) : IYouTube
     /// </summary>
     public IServiceProvider ServiceProvider { get; } = serviceProvider;
 
-    // handler instance cache, need to initialize once per request
-    private readonly Dictionary<Type, IYouTubeHandler> _handlerMap = [];
+    // Each lazy value owns the asynchronous creation and initialization of one handler type.
+    // The provider is scoped, so successful and failed initialization tasks are shared only
+    // within the current request scope.
+    private readonly ConcurrentDictionary<Type, Lazy<Task<IYouTubeHandler>>> _handlerMap = [];
 
     /// <summary>
     /// Returns the handler instance that will be used.
@@ -25,20 +28,23 @@ public class YouTubeHandlerProvider(IServiceProvider serviceProvider) : IYouTube
     /// <returns>The handler instance.</returns>
     public async Task<T?> GetHandlerAsync<T>() where T : class, IYouTubeHandler
     {
-        if (_handlerMap.TryGetValue(typeof(T), out var value))
-        {
-            return value as T;
-        }
-
         var handlerType = typeof(T);
-        var handler = ActivatorUtilities.CreateInstance(ServiceProvider, handlerType)
-            as T;
+        var lazyHandler = _handlerMap.GetOrAdd(
+            handlerType,
+            type => new Lazy<Task<IYouTubeHandler>>(
+                () => CreateAndInitializeHandlerAsync(type),
+                LazyThreadSafetyMode.ExecutionAndPublication));
 
-        if (handler != null)
-        {
-            await handler.InitializeAsync().ConfigureAwait(false);
-            _handlerMap[handlerType] = handler;
-        }
+        return await lazyHandler.Value.ConfigureAwait(false) as T;
+    }
+
+    private async Task<IYouTubeHandler> CreateAndInitializeHandlerAsync(Type handlerType)
+    {
+        var handler = ActivatorUtilities.CreateInstance(ServiceProvider, handlerType)
+            as IYouTubeHandler
+            ?? throw new InvalidOperationException($"Unable to create a YouTube handler for type '{handlerType}'.");
+
+        await handler.InitializeAsync().ConfigureAwait(false);
         return handler;
     }
 }
