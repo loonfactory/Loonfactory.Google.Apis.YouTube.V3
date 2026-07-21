@@ -1,5 +1,7 @@
 ﻿// Licensed under the MIT license by loonfactory.
 
+using System.Diagnostics;
+
 namespace Loonfactory.Google.Apis.YouTube.V3;
 
 /// <summary>
@@ -38,7 +40,28 @@ public class YouTubeOptions
     /// </summary>
     public virtual void Validate()
     {
-        // Add validation logic if needed.
+        if (Key is not null && string.IsNullOrWhiteSpace(Key))
+        {
+            throw new InvalidOperationException(
+                $"{nameof(Key)} cannot be empty or whitespace when specified."
+            );
+        }
+
+        if (BackchannelTimeout <= TimeSpan.Zero)
+        {
+            throw new ArgumentOutOfRangeException(
+                nameof(BackchannelTimeout),
+                BackchannelTimeout,
+                "The backchannel timeout must be graeter than zero."
+            );
+        }
+
+        if (Backchannel is null)
+        {
+            throw new InvalidOperationException(
+                $"{nameof(Backchannel)} must be configured."
+            );
+        }
     }
 
     /// <summary>
