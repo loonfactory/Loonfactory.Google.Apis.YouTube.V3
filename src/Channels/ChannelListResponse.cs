@@ -4,7 +4,7 @@ using System.Text.Json.Serialization;
 
 namespace Loonfactory.Google.Apis.YouTube.V3.Channels;
 
-public class CaptionListResponse
+public class ChannelListResponse
 {
     public string? Kind { get; set; }
     /// <summary>
