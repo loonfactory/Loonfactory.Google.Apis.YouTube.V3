@@ -6,7 +6,7 @@ namespace Loonfactory.Google.Apis.YouTube.V3.Channels;
 
 public interface IChannelsService
 {
-    public Task<CaptionListResponse> ListByForHandleAsync(
+    public Task<ChannelListResponse> ListByForHandleAsync(
         StringValues part,
         string forHandle,
         string? hl = null,
@@ -16,7 +16,7 @@ public interface IChannelsService
         CancellationToken cancellationToken = default
     );
 
-    public Task<CaptionListResponse> ListByForUsernameAsync(
+    public Task<ChannelListResponse> ListByForUsernameAsync(
         StringValues part,
         string forUsername,
         string? hl = null,
@@ -26,7 +26,7 @@ public interface IChannelsService
         CancellationToken cancellationToken = default
     );
 
-    public Task<CaptionListResponse> ListByIdAsync(
+    public Task<ChannelListResponse> ListByIdAsync(
         StringValues part,
         StringValues id,
         string? hl = null,
@@ -36,7 +36,7 @@ public interface IChannelsService
         CancellationToken cancellationToken = default
     );
 
-    public Task<CaptionListResponse> ListByMineAsync(
+    public Task<ChannelListResponse> ListByMineAsync(
         StringValues part,
         bool mine,
         string? hl = null,

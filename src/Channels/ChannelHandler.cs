@@ -11,11 +11,11 @@ public class ChannelHandler(
     ILoggerFactory logger
 ) : YouTubeHandler(options, logger), IChannelHandler
 {
-    public virtual Task<YouTubeResult<CaptionListResponse>> HandleChannelListAsync(ChannelProperties properties, CancellationToken cancellationToken)
+    public virtual Task<YouTubeResult<ChannelListResponse>> HandleChannelListAsync(ChannelProperties properties, CancellationToken cancellationToken)
     {
         ArgumentNullException.ThrowIfNull(properties);
 
-        return AuthorizationExecuteAsync<CaptionListResponse>(
+        return AuthorizationExecuteAsync<ChannelListResponse>(
             HttpMethod.Get,
             ChannelDefaults.ListEndpoint,
             properties,

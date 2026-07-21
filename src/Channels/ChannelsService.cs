@@ -15,7 +15,7 @@ public class ChannelsService(
 
     public IAccessTokenProvider AccessTokenProvider { get; } = accessTokenProvider;
 
-    public virtual Task<CaptionListResponse> ListByForHandleAsync(
+    public virtual Task<ChannelListResponse> ListByForHandleAsync(
         StringValues part,
         string forHandle,
         string? hl = null,
@@ -38,7 +38,7 @@ public class ChannelsService(
        );
     }
 
-    public virtual Task<CaptionListResponse> ListByForUsernameAsync(
+    public virtual Task<ChannelListResponse> ListByForUsernameAsync(
         StringValues part,
         string forUsername,
         string? hl = null,
@@ -61,7 +61,7 @@ public class ChannelsService(
        );
     }
 
-    public virtual Task<CaptionListResponse> ListByIdAsync(
+    public virtual Task<ChannelListResponse> ListByIdAsync(
         StringValues part,
         StringValues id,
         string? hl = null,
@@ -84,7 +84,7 @@ public class ChannelsService(
         );
     }
 
-    public virtual Task<CaptionListResponse> ListByMineAsync(
+    public virtual Task<ChannelListResponse> ListByMineAsync(
         StringValues part,
         bool mine,
         string? hl = null,
@@ -98,7 +98,7 @@ public class ChannelsService(
         return ListAsync(part, new(nameof(mine), mine), hl, maxResults, onBehalfOfContentOwner, pageToken, cancellationToken);
     }
 
-    private async Task<CaptionListResponse> ListAsync(
+    private async Task<ChannelListResponse> ListAsync(
         StringValues part,
         KeyValuePair<string, object> filter,
         string? hl = null,
