@@ -4,7 +4,7 @@ using Microsoft.Extensions.Primitives;
 
 namespace Loonfactory.Google.Apis.YouTube.V3.ChannelSections;
 
-public class ChannelSections(
+public class ChannelSectionsService(
     IYouTubeHandlerProvider handlers,
     IAccessTokenProvider accessTokenProvider) : IChannelSections
 {

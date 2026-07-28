@@ -10,6 +10,7 @@ using Loonfactory.Google.Apis.YouTube.V3.I18nLanguages;
 using Loonfactory.Google.Apis.YouTube.V3.I18nRegions;
 using Loonfactory.Google.Apis.YouTube.V3.Members;
 using Loonfactory.Google.Apis.YouTube.V3.MembershipsLevels;
+using Loonfactory.Google.Apis.YouTube.V3.PlaylistImages;
 using Loonfactory.Google.Apis.YouTube.V3.PlaylistItems;
 using Loonfactory.Google.Apis.YouTube.V3.Playlists;
 using Loonfactory.Google.Apis.YouTube.V3.Search;
@@ -147,6 +148,16 @@ public class YouTubeDataApiBuilder(IServiceCollection services)
         where THandler : class, IPlaylistItemHandler
     {
         Services.TryAddScoped<IPlaylistItemsService, TYouTubePlaylistItems>();
+        AddHandler<THandler>();
+
+        return this;
+    }
+
+    public virtual YouTubeDataApiBuilder AddPlaylistImages<TYouTubePlaylistImages, THandler>()
+        where TYouTubePlaylistImages : class, IPlaylistImagesService
+        where THandler : class, IPlaylistImageHandler
+    {
+        Services.TryAddScoped<IPlaylistImagesService, TYouTubePlaylistImages>();
         AddHandler<THandler>();
 
         return this;
