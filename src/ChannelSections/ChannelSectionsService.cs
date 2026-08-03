@@ -4,7 +4,7 @@ using Microsoft.Extensions.Primitives;
 
 namespace Loonfactory.Google.Apis.YouTube.V3.ChannelSections;
 
-public class ChannelSections(
+public class ChannelSectionsService(
     IYouTubeHandlerProvider handlers,
     IAccessTokenProvider accessTokenProvider) : IChannelSections
 {
@@ -83,7 +83,8 @@ public class ChannelSections(
         return result.Succeeded switch
         {
             true => result.Resource,
-            false => throw result.Failure!
+            false => throw result.Failure
+                ?? new InvalidOperationException("The channel section list operation failed without an exception.")
         };
     }
 
@@ -134,7 +135,8 @@ public class ChannelSections(
             return result.Succeeded switch
             {
                 true => result.Resource,
-                false => throw result.Failure!
+                false => throw result.Failure
+                    ?? new InvalidOperationException("The channel section insert operation failed without an exception.")
             };
         }
     }
@@ -171,7 +173,8 @@ public class ChannelSections(
             return result.Succeeded switch
             {
                 true => result.Resource,
-                false => throw result.Failure!
+                false => throw result.Failure
+                    ?? new InvalidOperationException("The channel section update operation failed without an exception.")
             };
         }
     }
