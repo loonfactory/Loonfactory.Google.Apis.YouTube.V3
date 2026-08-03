@@ -81,6 +81,7 @@ public class PlaylistImagesService(
             OnBehalfOfContentOwner = onBehalfOfContentOwner,
             OnBehalfOfContentOwnerChannel = onBehalfOfContentOwnerChannel,
             PageToken = pageToken,
+            AccessToken = await AccessTokenProvider.GetAccessTokenAsync(cancellationToken).ConfigureAwait(false),
         };
 
         properties.Parameters.Add(filter.Key, filter.Value);
@@ -171,6 +172,7 @@ public class PlaylistImagesService(
             Part = part,
             OnBehalfOfContentOwner = onBehalfOfContentOwner,
             OnBehalfOfContentOwnerChannel = onBehalfOfContentOwnerChannel,
+            AccessToken = await AccessTokenProvider.GetAccessTokenAsync(cancellationToken).ConfigureAwait(false),
         };
 
         return await handler.HandlePlaylistImageInsertAsync(
@@ -258,6 +260,7 @@ public class PlaylistImagesService(
         {
             Part = part,
             OnBehalfOfContentOwner = onBehalfOfContentOwner,
+            AccessToken = await AccessTokenProvider.GetAccessTokenAsync(cancellationToken).ConfigureAwait(false),
         };
 
         return await handler.HandlePlaylistImageUpdateAsync(
@@ -287,11 +290,17 @@ public class PlaylistImagesService(
         {
             Id = id,
             OnBehalfOfContentOwner = onBehalfOfContentOwner,
+            AccessToken = await AccessTokenProvider.GetAccessTokenAsync(cancellationToken).ConfigureAwait(false),
         };
 
-        await handler.HandlePlaylistImageDeleteAsync(
+        var result = await handler.HandlePlaylistImageDeleteAsync(
             properties,
             cancellationToken
         ).ConfigureAwait(false);
+
+        if (!result.Succeeded)
+        {
+            throw result.Failure!;
+        }
     }
 }
