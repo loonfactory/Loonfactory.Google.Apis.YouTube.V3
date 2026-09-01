@@ -34,7 +34,7 @@ public interface IPlaylistImagesService
         string? onBehalfOfContentOwner = null,
         CancellationToken cancellationToken = default
     );
-    
+
     public Task<PlaylistImageResource> UpdateAsync(
         StringValues part,
         PlaylistImageResource resource,
@@ -61,7 +61,7 @@ public interface IPlaylistImagesService
         string? onBehalfOfContentOwnerChannel = null,
         CancellationToken cancellationToken = default
     );
-    
+
     public Task DeleteAsync(
         StringValues id,
         string? onBehalfOfContentOwner = null,

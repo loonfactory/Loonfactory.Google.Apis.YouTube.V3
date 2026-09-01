@@ -1,3 +1,5 @@
+// Licensed under the MIT license by loonfactory.
+
 using Microsoft.AspNetCore.Mvc.RazorPages;
 
 namespace Loonfactory.Google.Apis.YouTube.V3.Example.Pages;

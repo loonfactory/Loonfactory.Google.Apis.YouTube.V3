@@ -1,4 +1,5 @@
-﻿using System;
+// Licensed under the MIT license by loonfactory.
+
 using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace Loonfactory.Google.Apis.YouTube.V3.Example.Data.Migrations

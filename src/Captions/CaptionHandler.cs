@@ -1,8 +1,8 @@
 // Licensed under the MIT license by loonfactory.
 
+using System.Net.Http.Headers;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
-using System.Net.Http.Headers;
 
 namespace Loonfactory.Google.Apis.YouTube.V3.Captions;
 

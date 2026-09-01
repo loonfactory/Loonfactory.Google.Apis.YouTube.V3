@@ -63,7 +63,7 @@ public class ChannelSectionProperties : YouTubeProperties
         get => GetParameter<string>(OnBehalfOfContentOwnerChannelKey);
         set => SetParameter(OnBehalfOfContentOwnerChannelKey, value);
     }
-    
+
     public string? ChannelId
     {
         get => GetParameter<string>(ChannelIdKey);

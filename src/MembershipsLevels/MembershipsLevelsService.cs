@@ -20,7 +20,7 @@ public class MembershipsLevelsService(
         StringValues part,
         CancellationToken cancellationToken = default)
     {
-        var getAccessTokenTask = AccessTokenProvider.GetAccessTokenAsync(cancellationToken).ConfigureAwait(false);        
+        var getAccessTokenTask = AccessTokenProvider.GetAccessTokenAsync(cancellationToken).ConfigureAwait(false);
 
         var handler = await Handlers.GetHandlerAsync<MembershipsLevelHandler>()
                                     .ConfigureAwait(false) ?? throw new InvalidOperationException("YouTubeMembershipsLevelHandler could not be obtained.");

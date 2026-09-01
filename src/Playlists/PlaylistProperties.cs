@@ -32,7 +32,7 @@ public class PlaylistProperties : YouTubeProperties
         get => GetParameter<StringValues>(PartKey);
         set => SetParameter(PartKey, value);
     }
-    
+
     public string? ChannelId
     {
         get => GetParameter<string>(ChannelIdKey);

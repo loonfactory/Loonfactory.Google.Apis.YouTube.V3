@@ -1,6 +1,4 @@
-﻿// Licensed under the MIT license by loonfactory.
-
-using System.Diagnostics;
+// Licensed under the MIT license by loonfactory.
 
 namespace Loonfactory.Google.Apis.YouTube.V3;
 
