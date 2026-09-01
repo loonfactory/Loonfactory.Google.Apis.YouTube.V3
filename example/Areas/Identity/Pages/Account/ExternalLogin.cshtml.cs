@@ -1,23 +1,18 @@
-// Licensed to the .NET Foundation under one or more agreements.
-// The .NET Foundation licenses this file to you under the MIT license.
+// Licensed under the MIT license by loonfactory.
+
 #nullable disable
 
-using System;
 using System.ComponentModel.DataAnnotations;
 using System.Security.Claims;
 using System.Text;
 using System.Text.Encodings.Web;
-using System.Threading;
-using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.Extensions.Options;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.WebUtilities;
-using Microsoft.Extensions.Logging;
-using Microsoft.AspNetCore.Authentication;
 
 namespace Loonfactory.Google.Apis.YouTube.V3.Example.Areas.Identity.Pages.Account
 {
@@ -123,13 +118,13 @@ namespace Loonfactory.Google.Apis.YouTube.V3.Example.Areas.Identity.Pages.Accoun
             if (result.Succeeded)
             {
                 _logger.LogInformation("{Name} logged in with {LoginProvider} provider.", info.Principal.Identity.Name, info.LoginProvider);
-                
+
                 info = await _signInManager.GetExternalLoginInfoAsync();
                 var user = await _userManager.FindByLoginAsync(info.LoginProvider, info.ProviderKey);
                 var props = new AuthenticationProperties();
                 props.StoreTokens(info.AuthenticationTokens);
                 props.IsPersistent = false;
-             
+
                 await _signInManager.SignInAsync(user, props, info.LoginProvider);
 
                 return LocalRedirect(returnUrl);

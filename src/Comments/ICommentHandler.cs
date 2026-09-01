@@ -11,6 +11,6 @@ public interface ICommentHandler : IYouTubeHandler
     public Task<YouTubeResult<CommentResource>> HandleCommentUpdateAsync(CommentResource resource, CommentProperties properties, CancellationToken cancellationToken);
 
     public Task<YouTubeResult> HandleCommentDeleteAsync(CommentProperties properties, CancellationToken cancellationToken);
-    
+
     public Task<YouTubeResult> HandleSetModerationStatus(CommentProperties properties, CancellationToken cancellationToken);
 }

@@ -1,7 +1,5 @@
 // Licensed under the MIT license by loonfactory.
 
-using Microsoft.AspNetCore.Http;
-
 namespace Loonfactory.Google.Apis.YouTube.V3;
 
 /// <summary>

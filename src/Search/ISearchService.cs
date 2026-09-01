@@ -8,7 +8,7 @@ public interface ISearchService
 {
     Task<SearchListResponse> ListAsync(
         StringValues part,
-        SearchListOptions? options = null, 
+        SearchListOptions? options = null,
         CancellationToken cancellationToken = default);
 
     Task<SearchListResponse> ListForContentOwnerAsync(

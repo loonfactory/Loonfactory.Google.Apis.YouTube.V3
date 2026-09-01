@@ -1,12 +1,12 @@
 // Licensed under the MIT license by loonfactory.
 
-using Microsoft.AspNetCore.Authentication.Google;
-using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.HttpOverrides;
-using Microsoft.EntityFrameworkCore;
 using Loonfactory.Google.Apis.YouTube.V3;
 using Loonfactory.Google.Apis.YouTube.V3.Example;
 using Loonfactory.Google.Apis.YouTube.V3.Example.Data;
+using Microsoft.AspNetCore.Authentication.Google;
+using Microsoft.AspNetCore.HttpOverrides;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
 var configuration = builder.Configuration;
