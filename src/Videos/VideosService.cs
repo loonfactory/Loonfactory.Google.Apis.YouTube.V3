@@ -153,7 +153,7 @@ public class VideosService(
 
         return result.Succeeded
             ? result.Resource
-            : throw result.Failure!;
+            : throw result.FailureOrDefault;
     }
 
     public Task<VideoResource> InsertAsync(
@@ -227,7 +227,7 @@ public class VideosService(
         return result.Succeeded switch
         {
             true => result.Resource,
-            false => throw result.Failure!
+            false => throw result.FailureOrDefault
         };
     }
 
@@ -283,7 +283,7 @@ public class VideosService(
         return result.Succeeded switch
         {
             true => result.Resource,
-            false => throw result.Failure!
+            false => throw result.FailureOrDefault
         };
     }
 
@@ -310,7 +310,7 @@ public class VideosService(
         var result = await handler.HandleVideoDeleteAsync(properties, cancellationToken).ConfigureAwait(false);
         if (!result.Succeeded)
         {
-            throw result.Failure!;
+            throw result.FailureOrDefault;
         }
     }
 
@@ -339,7 +339,7 @@ public class VideosService(
         var result = await handler.HandleVideoRateAsync(properties, cancellationToken).ConfigureAwait(false);
         if (!result.Succeeded)
         {
-            throw result.Failure!;
+            throw result.FailureOrDefault;
         }
     }
 
@@ -367,7 +367,7 @@ public class VideosService(
         return result.Succeeded switch
         {
             true => result.Resource,
-            false => throw result.Failure!
+            false => throw result.FailureOrDefault
         };
     }
 
@@ -388,7 +388,7 @@ public class VideosService(
         var result = await handler.HandleVideoReportAbuseAsync(resource, properties, cancellationToken).ConfigureAwait(false);
         if (!result.Succeeded)
         {
-            throw result.Failure!;
+            throw result.FailureOrDefault;
         }
     }
 }

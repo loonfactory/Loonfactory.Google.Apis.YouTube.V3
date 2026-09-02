@@ -84,7 +84,7 @@ public class PlaylistItemsService(
         return result.Succeeded switch
         {
             true => result.Resource,
-            false => throw result.Failure!
+            false => throw result.FailureOrDefault
         };
     }
 
@@ -127,7 +127,7 @@ public class PlaylistItemsService(
             return result.Succeeded switch
             {
                 true => result.Resource,
-                false => throw result.Failure!
+                false => throw result.FailureOrDefault
             };
         }
     }
@@ -172,7 +172,7 @@ public class PlaylistItemsService(
             return result.Succeeded switch
             {
                 true => result.Resource,
-                false => throw result.Failure!
+                false => throw result.FailureOrDefault
             };
         }
     }
@@ -195,7 +195,7 @@ public class PlaylistItemsService(
         var result = await handler.HandlePlaylistItemDeleteAsync(properties, cancellationToken).ConfigureAwait(false);
         if (!result.Succeeded)
         {
-            throw result.Failure!;
+            throw result.FailureOrDefault;
         }
     }
 }

@@ -158,7 +158,7 @@ public class SubscriptionService(
         return result.Succeeded switch
         {
             true => result.Resource,
-            false => throw result.Failure!
+            false => throw result.FailureOrDefault
         };
     }
 
@@ -212,7 +212,7 @@ public class SubscriptionService(
             return result.Succeeded switch
             {
                 true => result.Resource,
-                false => throw result.Failure!
+                false => throw result.FailureOrDefault
             };
         }
     }
@@ -236,7 +236,7 @@ public class SubscriptionService(
         var result = await handler.HandleSubscriptionDeleteAsync(properties, cancellationToken).ConfigureAwait(false);
         if (!result.Succeeded)
         {
-            throw result.Failure!;
+            throw result.FailureOrDefault;
         }
     }
 }

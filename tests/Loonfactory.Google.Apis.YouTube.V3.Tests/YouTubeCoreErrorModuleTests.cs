@@ -29,6 +29,24 @@ public class YouTubeCoreErrorModuleTests
     }
 
     [Fact]
+    public void FailureOrDefault_PreservesOriginalFailure()
+    {
+        var failure = new InvalidOperationException("test-failure");
+        var result = YouTubeResult<object>.Fail(failure);
+
+        Assert.Same(failure, result.FailureOrDefault);
+    }
+
+    [Fact]
+    public void FailureOrDefault_ReturnsFallbackWhenFailureIsMissing()
+    {
+        var result = YouTubeResult<object>.Success(new object());
+
+        var failure = Assert.IsType<InvalidOperationException>(result.FailureOrDefault);
+        Assert.Equal("The YouTube operation failed without an exception.", failure.Message);
+    }
+
+    [Fact]
     public async Task GetHandlerAsync_ConcurrentCalls_SharesOneInitializationTask()
     {
         var services = new ServiceCollection();

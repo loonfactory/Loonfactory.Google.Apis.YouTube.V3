@@ -125,7 +125,7 @@ public class ChannelsService(
         return result.Succeeded switch
         {
             true => result.Resource,
-            false => throw result.Failure!
+            false => throw result.FailureOrDefault
         };
     }
 
@@ -160,7 +160,7 @@ public class ChannelsService(
             return result.Succeeded switch
             {
                 true => result.Resource,
-                false => throw result.Failure!
+                false => throw result.FailureOrDefault
             };
         }
     }
