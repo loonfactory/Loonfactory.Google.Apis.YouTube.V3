@@ -26,7 +26,7 @@ public class ChannelSectionHandler(
     /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     /// <exception cref="ArgumentNullException">Thrown when <paramref name="properties"/> is <c>null</c>.</exception>
     /// <exception cref="InvalidOperationException">Thrown when required properties are missing or invalid.</exception>
-    public virtual Task<YouTubeResult> HandleChannelSectionDeleteAsync(
+    public virtual Task<YouTubeResult<ChannelSectionResource>> HandleChannelSectionDeleteAsync(
         ChannelSectionProperties properties,
         CancellationToken cancellationToken
     )
@@ -38,7 +38,7 @@ public class ChannelSectionHandler(
             throw new InvalidOperationException("The ChannelSection id must be provided in the properties.");
         }
 
-        return AuthorizationExecuteAsync(
+        return AuthorizationExecuteAsync<ChannelSectionResource>(
             HttpMethod.Delete,
             ChannelSectionDefaults.DeleteEndpoint,
             properties,

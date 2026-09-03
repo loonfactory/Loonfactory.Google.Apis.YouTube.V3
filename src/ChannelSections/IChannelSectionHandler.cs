@@ -10,5 +10,5 @@ public interface IChannelSectionHandler : IYouTubeHandler
 
     public Task<YouTubeResult<ChannelSectionResource>> HandleChannelSectionUpdateAsync(ChannelSectionResource resource, ChannelSectionProperties properties, CancellationToken cancellationToken);
 
-    public Task<YouTubeResult> HandleChannelSectionDeleteAsync(ChannelSectionProperties properties, CancellationToken cancellationToken);
+    public Task<YouTubeResult<ChannelSectionResource>> HandleChannelSectionDeleteAsync(ChannelSectionProperties properties, CancellationToken cancellationToken);
 }

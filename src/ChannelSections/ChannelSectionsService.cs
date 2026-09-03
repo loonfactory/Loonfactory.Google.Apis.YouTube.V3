@@ -178,4 +178,32 @@ public class ChannelSectionsService(
             };
         }
     }
+
+    public async Task<ChannelSectionResource> DeleteAsync(
+        string id,
+        string? onBehalfOfContentOwner = null,
+        CancellationToken cancellationToken = default)
+    {
+        ArgumentNullException.ThrowIfNull(id);
+
+        var handler = await Handlers.GetHandlerAsync<ChannelSectionHandler>()
+            .ConfigureAwait(false) ?? throw new InvalidOperationException("YouTubeChannelSectionHandler could not be obtained.");
+
+        var properties = new ChannelSectionProperties
+        {
+            Id = id,
+            OnBehalfOfContentOwner = onBehalfOfContentOwner,
+            AccessToken = await AccessTokenProvider.GetAccessTokenAsync(cancellationToken).ConfigureAwait(false)
+        };
+
+        var result = await handler.HandleChannelSectionDeleteAsync(properties, cancellationToken)
+            .ConfigureAwait(false);
+
+        return result.Succeeded switch
+        {
+            true => result.Resource,
+            false => throw result.Failure
+                ?? new InvalidOperationException("The channel section delete operation failed without an exception.")
+        };
+    }
 }
