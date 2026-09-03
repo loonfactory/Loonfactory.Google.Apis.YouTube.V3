@@ -33,6 +33,13 @@ public class YouTubeResult<T> where T : class
     public Exception? Failure { get; protected set; }
 
     /// <summary>
+    /// Gets the failure associated with this result, or a fallback exception when a failed
+    /// result does not contain one.
+    /// </summary>
+    public Exception FailureOrDefault => Failure
+        ?? new InvalidOperationException("The YouTube operation failed without an exception.");
+
+    /// <summary>
     /// Indicates that there was no information returned for this authentication scheme.
     /// </summary>
     public bool None { get; protected set; }

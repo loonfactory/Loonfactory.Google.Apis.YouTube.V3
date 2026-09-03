@@ -82,7 +82,7 @@ public class CommentsService(
         return result.Succeeded switch
         {
             true => result.Resource,
-            false => throw result.Failure!
+            false => throw result.FailureOrDefault
         };
     }
 
@@ -123,7 +123,7 @@ public class CommentsService(
             return result.Succeeded switch
             {
                 true => result.Resource,
-                false => throw result.Failure!
+                false => throw result.FailureOrDefault
             };
         }
     }
@@ -156,7 +156,7 @@ public class CommentsService(
             return result.Succeeded switch
             {
                 true => result.Resource,
-                false => throw result.Failure!
+                false => throw result.FailureOrDefault
             };
         }
     }
@@ -175,7 +175,7 @@ public class CommentsService(
         var result = await handler.HandleCommentDeleteAsync(properties, cancellationToken).ConfigureAwait(false);
         if (!result.Succeeded)
         {
-            throw result.Failure!;
+            throw result.FailureOrDefault;
         }
     }
 
@@ -195,7 +195,7 @@ public class CommentsService(
         var result = await handler.HandleCommentDeleteAsync(properties, cancellationToken).ConfigureAwait(false);
         if (!result.Succeeded)
         {
-            throw result.Failure!;
+            throw result.FailureOrDefault;
         }
     }
 }

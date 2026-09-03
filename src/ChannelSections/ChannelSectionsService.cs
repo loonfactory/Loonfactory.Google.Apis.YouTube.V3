@@ -83,8 +83,7 @@ public class ChannelSectionsService(
         return result.Succeeded switch
         {
             true => result.Resource,
-            false => throw result.Failure
-                ?? new InvalidOperationException("The channel section list operation failed without an exception.")
+            false => throw result.FailureOrDefault
         };
     }
 
@@ -135,8 +134,7 @@ public class ChannelSectionsService(
             return result.Succeeded switch
             {
                 true => result.Resource,
-                false => throw result.Failure
-                    ?? new InvalidOperationException("The channel section insert operation failed without an exception.")
+                false => throw result.FailureOrDefault
             };
         }
     }
@@ -173,8 +171,7 @@ public class ChannelSectionsService(
             return result.Succeeded switch
             {
                 true => result.Resource,
-                false => throw result.Failure
-                    ?? new InvalidOperationException("The channel section update operation failed without an exception.")
+                false => throw result.FailureOrDefault
             };
         }
     }

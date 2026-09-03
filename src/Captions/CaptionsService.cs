@@ -39,7 +39,7 @@ public class CaptionsService(
 
         if (!result.Succeeded)
         {
-            throw result.Failure!;
+            throw result.FailureOrDefault;
         }
     }
 
@@ -69,7 +69,7 @@ public class CaptionsService(
         return result.Succeeded switch
         {
             true => result.Resource,
-            false => throw result.Failure!
+            false => throw result.FailureOrDefault
         };
     }
 
@@ -169,7 +169,7 @@ public class CaptionsService(
         return result.Succeeded switch
         {
             true => result.Resource,
-            false => throw result.Failure!
+            false => throw result.FailureOrDefault
         };
     }
 
@@ -275,7 +275,7 @@ public class CaptionsService(
         return result.Succeeded switch
         {
             true => result.Resource,
-            false => throw result.Failure!
+            false => throw result.FailureOrDefault
         };
     }
 
@@ -308,7 +308,7 @@ public class CaptionsService(
         return result.Succeeded switch
         {
             true => result.Resource,
-            false => throw result.Failure!
+            false => throw result.FailureOrDefault
         };
     }
 }

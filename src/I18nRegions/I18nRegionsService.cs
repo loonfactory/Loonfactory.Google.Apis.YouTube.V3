@@ -33,7 +33,7 @@ public class I18nRegionsService(
         return result.Succeeded switch
         {
             true => result.Resource,
-            false => throw result.Failure!
+            false => throw result.FailureOrDefault
         };
     }
 }
