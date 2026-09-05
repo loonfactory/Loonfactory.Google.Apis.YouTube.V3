@@ -25,7 +25,7 @@ public class I18nRegionsService(
 
         var result = await handler.HandleI18nRegionListAsync(new I18nRegionProperties
         {
-            Parts = part,
+            Part = part,
             Hl = hl,
             AccessToken = await AccessTokenProvider.GetAccessTokenAsync(cancellationToken).ConfigureAwait(false)
         }, cancellationToken).ConfigureAwait(false);

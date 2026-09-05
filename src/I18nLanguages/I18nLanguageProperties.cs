@@ -4,7 +4,7 @@ namespace Loonfactory.Google.Apis.YouTube.V3.I18nLanguages;
 
 public class I18nLanguageProperties : YouTubeProperties
 {
-    public static readonly string PartsKey = "parts";
+    public static readonly string PartKey = "part";
 
     public static readonly string Hlkey = "hl";
 
@@ -19,10 +19,10 @@ public class I18nLanguageProperties : YouTubeProperties
         : base(items, parameters)
     { }
 
-    public string?[]? Parts
+    public string?[]? Part
     {
-        get => GetParameter<string?[]>(PartsKey);
-        set => SetParameter(PartsKey, value);
+        get => GetParameter<string?[]>(PartKey);
+        set => SetParameter(PartKey, value);
     }
 
     public string? Hl

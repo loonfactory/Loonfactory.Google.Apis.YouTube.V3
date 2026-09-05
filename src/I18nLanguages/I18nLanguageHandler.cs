@@ -14,9 +14,9 @@ public class I18nLanguageHandler(
     {
         ArgumentNullException.ThrowIfNull(properties);
 
-        if ((properties.Parts?.Length ?? 0) == 0)
+        if ((properties.Part?.Length ?? 0) == 0)
         {
-            throw new InvalidOperationException("The parts parameter must be provided in the properties.");
+            throw new InvalidOperationException("The part parameter must be provided in the properties.");
         }
 
         return ExecuteAsync<I18nLanguageListResponse>(

@@ -26,7 +26,7 @@ public class I18nLanguagesService(
 
         var result = await handler.HandleI18nLanguageListAsync(new I18nLanguageProperties
         {
-            Parts = part,
+            Part = part,
             Hl = hl,
             AccessToken = await AccessTokenProvider.GetAccessTokenAsync(cancellationToken).ConfigureAwait(false)
         }, cancellationToken).ConfigureAwait(false);
