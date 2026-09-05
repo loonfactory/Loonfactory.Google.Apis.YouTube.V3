@@ -41,4 +41,10 @@ public interface IChannelSections
         string? onBehalfOfContentOwnerChannel = null,
         CancellationToken cancellationToken = default
     );
+
+    public Task<ChannelSectionResource> DeleteAsync(
+        string id,
+        string? onBehalfOfContentOwner = null,
+        CancellationToken cancellationToken = default
+    );
 }
