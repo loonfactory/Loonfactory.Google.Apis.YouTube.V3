@@ -14,7 +14,7 @@ public class CaptionProperties : YouTubeProperties
 
     public static readonly string VideoIdKey = "videoId";
 
-    public static readonly string PartsKey = "parts";
+    public static readonly string PartKey = "part";
 
     public static readonly string TfmtKey = "tfmt";
 
@@ -73,8 +73,8 @@ public class CaptionProperties : YouTubeProperties
 
     public string[]? Part
     {
-        get => GetParameter<string[]>(PartsKey);
-        set => SetParameter(PartsKey, value);
+        get => GetParameter<string[]>(PartKey);
+        set => SetParameter(PartKey, value);
     }
 
     public string? Tfmt
