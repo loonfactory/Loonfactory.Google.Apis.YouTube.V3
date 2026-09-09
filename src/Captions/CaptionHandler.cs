@@ -7,18 +7,16 @@ using Microsoft.Extensions.Options;
 namespace Loonfactory.Google.Apis.YouTube.V3.Captions;
 
 /// <summary>
-/// Provides functionality to handle YouTube caption operations.
+/// Sends YouTube caption requests and processes their responses.
 /// </summary>
-/// <remarks>
-/// Initializes a new instance of <see cref="CaptionHandler" />.
-/// </remarks>
-/// <param name="options">The monitor for the options instance.</param>
-/// <param name="logger">The <see cref="ILoggerFactory"/>.</param>
+/// <param name="options">The monitor for YouTube options.</param>
+/// <param name="logger">The logger factory.</param>
 public class CaptionHandler(
     IOptionsMonitor<YouTubeOptions> options,
     ILoggerFactory logger
 ) : YouTubeHandler(options, logger), ICaptionHandler
 {
+    /// <inheritdoc />
     public virtual async Task<YouTubeResult<Stream>> HandleCaptionDownloadAsync(
         CaptionProperties properties,
         CancellationToken cancellationToken
@@ -47,13 +45,7 @@ public class CaptionHandler(
         return await HandleStreamResponseAsync(response, cancellationToken).ConfigureAwait(false);
     }
 
-    /// <summary>
-    /// Asynchronously handles the deletion of a YouTube caption.
-    /// </summary>
-    /// <param name="properties">The <see cref="CaptionProperties"/> required for caption deletion.</param>
-    /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
-    /// <exception cref="ArgumentNullException">Thrown when <paramref name="properties"/> is <c>null</c>.</exception>
-    /// <exception cref="InvalidOperationException">Thrown when required properties are missing or invalid.</exception>
+    /// <inheritdoc />
     public virtual Task<YouTubeResult> HandleCaptionDeleteAsync(
         CaptionProperties properties,
         CancellationToken cancellationToken
@@ -74,6 +66,7 @@ public class CaptionHandler(
         );
     }
 
+    /// <inheritdoc />
     public virtual Task<YouTubeResult<CaptionListResponse>> HandleCaptionListAsync(
         CaptionProperties properties,
         CancellationToken cancellationToken
@@ -99,6 +92,7 @@ public class CaptionHandler(
         );
     }
 
+    /// <inheritdoc />
     public virtual Task<YouTubeResult<CaptionResource>> HandleCaptionInsertAsync(
         CaptionResource resource,
         StreamContent? content,
@@ -139,6 +133,7 @@ public class CaptionHandler(
         );
     }
 
+    /// <inheritdoc />
     public virtual Task<YouTubeResult<CaptionResource>> HandleCaptionUpdateAsync(
         CaptionResource resource,
         StreamContent? content,

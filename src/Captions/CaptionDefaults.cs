@@ -2,32 +2,35 @@
 
 namespace Loonfactory.Google.Apis.YouTube.V3.Captions;
 
+/// <summary>
+/// Defines endpoints for YouTube caption operations.
+/// </summary>
 public static class CaptionDefaults
 {
     private const string ApiRootUrl = "https://www.googleapis.com/youtube/v3";
     private const string UploadRootUrl = "https://www.googleapis.com/upload/youtube/v3";
     /// <summary>
-    /// Endpoint URL for listing captions.
+    /// The endpoint for caption list requests.
     /// </summary>
     public static readonly string ListEndpoint = $"{ApiRootUrl}/captions";
 
     /// <summary>
-    /// Endpoint URL for inserting new captions.
+    /// The endpoint for caption insert requests.
     /// </summary>
     public static readonly string InsertEndpoint = $"{UploadRootUrl}/captions";
 
     /// <summary>
-    /// Endpoint URL for updating existing captions.
+    /// The endpoint for caption update requests.
     /// </summary>
     public static readonly string UpdateEndpoint = $"{UploadRootUrl}/captions";
 
     /// <summary>
-    /// Endpoint URL for downloading captions.
+    /// The endpoint for caption download requests.
     /// </summary>
     public static readonly string DownloadEndpoint = $"{ApiRootUrl}/captions/";
 
     /// <summary>
-    /// Endpoint URL for deleting captions.
+    /// The endpoint for caption delete requests.
     /// </summary>
     public static readonly string DeleteEndpoint = $"{ApiRootUrl}/captions";
 }

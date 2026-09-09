@@ -5,6 +5,11 @@ using Microsoft.Extensions.Primitives;
 
 namespace Loonfactory.Google.Apis.YouTube.V3.Captions;
 
+/// <summary>
+/// Implements <see cref="ICaptionsService"/> using caption handlers.
+/// </summary>
+/// <param name="handlers">The handler provider.</param>
+/// <param name="accessTokenProvider">The OAuth access token provider.</param>
 public class CaptionsService(
     IYouTubeHandlerProvider handlers,
     IAccessTokenProvider accessTokenProvider
@@ -12,12 +17,16 @@ public class CaptionsService(
 {
 
     /// <summary>
-    /// Used to resolve <see cref="IYouTubeHandler"/> instances.
+    /// Gets the provider used to resolve caption handlers.
     /// </summary>
     public IYouTubeHandlerProvider Handlers { get; } = handlers;
 
+    /// <summary>
+    /// Gets the OAuth access token provider.
+    /// </summary>
     public IAccessTokenProvider AccessTokenProvider { get; } = accessTokenProvider;
 
+    /// <inheritdoc />
     public async Task DeleteAsync(
         string id,
         string? onBehalfOfContentOwner = null,
@@ -28,8 +37,6 @@ public class CaptionsService(
 
         var handler = await Handlers.GetHandlerAsync<CaptionHandler>()
             .ConfigureAwait(false) ?? throw new InvalidOperationException("YouTubeCaptionHandler could not be obtained.");
-
-        // Implement the deletion logic using the handler
         var result = await handler.HandleCaptionDeleteAsync(new CaptionProperties
         {
             Id = id,
@@ -43,6 +50,7 @@ public class CaptionsService(
         }
     }
 
+    /// <inheritdoc />
     public async Task<Stream> DownloadAsync(
         string id,
         string? onBehalfOfContentOwner = null,
@@ -55,8 +63,6 @@ public class CaptionsService(
 
         var handler = await Handlers.GetHandlerAsync<CaptionHandler>()
             .ConfigureAwait(false) ?? throw new InvalidOperationException("YouTubeCaptionHandler could not be obtained.");
-
-        // Implement the deletion logic using the handler
         var result = await handler.HandleCaptionDownloadAsync(new CaptionProperties
         {
             Id = id,
@@ -73,6 +79,7 @@ public class CaptionsService(
         };
     }
 
+    /// <inheritdoc />
     public Task<CaptionResource> InsertAsync(
         StringValues part,
         CaptionResource resource,
@@ -85,6 +92,7 @@ public class CaptionsService(
         return InternalInsertAsync(part, null, resource, null, null, cancellationToken);
     }
 
+    /// <inheritdoc />
     public Task<CaptionResource> InsertAsync(
         StringValues part,
         string onBehalfOfContentOwner,
@@ -99,6 +107,7 @@ public class CaptionsService(
         return InternalInsertAsync(part, onBehalfOfContentOwner, resource, null, null, cancellationToken);
     }
 
+    /// <inheritdoc />
     public Task<CaptionResource> InsertAsync(
         StringValues part,
         CaptionResource resource,
@@ -113,6 +122,7 @@ public class CaptionsService(
         return InternalInsertAsync(part, null, resource, stream, "application/octet-stream", cancellationToken);
     }
 
+    /// <inheritdoc />
     public Task<CaptionResource> InsertAsync(
         StringValues part,
         string onBehalfOfContentOwner,
@@ -126,9 +136,10 @@ public class CaptionsService(
         ArgumentNullException.ThrowIfNull(resource);
         ArgumentNullException.ThrowIfNull(stream);
 
-        return InternalInsertAsync(part, null, resource, stream, "application/octet-stream", cancellationToken);
+        return InternalInsertAsync(part, onBehalfOfContentOwner, resource, stream, "application/octet-stream", cancellationToken);
     }
 
+    /// <inheritdoc />
     public Task<CaptionResource> InsertAsync(
         StringValues part,
         string onBehalfOfContentOwner,
@@ -146,6 +157,7 @@ public class CaptionsService(
         return InternalInsertAsync(part, onBehalfOfContentOwner, resource, stream, contentType, cancellationToken);
     }
 
+    /// <inheritdoc />
     public async Task<CaptionListResponse> ListAsync(
         StringValues part,
         string videoId,
@@ -173,6 +185,7 @@ public class CaptionsService(
         };
     }
 
+    /// <inheritdoc />
     public Task<CaptionResource> UpdateAsync(
         StringValues part,
         CaptionResource resource,
@@ -185,9 +198,10 @@ public class CaptionsService(
         return InternalUpdateAsync(part, null, resource, null, null, cancellationToken);
     }
 
+    /// <inheritdoc />
     public Task<CaptionResource> UpdateAsync(
         StringValues part,
-        string? onBehalfOfContentOwner,
+        string onBehalfOfContentOwner,
         CaptionResource resource,
         CancellationToken cancellationToken = default
     )
@@ -199,6 +213,7 @@ public class CaptionsService(
         return InternalUpdateAsync(part, onBehalfOfContentOwner, resource, null, null, cancellationToken);
     }
 
+    /// <inheritdoc />
     public Task<CaptionResource> UpdateAsync(
         StringValues part,
         CaptionResource resource,
@@ -213,9 +228,10 @@ public class CaptionsService(
         return InternalUpdateAsync(part, null, resource, stream, "application/octet-stream", cancellationToken);
     }
 
+    /// <inheritdoc />
     public Task<CaptionResource> UpdateAsync(
         StringValues part,
-        string? onBehalfOfContentOwner,
+        string onBehalfOfContentOwner,
         CaptionResource resource,
         Stream stream,
         CancellationToken cancellationToken = default
@@ -229,9 +245,10 @@ public class CaptionsService(
         return InternalUpdateAsync(part, onBehalfOfContentOwner, resource, stream, null, cancellationToken);
     }
 
+    /// <inheritdoc />
     public Task<CaptionResource> UpdateAsync(
         StringValues part,
-        string? onBehalfOfContentOwner,
+        string onBehalfOfContentOwner,
         CaptionResource resource,
         Stream stream,
         string contentType,
