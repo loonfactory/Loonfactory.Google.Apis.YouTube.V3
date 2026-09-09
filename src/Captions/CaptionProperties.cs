@@ -3,25 +3,37 @@
 namespace Loonfactory.Google.Apis.YouTube.V3.Captions;
 
 /// <summary>
-/// <see cref="YouTubeProperties"/> for a YouTube caption challenge.
+/// Stores parameters for caption requests.
 /// </summary>
 public class CaptionProperties : YouTubeProperties
 {
     /// <summary>
-    /// The parameter key for the "id" argument being used for a challenge request.
+    /// The query key for <c>id</c>.
     /// </summary>
     public static readonly string IdKey = "id";
 
+    /// <summary>
+    /// The query key for <c>videoId</c>.
+    /// </summary>
     public static readonly string VideoIdKey = "videoId";
 
+    /// <summary>
+    /// The query key for <c>part</c>.
+    /// </summary>
     public static readonly string PartKey = "part";
 
+    /// <summary>
+    /// The query key for <c>tfmt</c>.
+    /// </summary>
     public static readonly string TfmtKey = "tfmt";
 
+    /// <summary>
+    /// The query key for <c>tlang</c>.
+    /// </summary>
     public static readonly string TlangKey = "tlang";
 
     /// <summary>
-    /// The parameter key for the "onBehalfOfContentOwner" argument being used for a challenge request.
+    /// The query key for <c>onBehalfOfContentOwner</c>.
     /// </summary>
     public static readonly string onBehalfOfContentOwnerKey = "onBehalfOfContentOwner";
 
@@ -34,7 +46,7 @@ public class CaptionProperties : YouTubeProperties
     /// <summary>
     /// Initializes a new instance of <see cref="CaptionProperties"/>.
     /// </summary>
-    /// <inheritdoc />
+    /// <param name="items">The stored property values.</param>
     public CaptionProperties(IDictionary<string, string?> items)
         : base(items)
     { }
@@ -42,13 +54,14 @@ public class CaptionProperties : YouTubeProperties
     /// <summary>
     /// Initializes a new instance of <see cref="CaptionProperties"/>.
     /// </summary>
-    /// <inheritdoc />
+    /// <param name="items">The stored property values.</param>
+    /// <param name="parameters">The request parameter values.</param>
     public CaptionProperties(IDictionary<string, string?> items, IDictionary<string, object?> parameters)
         : base(items, parameters)
     { }
 
     /// <summary>
-    /// The "id" parameter value being used for a challenge request.
+    /// Gets or sets caption identifiers; list accepts comma-separated values.
     /// </summary>
     public string? Id
     {
@@ -57,7 +70,7 @@ public class CaptionProperties : YouTubeProperties
     }
 
     /// <summary>
-    /// The "onBehalfOfContentOwner" parameter value being used for a challenge request.
+    /// Gets or sets the optional content partner owner identifier.
     /// </summary>
     public string? OnBehalfOfContentOwner
     {
@@ -65,24 +78,36 @@ public class CaptionProperties : YouTubeProperties
         set => SetParameter(onBehalfOfContentOwnerKey, value);
     }
 
+    /// <summary>
+    /// Gets or sets the video identifier required for listing.
+    /// </summary>
     public string? VideoId
     {
         get => GetParameter<string>(VideoIdKey);
         set => SetParameter(VideoIdKey, value);
     }
 
+    /// <summary>
+    /// Gets or sets the requested resource parts.
+    /// </summary>
     public string[]? Part
     {
         get => GetParameter<string[]>(PartKey);
         set => SetParameter(PartKey, value);
     }
 
+    /// <summary>
+    /// Gets or sets the download format, or null for the original format.
+    /// </summary>
     public string? Tfmt
     {
         get => GetParameter<string>(TfmtKey);
         set => SetParameter(TfmtKey, value);
     }
 
+    /// <summary>
+    /// Gets or sets the translation language, or null for the original language.
+    /// </summary>
     public string? Tlang
     {
         get => GetParameter<string>(TlangKey);

@@ -5,30 +5,30 @@ using System.Text.Json.Serialization;
 namespace Loonfactory.Google.Apis.YouTube.V3.Captions;
 
 /// <summary>
-/// A YouTubeCaptionResource represents a YouTube caption track.
-/// A caption track is associated with exactly one YouTube video.
+/// Represents caption metadata used in requests and responses.
 /// </summary>
+/// <remarks>Each track belongs to one video. Members may be absent in partial responses or requests; required fields depend on the operation.</remarks>
+/// <seealso href="https://developers.google.com/youtube/v3/docs/captions" />
 public class CaptionResource
 {
     /// <summary>
-    /// Identifies the API resource's type.
-    /// The value will be <c>"youtube#caption"</c>.
+    /// Gets or sets the resource kind, <c>youtube#caption</c>.
     /// </summary>
     public string? Kind { get; set; }
 
     /// <summary>
-    /// The Etag of this resource.
+    /// Gets or sets the resource entity tag.
     /// </summary>
     [JsonPropertyName("etag")]
     public string? ETag { get; set; }
 
     /// <summary>
-    /// The ID that YouTube uses to uniquely identify the caption track.
+    /// Gets or sets the caption identifier.
     /// </summary>
     public string? Id { get; set; }
 
     /// <summary>
-    /// The snippet object contains basic details about the caption.
+    /// Gets or sets the selected caption metadata.
     /// </summary>
     public CaptionSnippet? Snippet { get; set; }
 }
